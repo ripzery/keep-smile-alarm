@@ -13,7 +13,7 @@ fun <T> Any.save(key: String, value: T){
         is Long -> SharePref.putLong(key, value)
         is Boolean -> SharePref.putBoolean(key, value)
         is Float -> SharePref.putFloat(key,value)
-        else -> throw IllegalArgumentException("Can save only [Int, String, Long, Boolean, Float")
+        else -> throw IllegalArgumentException("Can save only [Int, String, Long, Boolean, Float] !")
     }
 }
 
