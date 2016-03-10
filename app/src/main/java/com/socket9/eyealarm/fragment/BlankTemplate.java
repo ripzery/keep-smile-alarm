@@ -25,6 +25,6 @@ public class BlankTemplate extends Fragment implements TimePickerDialog.OnTimeSe
     }
 
     @Override public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
+        Long[] test = new Long[]{ 500L, 600L };
     }
 }
