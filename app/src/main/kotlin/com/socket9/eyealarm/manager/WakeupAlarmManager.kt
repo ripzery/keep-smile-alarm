@@ -33,9 +33,9 @@ object WakeupAlarmManager {
         /* start activity alarm */
         val wakeupIntent = Intent(service, WakeTrackerActivity::class.java)
         wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//        wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         service.startActivity(wakeupIntent)
-
-        //TODO: play alarm sound
 
     }
 

@@ -46,6 +46,16 @@ class WakeTrackerActivity : AppCompatActivity(){
     private fun initInstance() {
         wakeTrackerFragment = WakeTrackerFragment.getInstance()
         replaceFragment(R.id.contentContainer, wakeTrackerFragment)
+        playAlarmSound()
+    }
+
+    private fun playAlarmSound(){
+        //TODO: loop alarm sound
+
+    }
+
+    private fun cancelAlarmSound(){
+        //TODO: remove alarm sound
     }
 
     /** Listener zone **/
