@@ -2,10 +2,12 @@ package com.socket9.eyealarm.extension
 
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.socket9.eyealarm.R
+import com.socket9.eyealarm.util.SharePref
 
 /**
  * Created by Euro on 3/4/16 AD.
