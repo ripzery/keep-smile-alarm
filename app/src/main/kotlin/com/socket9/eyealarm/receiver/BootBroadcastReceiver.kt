@@ -32,6 +32,8 @@ class BootBroadcastReceiver : WakefulBroadcastReceiver(){
         if(intent!!.action.equals(ACTION_BOOT_COMPLETE)){
             /* reset alarm */
 
+            //TODO: reset all alarm
+
         } else if(intent.type.equals(MyNotificationManager.SET_NOTIFICATION)){
 
             startNotificationService(intent, context)
