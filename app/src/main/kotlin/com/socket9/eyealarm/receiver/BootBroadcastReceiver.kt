@@ -7,6 +7,8 @@ import android.support.v4.content.WakefulBroadcastReceiver
 import android.util.Log
 import android.widget.Toast
 import com.socket9.eyealarm.BaseApp
+import com.socket9.eyealarm.manager.MyNotificationManager
+import com.socket9.eyealarm.manager.WakeupAlarmManager
 
 /**
  * Created by Euro on 3/10/16 AD.
@@ -26,6 +28,18 @@ class BootBroadcastReceiver : WakefulBroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
         if(intent!!.action.equals(ACTION_BOOT_COMPLETE)){
             /* reset alarm */
+
+        } else if(intent.type.equals(MyNotificationManager.SET_NOTIFICATION)){
+
+            MyNotificationManager.createNotification(intent.getStringExtra(MyNotificationManager.EXTRA_TITLE),
+                    intent.getStringExtra(MyNotificationManager.EXTRA_CONTENT),
+                    intent.getIntExtra(MyNotificationManager.EXTRA_IC, 0),
+                    intent.getLongExtra(MyNotificationManager.EXTRA_NOTI_ID, 0))
+
+
+        } else if(intent.type.equals(WakeupAlarmManager.WAKEUP_ALARM)){
+
+            WakeupAlarmManager.createAlarm(intent)
         }
     }
 

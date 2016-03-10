@@ -1,4 +1,4 @@
-package com.socket9.eyealarm.receiver
+package com.socket9.eyealarm.service
 
 import android.app.IntentService
 import android.content.Intent
@@ -8,12 +8,18 @@ import com.socket9.eyealarm.manager.MyNotificationManager
 /**
  * Created by Euro on 3/10/16 AD.
  */
-class NotificationReceiver(name: String?) : IntentService(name) {
+class NotificationService : IntentService{
 
     /** Variable zone **/
 
 
     /** Override zone **/
+
+    constructor(name: String) : super(name) {
+
+    }
+
+    constructor() : super("NotificationService")
 
     override fun onHandleIntent(intent: Intent?) {
         when(intent!!.type){

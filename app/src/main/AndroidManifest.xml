@@ -4,8 +4,8 @@
 
     <uses-feature android:name="android.hardware.camera"/>
 
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
@@ -42,10 +42,16 @@
             android:name=".activity.WakeTrackerActivity"
             android:screenOrientation="portrait"/>
 
-        <receiver android:name=".receiver.BootBroadcastReceiver"
+
+        <service android:name=".service.NotificationService"/>
+
+        <service android:name=".service.WakeupAlarmService"/>
+
+        <receiver
+            android:name=".receiver.BootBroadcastReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 

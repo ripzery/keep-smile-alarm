@@ -2,16 +2,23 @@ package com.socket9.eyealarm.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.gson.Gson
 import com.socket9.eyealarm.R
 import com.socket9.eyealarm.dialog.DatePickerDialogFragment
 import com.socket9.eyealarm.dialog.TimePickerDialogFragment
-import com.socket9.eyealarm.extension.log
+import com.socket9.eyealarm.extension.get
+import com.socket9.eyealarm.extension.save
 import com.socket9.eyealarm.extension.toast
+import com.socket9.eyealarm.manager.MyNotificationManager
+import com.socket9.eyealarm.manager.WakeupAlarmManager
+import com.socket9.eyealarm.model.dao.Model
+import com.socket9.eyealarm.util.Contextor
+import com.socket9.eyealarm.util.SharePref
 import kotlinx.android.synthetic.main.fragment_alarm_set.*
-import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.*
 
 /**
@@ -23,6 +30,7 @@ class AlarmSetFragment : Fragment() {
     lateinit var param1: String
     var currentDate: DatePickerDialogFragment.DatePicked? = null
     var currentTime: TimePickerDialogFragment.TimePicked? = null
+    var alarmCollectionDao: Model.AlarmCollectionDao? = null
 
     /** static method zone **/
     companion object {
@@ -86,28 +94,69 @@ class AlarmSetFragment : Fragment() {
     }
 
     private fun setAlarm() {
-        if(isSelectedDateTime()) {
+        if (isSelectedDateTime()) {
             var alarmDate = GregorianCalendar(currentDate!!.dayOfMonth,
                     currentDate!!.monthOfYear,
                     currentDate!!.year,
                     currentTime!!.hourOfDay,
                     currentTime!!.minute)
 
-            startAlarmReceiver(alarmDate)
+            /* get alarmCollectionDao */
+            initAlarmCollectionDao()
+
+            /* create new alarm dao */
+            var alarmDao: Model.AlarmDao = Model.AlarmDao(currentDate!!, currentTime!!)
+
+            /* add alarm dao */
+            alarmCollectionDao!!.alarmCollectionList.plus(alarmDao)
+
+            /* update alarm collection */
+            updateAlarmCollectionDao()
+
+            /* start alarm */
+            startAlarmReceiver(alarmDate, alarmDao)
         }
     }
 
-    private fun startAlarmReceiver(alarmDate: GregorianCalendar) {
-        /* load AlarmCollectionDao json in sharePref */
+    private fun startAlarmReceiver(alarmDate: GregorianCalendar, alarmDao: Model.AlarmDao) {
+        MyNotificationManager.broadcastNotificationIntent("Wakeup title",
+                "Wakeup description",
+                R.mipmap.icon,
+                alarmDate.timeInMillis,
+                alarmDao.hashCode().toLong())
+
+        WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDate.timeInMillis)
     }
 
-    private fun isSelectedDateTime() : Boolean {
-        if(currentDate == null){
+    private fun updateAlarmCollectionDao() {
+        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(alarmCollectionDao))
+    }
+
+    private fun initAlarmCollectionDao() {
+        /* load AlarmCollectionDao json in sharePref */
+
+        val alarmCollectionJson: String = get(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, "") as String
+
+        if (!alarmCollectionJson.isNotBlank()) {
+            /* alarm was exist */
+
+            alarmCollectionDao = Gson().fromJson(alarmCollectionJson, Model.AlarmCollectionDao::class.java)
+
+        } else {
+            /* blank alarm collection */
+
+            alarmCollectionDao = Model.AlarmCollectionDao(ArrayList<Model.AlarmDao>())
+
+        }
+    }
+
+    private fun isSelectedDateTime(): Boolean {
+        if (currentDate == null) {
             toast("Please select date")
             return false
         }
 
-        if(currentTime == null) {
+        if (currentTime == null) {
             toast("Please select time")
             return false
         }

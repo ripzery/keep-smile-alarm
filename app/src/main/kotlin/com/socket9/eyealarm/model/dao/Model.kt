@@ -11,5 +11,5 @@ import java.util.*
 object Model{
     data class AlarmDao(var datePicked: DatePickerDialogFragment.DatePicked, var timePicked: TimePickerDialogFragment.TimePicked)
 
-    data class AlarmCollectionDao(var alarmCollectionDao:List<AlarmDao>)
+    data class AlarmCollectionDao(var alarmCollectionList:List<AlarmDao>)
 }

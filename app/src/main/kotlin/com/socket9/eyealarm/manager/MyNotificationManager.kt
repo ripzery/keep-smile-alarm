@@ -23,6 +23,7 @@ object MyNotificationManager {
 
     val SET_NOTIFICATION = "CREATE_NOTIFICATION"
     val CANCEL_NOTIFICATION = "CANCEL_NOTIFICATION"
+    val SET_ALARM = "SET_ALARM"
     val EXTRA_TITLE = "title"
     val EXTRA_CONTENT = "content"
     val EXTRA_IC = "ic"
