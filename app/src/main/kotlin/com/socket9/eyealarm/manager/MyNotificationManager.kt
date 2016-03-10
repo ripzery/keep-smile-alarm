@@ -41,7 +41,7 @@ object MyNotificationManager {
         alarmManager.set(AlarmManager.RTC_WAKEUP, wakeTime, alarmIntent)
     }
 
-    fun createNotification(title: String, msg: String, icon: Int, notificationId: Int) {
+    fun createNotification(title: String, msg: String, icon: Int, notificationId: Long) {
         val clickNotificationIntent: Intent = Intent(Contextor.context, MainActivity::class.java)
 
         val resultPendingIntent: PendingIntent = PendingIntent.getActivity(Contextor.context, 0,
@@ -63,7 +63,7 @@ object MyNotificationManager {
 
         val notificationManager: NotificationManager = Contextor.context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        notificationManager.notify(notificationId, mBuilder.build())
+        notificationManager.notify(notificationId.toInt(), mBuilder.build())
 
     }
 }

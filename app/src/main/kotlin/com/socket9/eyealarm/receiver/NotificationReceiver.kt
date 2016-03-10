@@ -17,7 +17,7 @@ class NotificationReceiver(name: String?) : IntentService(name) {
     override fun onHandleIntent(intent: Intent?) {
         when(intent!!.type){
             MyNotificationManager.SET_NOTIFICATION -> {
-                createNotification()
+                createNotification(intent)
             }
             MyNotificationManager.CANCEL_NOTIFICATION -> {
                 cancelNotification()
@@ -30,8 +30,13 @@ class NotificationReceiver(name: String?) : IntentService(name) {
 
     /** Method zone **/
 
-    private fun createNotification(){
+    private fun createNotification(intent: Intent?) {
+        val title = intent!!.getStringExtra(MyNotificationManager.EXTRA_TITLE)
+        val content = intent.getStringExtra(MyNotificationManager.EXTRA_CONTENT)
+        val ic = intent.getIntExtra(MyNotificationManager.EXTRA_IC, 0)
+        val notificationId = intent.getLongExtra(MyNotificationManager.EXTRA_NOTI_ID, 0)
 
+        MyNotificationManager.createNotification(title, content, ic, notificationId)
     }
 
     private fun cancelNotification(){
