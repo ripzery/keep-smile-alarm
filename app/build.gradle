@@ -1,0 +1,81 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'me.tatarka.retrolambda'
+
+String getJavaHome(String version) {
+  def stdout = new ByteArrayOutputStream()
+  exec {
+    commandLine "/usr/libexec/java_home", "-v", version
+    standardOutput = stdout;
+  }
+  return stdout.toString().trim()
+}
+
+android {
+  compileSdkVersion 23
+  buildToolsVersion "23.0.2"
+
+  dataBinding {
+    enabled = true
+  }
+
+  defaultConfig {
+    applicationId "com.socket9.eyealarm"
+    minSdkVersion 17
+    targetSdkVersion 23
+    versionCode 1
+    versionName "1.0"
+  }
+
+  retrolambda {
+    jdk System.getenv("JAVA8_HOME") ?: getJavaHome("1.8")
+    oldJdk System.getenv("JAVA7_HOME") ?: getJavaHome("1.7")
+    // ...
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+  }
+}
+
+dependencies {
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+  testCompile 'junit:junit:4.12'
+  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  compile 'com.android.support:appcompat-v7:23.1.1'
+  compile 'com.android.support:design:23.1.1'
+  compile 'com.google.android.gms:play-services-vision:8.4.0'
+  compile 'io.reactivex:rxjava:1.1.0'
+  compile 'io.reactivex:rxandroid:1.1.0'
+  compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
+  compile 'com.android.support:support-v4:23.1.1'
+}
+
+buildscript {
+  ext.kotlin_version = '1.0.0'
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
+  }
+}
+
+repositories {
+  mavenCentral()
+}
