@@ -20,6 +20,7 @@ import com.socket9.eyealarm.util.Contextor
 object MyNotificationManager {
 
     /** Variable **/
+
     val SET_NOTIFICATION = "CREATE_NOTIFICATION"
     val CANCEL_NOTIFICATION = "CANCEL_NOTIFICATION"
     val EXTRA_TITLE = "title"
@@ -28,6 +29,7 @@ object MyNotificationManager {
     val EXTRA_NOTI_ID = "notification_id"
 
     /** Method zone **/
+
     fun broadcastNotificationIntent(title: String, description: String, icon: Int, wakeTime: Long, notificationId: Long) {
         val alarmManager: AlarmManager = Contextor.context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent: Intent = Intent(Contextor.context, BootBroadcastReceiver::class.java)

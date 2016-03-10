@@ -98,7 +98,7 @@ class AlarmSetFragment : Fragment() {
     }
 
     private fun startAlarmReceiver(alarmDate: GregorianCalendar) {
-
+        /* load AlarmCollectionDao json in sharePref */
     }
 
     private fun isSelectedDateTime() : Boolean {

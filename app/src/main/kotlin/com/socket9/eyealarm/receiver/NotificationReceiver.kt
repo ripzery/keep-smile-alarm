@@ -2,6 +2,7 @@ package com.socket9.eyealarm.receiver
 
 import android.app.IntentService
 import android.content.Intent
+import android.support.v4.content.WakefulBroadcastReceiver
 import com.socket9.eyealarm.manager.MyNotificationManager
 
 /**
@@ -26,6 +27,9 @@ class NotificationReceiver(name: String?) : IntentService(name) {
 
             }
         }
+
+        // Release the wake lock provided by the WakefulBroadcastReceiver.
+        WakefulBroadcastReceiver.completeWakefulIntent(intent)
     }
 
     /** Method zone **/
