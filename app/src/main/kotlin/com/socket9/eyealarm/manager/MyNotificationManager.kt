@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Bundle
 import android.support.v4.app.NotificationCompat
 import com.socket9.eyealarm.MainActivity
 import com.socket9.eyealarm.receiver.BootBroadcastReceiver
@@ -36,10 +37,13 @@ object MyNotificationManager {
         val intent: Intent = Intent(Contextor.context, BootBroadcastReceiver::class.java)
         intent.type = SET_NOTIFICATION
         intent.action = "$notificationId"
-        intent.putExtra(EXTRA_TITLE, title)
-        intent.putExtra(EXTRA_CONTENT, description)
-        intent.putExtra(EXTRA_IC, icon)
-        intent.putExtra(EXTRA_NOTI_ID, notificationId)
+        val bundle:Bundle = Bundle()
+        bundle.putString(EXTRA_TITLE, title)
+        bundle.putString(EXTRA_CONTENT, description)
+        bundle.putInt(EXTRA_IC, icon)
+        bundle.putLong(EXTRA_NOTI_ID, notificationId)
+        intent.action = ""
+        intent.putExtras(bundle)
         val alarmIntent: PendingIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
         alarmManager.set(AlarmManager.RTC_WAKEUP, wakeTime, alarmIntent)
     }

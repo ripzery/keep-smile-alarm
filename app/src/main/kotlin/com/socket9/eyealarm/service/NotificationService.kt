@@ -2,6 +2,7 @@ package com.socket9.eyealarm.service
 
 import android.app.IntentService
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.content.WakefulBroadcastReceiver
 import com.socket9.eyealarm.manager.MyNotificationManager
 
@@ -41,10 +42,12 @@ class NotificationService : IntentService{
     /** Method zone **/
 
     private fun createNotification(intent: Intent?) {
-        val title = intent!!.getStringExtra(MyNotificationManager.EXTRA_TITLE)
-        val content = intent.getStringExtra(MyNotificationManager.EXTRA_CONTENT)
-        val ic = intent.getIntExtra(MyNotificationManager.EXTRA_IC, 0)
-        val notificationId = intent.getLongExtra(MyNotificationManager.EXTRA_NOTI_ID, 0)
+        val bundle: Bundle = intent!!.extras
+
+        val title = bundle.getString(MyNotificationManager.EXTRA_TITLE)
+        val content = bundle.getString(MyNotificationManager.EXTRA_CONTENT)
+        val ic = bundle.getInt(MyNotificationManager.EXTRA_IC, 0)
+        val notificationId = bundle.getLong(MyNotificationManager.EXTRA_NOTI_ID, 0)
 
         MyNotificationManager.createNotification(title, content, ic, notificationId)
     }

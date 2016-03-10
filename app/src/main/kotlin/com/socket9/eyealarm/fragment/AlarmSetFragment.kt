@@ -108,7 +108,7 @@ class AlarmSetFragment : Fragment() {
             var alarmDao: Model.AlarmDao = Model.AlarmDao(currentDate!!, currentTime!!)
 
             /* add alarm dao */
-            alarmCollectionDao!!.alarmCollectionList.plus(alarmDao)
+            alarmCollectionDao?.alarmCollectionList?.plus(alarmDao)
 
             /* update alarm collection */
             updateAlarmCollectionDao()
@@ -137,7 +137,7 @@ class AlarmSetFragment : Fragment() {
 
         val alarmCollectionJson: String = get(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, "") as String
 
-        if (!alarmCollectionJson.isNotBlank()) {
+        if (alarmCollectionJson.isNotBlank()) {
             /* alarm was exist */
 
             alarmCollectionDao = Gson().fromJson(alarmCollectionJson, Model.AlarmCollectionDao::class.java)

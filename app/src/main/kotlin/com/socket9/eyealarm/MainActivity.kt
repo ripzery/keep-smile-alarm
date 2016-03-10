@@ -8,6 +8,7 @@ import com.socket9.eyealarm.extension.replaceFragment
 import com.socket9.eyealarm.fragment.MainFragment
 import com.socket9.eyealarm.fragment.TemplateFragment
 import com.socket9.eyealarm.fragment.WakeTrackerFragment
+import com.socket9.eyealarm.util.SharePref
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         mainFragment = MainFragment.newInstance("mainFragment")
         replaceFragment(R.id.contentContainer, mainFragment)
 
-        if(BaseApp.SharePref.sharePref?.getString("boot", "fail").equals("complete")){
+        if(SharePref.sharePref?.getString("boot", "fail").equals("complete")){
             log("Yayyyy boot receiver working")
         }
     }
