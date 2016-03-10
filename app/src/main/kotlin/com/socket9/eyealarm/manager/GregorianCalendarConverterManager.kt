@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Created by Euro on 3/10/16 AD.
  */
-object GregorianCalendarConverter {
+object GregorianCalendarConverterManager {
     fun parseDateTimePicked(datePicked: DatePickerDialogFragment.DatePicked, timePicked: TimePickerDialogFragment.TimePicked) : GregorianCalendar{
         return GregorianCalendar(datePicked.year, datePicked.monthOfYear, datePicked.dayOfMonth, timePicked.hourOfDay, timePicked.minute)
     }
