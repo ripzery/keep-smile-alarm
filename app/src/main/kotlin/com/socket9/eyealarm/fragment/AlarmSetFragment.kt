@@ -13,6 +13,7 @@ import com.socket9.eyealarm.dialog.TimePickerDialogFragment
 import com.socket9.eyealarm.extension.get
 import com.socket9.eyealarm.extension.save
 import com.socket9.eyealarm.extension.toast
+import com.socket9.eyealarm.manager.GregorianCalendarConverterManager
 import com.socket9.eyealarm.manager.MyNotificationManager
 import com.socket9.eyealarm.manager.WakeupAlarmManager
 import com.socket9.eyealarm.model.dao.Model
@@ -95,11 +96,7 @@ class AlarmSetFragment : Fragment() {
 
     private fun setAlarm() {
         if (isSelectedDateTime()) {
-            var alarmDate = GregorianCalendar(currentDate!!.dayOfMonth,
-                    currentDate!!.monthOfYear,
-                    currentDate!!.year,
-                    currentTime!!.hourOfDay,
-                    currentTime!!.minute)
+            var alarmDate = GregorianCalendarConverterManager.parseDateTimePicked(currentDate!!, currentTime!!)
 
             /* get alarmCollectionDao */
             initAlarmCollectionDao()

@@ -13,7 +13,7 @@ class WakeupAlarmService : IntentService {
 
 
 
-    /** Method zone **/
+    /** Override zone **/
 
     constructor(name: String) : super(name){
 
@@ -23,10 +23,14 @@ class WakeupAlarmService : IntentService {
 
     }
 
+
     override fun onHandleIntent(intent: Intent?) {
         when(intent?.type){
             WakeupAlarmManager.WAKEUP_ALARM -> WakeupAlarmManager.createAlarm(this)
         }
     }
+
+    /** Method zone **/
+
 
 }

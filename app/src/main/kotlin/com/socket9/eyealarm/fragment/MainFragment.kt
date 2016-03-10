@@ -15,8 +15,12 @@ import kotlinx.android.synthetic.main.fragment_main.*
  * Created by Euro on 3/10/16 AD.
  */
 class MainFragment : Fragment(){
+    /** Variable zone **/
+
     lateinit var param1: String
 
+
+    /** Static method zone **/
     companion object{
         val ARG_1 = "ARG_1"
 
@@ -29,6 +33,8 @@ class MainFragment : Fragment(){
         }
 
     }
+
+    /** Lifecycle zone **/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +55,8 @@ class MainFragment : Fragment(){
 
         initInstance()
     }
+
+    /** Method zone **/
 
     private fun initInstance() {
         btnWakeActivity.setOnClickListener { startActivity(Intent(activity, WakeTrackerActivity::class.java)) }
