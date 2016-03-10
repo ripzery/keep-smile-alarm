@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.socket9.eyealarm.R
+import com.socket9.eyealarm.extension.replaceFragment
+import com.socket9.eyealarm.fragment.AlarmSetFragment
 
 /**
  * Created by Euro on 3/10/16 AD.
@@ -13,6 +15,7 @@ import com.socket9.eyealarm.R
 class AlarmSetActivity : AppCompatActivity(){
 
     /** Variable zone **/
+    lateinit private var alarmSetFragment: AlarmSetFragment
 
 
     /** Lifecycle zone **/
@@ -42,7 +45,8 @@ class AlarmSetActivity : AppCompatActivity(){
     /** Method zone **/
 
     private fun initInstance() {
-
+        alarmSetFragment  = AlarmSetFragment.newInstance("alarmSetFragment")
+        replaceFragment(R.id.contentContainer, alarmSetFragment)
     }
 
     /** Listener zone **/

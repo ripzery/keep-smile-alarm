@@ -32,6 +32,12 @@
         <activity
             android:name=".FaceTrackerActivity"
             android:screenOrientation="sensorPortrait"/>
+        <activity
+            android:name=".activity.AlarmSetActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.WakeTrackerActivity"
+            android:screenOrientation="portrait"/>
 
 
     </application>

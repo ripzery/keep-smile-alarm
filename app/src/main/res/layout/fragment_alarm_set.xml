@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="Pick Date"/>
+        android:text="Wake Date"/>
 
 
     <android.support.v7.widget.AppCompatButton
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textSize="20sp"
-        android:text="Pick Time"/>
+        android:text="Wake Time"/>
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnPickTime"
