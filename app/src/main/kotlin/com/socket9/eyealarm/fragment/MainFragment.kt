@@ -53,7 +53,7 @@ class MainFragment : Fragment(){
     private fun initInstance() {
         btnWakeActivity.setOnClickListener { startActivity(Intent(activity, WakeTrackerActivity::class.java)) }
 
-        btnSetAlarm.setOnClickListener { startActivity(Intent(activity, AlarmSetActivity::class.java)) }
+        btnAlarmActivity.setOnClickListener { startActivity(Intent(activity, AlarmSetActivity::class.java)) }
 
     }
 }

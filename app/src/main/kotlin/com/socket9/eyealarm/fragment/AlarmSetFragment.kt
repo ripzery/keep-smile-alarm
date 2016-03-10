@@ -9,22 +9,26 @@ import com.socket9.eyealarm.R
 import com.socket9.eyealarm.dialog.DatePickerDialogFragment
 import com.socket9.eyealarm.dialog.TimePickerDialogFragment
 import com.socket9.eyealarm.extension.log
+import com.socket9.eyealarm.extension.toast
 import kotlinx.android.synthetic.main.fragment_alarm_set.*
+import kotlinx.android.synthetic.main.fragment_main.*
+import java.util.*
 
 /**
  * Created by Euro on 3/10/16 AD.
  */
-class AlarmSetFragment : Fragment(){
+class AlarmSetFragment : Fragment() {
 
     /** Variable zone **/
     lateinit var param1: String
-
+    var currentDate: DatePickerDialogFragment.DatePicked? = null
+    var currentTime: TimePickerDialogFragment.TimePicked? = null
 
     /** static method zone **/
-    companion object{
+    companion object {
         val ARG_1 = "ARG_1"
 
-        fun newInstance(param1:String) : AlarmSetFragment {
+        fun newInstance(param1: String): AlarmSetFragment {
             var bundle: Bundle = Bundle()
             bundle.putString(ARG_1, param1)
             val alarmSetFragment: AlarmSetFragment = AlarmSetFragment()
@@ -38,7 +42,7 @@ class AlarmSetFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             /* if newly created */
             param1 = arguments.getString(ARG_1)
         }
@@ -57,20 +61,58 @@ class AlarmSetFragment : Fragment(){
 
     /** Method zone **/
 
-    private fun initInstance(){
+    private fun initInstance() {
         btnPickDate.setOnClickListener { showDatePickerDialog() }
         btnPickTime.setOnClickListener { showTimePickerDialog() }
+        btnSetAlarm.setOnClickListener { setAlarm() }
     }
 
-    private fun showTimePickerDialog(){
+    private fun showTimePickerDialog() {
         var timePickerDialog = TimePickerDialogFragment()
         timePickerDialog.show(childFragmentManager, "timePicker");
-        timePickerDialog.getTimePickedObservable().subscribe { btnPickTime.text = it.getTimeFormat() }
+        timePickerDialog.getTimePickedObservable().subscribe {
+            currentTime = it;
+            btnPickTime.text = it.getTimeFormat()
+        }
     }
 
     private fun showDatePickerDialog() {
         var datePickerDialog = DatePickerDialogFragment()
         datePickerDialog.show(childFragmentManager, "datePicker");
-        datePickerDialog.getDatePickedObservable().subscribe { btnPickDate.text = it.getDateFormat() }
+        datePickerDialog.getDatePickedObservable().subscribe {
+            currentDate = it
+            btnPickDate.text = it.getDateFormat()
+        }
     }
+
+    private fun setAlarm() {
+        if(isSelectedDateTime()) {
+            var alarmDate = GregorianCalendar(currentDate!!.dayOfMonth,
+                    currentDate!!.monthOfYear,
+                    currentDate!!.year,
+                    currentTime!!.hourOfDay,
+                    currentTime!!.minute)
+
+            startAlarmReceiver(alarmDate)
+        }
+    }
+
+    private fun startAlarmReceiver(alarmDate: GregorianCalendar) {
+
+    }
+
+    private fun isSelectedDateTime() : Boolean {
+        if(currentDate == null){
+            toast("Please select date")
+            return false
+        }
+
+        if(currentTime == null) {
+            toast("Please select time")
+            return false
+        }
+
+        return true
+    }
+
 }
