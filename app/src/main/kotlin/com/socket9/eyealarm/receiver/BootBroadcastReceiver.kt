@@ -13,14 +13,22 @@ import com.socket9.eyealarm.BaseApp
  */
 class BootBroadcastReceiver : WakefulBroadcastReceiver(){
 
+    /** Variable zone **/
+
+    /** Static method zone **/
+
     companion object{
         val ACTION_BOOT_COMPLETE : String = "android.intent.action.BOOT_COMPLETED"
     }
+
+    /** Override zone **/
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if(intent!!.action.equals(ACTION_BOOT_COMPLETE)){
             /* reset alarm */
         }
     }
+
+    /** Method zone **/
 
 }

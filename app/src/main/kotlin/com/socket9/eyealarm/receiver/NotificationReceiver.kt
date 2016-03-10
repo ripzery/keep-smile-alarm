@@ -9,6 +9,7 @@ import android.content.Intent
 class NotificationReceiver(name: String?) : IntentService(name) {
 
     /** Variable zone **/
+
     val SET_NOTIFICATION = "CREATE_NOTIFICATION"
     val CANCEL_NOTIFICATION = "CANCEL_NOTIFICATION"
 
@@ -29,6 +30,7 @@ class NotificationReceiver(name: String?) : IntentService(name) {
     }
 
     /** Method zone **/
+
     private fun createNotification(){
 
     }
