@@ -40,7 +40,7 @@ class BootBroadcastReceiver : WakefulBroadcastReceiver(){
 
         } else if(intent.type.equals(WakeupAlarmManager.WAKEUP_ALARM)){
 
-            startWakeupAlarmService(intent, context)
+            startSetWakeupAlarmService(intent, context)
         }
     }
 
@@ -56,13 +56,17 @@ class BootBroadcastReceiver : WakefulBroadcastReceiver(){
         context?.startService(notificationService)
     }
 
-    private fun startWakeupAlarmService(intent: Intent?, context: Context?){
+    private fun startSetWakeupAlarmService(intent: Intent?, context: Context?){
         val wakeupAlarmService = Intent(context, WakeupAlarmService::class.java)
 //        val bundle:Bundle = intent!!.extras
 
         wakeupAlarmService.type = WakeupAlarmManager.WAKEUP_ALARM
 
         context?.startService(wakeupAlarmService)
+    }
+
+    private fun startCancelWakeupAlarmService(intent: Intent?, context: Context?){
+
     }
 
 }

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.util.Log
 import com.socket9.eyealarm.activity.WakeTrackerActivity
 import com.socket9.eyealarm.receiver.BootBroadcastReceiver
+import com.socket9.eyealarm.service.WakeupAlarmService
 import com.socket9.eyealarm.util.Contextor
 
 /**
@@ -17,6 +18,7 @@ object WakeupAlarmManager {
     /** Variable zone **/
 
     val WAKEUP_ALARM = "WAKEUP_ALARM"
+    val CANCEL_ALARM = "CANCEL_ALARM"
 
 
     /** Method zone**/
@@ -42,15 +44,18 @@ object WakeupAlarmManager {
         alarmManager.set(AlarmManager.RTC_WAKEUP, wakeTime, alarmIntent)
     }
 
-    fun createAlarm(service: IntentService) {
+    fun createAlarm(wakeupAlarmService: IntentService) {
         /* start activity alarm */
-        val wakeupIntent = Intent(service, WakeTrackerActivity::class.java)
+
+        val wakeupIntent = Intent(wakeupAlarmService, WakeTrackerActivity::class.java)
         wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        service.startActivity(wakeupIntent)
+        wakeupAlarmService.startActivity(wakeupIntent)
     }
 
-    fun cancelAlarm(){
+    fun cancelAlarm(wakeupAlarmService: IntentService) {
         //TODO : implement cancel alarm
+
+
     }
 }
