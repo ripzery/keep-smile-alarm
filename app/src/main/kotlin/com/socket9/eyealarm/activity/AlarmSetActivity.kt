@@ -27,6 +27,7 @@ class AlarmSetActivity : AppCompatActivity(){
     }
 
     override fun onResume() {
+
         super.onResume()
     }
 
@@ -39,12 +40,19 @@ class AlarmSetActivity : AppCompatActivity(){
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            android.R.id.home -> finish()
+        }
+
         return super.onOptionsItemSelected(item)
     }
 
     /** Method zone **/
 
     private fun initInstance() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Set Alarm"
+
         alarmSetFragment  = AlarmSetFragment.newInstance("alarmSetFragment")
         replaceFragment(R.id.contentContainer, alarmSetFragment)
     }

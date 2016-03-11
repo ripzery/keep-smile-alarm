@@ -7,6 +7,7 @@ import android.content.SharedPreferences
  */
 object SharePref {
     var sharePref: SharedPreferences? = null
+
     val SHARE_PREF_KEY_ALARM_COLLECTION_JSON = "ALARM_COLLECTION_JSON"
 
     fun putString(key:String, value:String){

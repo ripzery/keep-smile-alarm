@@ -15,6 +15,7 @@ import com.socket9.eyealarm.extension.save
 import com.socket9.eyealarm.extension.toast
 import com.socket9.eyealarm.manager.GregorianCalendarConverterManager
 import com.socket9.eyealarm.manager.MyNotificationManager
+import com.socket9.eyealarm.manager.SharePrefDaoManager
 import com.socket9.eyealarm.manager.WakeupAlarmManager
 import com.socket9.eyealarm.model.dao.Model
 import com.socket9.eyealarm.util.Contextor
@@ -99,13 +100,14 @@ class AlarmSetFragment : Fragment() {
             var alarmDate = GregorianCalendarConverterManager.parseDateTimePicked(currentDate!!, currentTime!!)
 
             /* get alarmCollectionDao */
-            initAlarmCollectionDao()
+
+            alarmCollectionDao = SharePrefDaoManager.getAlarmCollectionDao()
 
             /* create new alarm dao */
             var alarmDao: Model.AlarmDao = Model.AlarmDao(currentDate!!, currentTime!!)
 
             /* add alarm dao */
-            alarmCollectionDao?.alarmCollectionList?.plus(alarmDao)
+            alarmCollectionDao?.alarmCollectionList?.add(alarmDao)
 
             /* update alarm collection */
             updateAlarmCollectionDao()
@@ -131,24 +133,6 @@ class AlarmSetFragment : Fragment() {
 
     private fun updateAlarmCollectionDao() {
         save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(alarmCollectionDao))
-    }
-
-    private fun initAlarmCollectionDao() {
-        /* load AlarmCollectionDao json in sharePref */
-
-        val alarmCollectionJson: String = get(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, "") as String
-
-        if (alarmCollectionJson.isNotBlank()) {
-            /* alarm was exist */
-
-            alarmCollectionDao = Gson().fromJson(alarmCollectionJson, Model.AlarmCollectionDao::class.java)
-
-        } else {
-            /* blank alarm collection */
-
-            alarmCollectionDao = Model.AlarmCollectionDao(ArrayList<Model.AlarmDao>())
-
-        }
     }
 
     private fun isSelectedDateTime(): Boolean {

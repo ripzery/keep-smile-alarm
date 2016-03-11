@@ -1,5 +1,6 @@
 package com.socket9.eyealarm.extension
 
+import android.util.Log
 import com.socket9.eyealarm.util.SharePref
 
 /**
