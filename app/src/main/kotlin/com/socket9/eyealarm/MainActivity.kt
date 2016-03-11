@@ -31,9 +31,6 @@ class MainActivity : AppCompatActivity() {
         mainFragment = MainFragment.newInstance("mainFragment")
         replaceFragment(R.id.contentContainer, mainFragment)
 
-        if(SharePref.sharePref?.getString("boot", "fail").equals("complete")){
-            log("Yayyyy boot receiver working")
-        }
     }
 
     /** Listener zone **/

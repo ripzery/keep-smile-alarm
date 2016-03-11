@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.WindowManager
 import com.socket9.eyealarm.R
 import com.socket9.eyealarm.extension.replaceFragment
 import com.socket9.eyealarm.fragment.WakeTrackerFragment
@@ -21,6 +22,9 @@ class WakeTrackerActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setFlagScreenOnEvenLocked()
+
         setContentView(R.layout.activity_wake_tracker)
         initInstance()
     }
@@ -42,6 +46,14 @@ class WakeTrackerActivity : AppCompatActivity(){
     }
 
     /** Method zone **/
+
+    private fun setFlagScreenOnEvenLocked() {
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON +
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD +
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED +
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+    }
+
 
     private fun initInstance() {
         wakeTrackerFragment = WakeTrackerFragment.getInstance()

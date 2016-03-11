@@ -116,13 +116,15 @@ class AlarmSetFragment : Fragment() {
     }
 
     private fun startAlarmReceiver(alarmDate: GregorianCalendar, alarmDao: Model.AlarmDao) {
-        MyNotificationManager.broadcastNotificationIntent("Wakeup title",
-                "Wakeup description",
-                R.mipmap.icon,
-                alarmDate.timeInMillis,
-                alarmDao.hashCode().toLong())
+//        MyNotificationManager.broadcastNotificationIntent("Wakeup title",
+//                "Wakeup description",
+//                R.mipmap.icon,
+//                alarmDate.timeInMillis,
+//                alarmDao.hashCode().toLong())
 
         WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDate.timeInMillis)
+
+        toast("Set alarm at ${alarmDao.timePicked.getTimeFormat()}")
     }
 
     private fun updateAlarmCollectionDao() {

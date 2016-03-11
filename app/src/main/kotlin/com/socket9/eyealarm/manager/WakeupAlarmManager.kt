@@ -5,6 +5,7 @@ import android.app.IntentService
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.socket9.eyealarm.activity.WakeTrackerActivity
 import com.socket9.eyealarm.receiver.BootBroadcastReceiver
 import com.socket9.eyealarm.util.Contextor
@@ -26,6 +27,7 @@ object WakeupAlarmManager {
         intent.action = ""
         intent.type = WAKEUP_ALARM
         val alarmIntent: PendingIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        Log.d("wakeTime", "$wakeTime")
         alarmManager.set(AlarmManager.RTC_WAKEUP, wakeTime, alarmIntent)
     }
 

@@ -40,7 +40,8 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.WakeTrackerActivity"
-            android:screenOrientation="portrait"/>
+            android:showOnLockScreen="true"
+            android:screenOrientation="sensorPortrait"/>
 
 
         <service android:name=".service.NotificationService"/>
