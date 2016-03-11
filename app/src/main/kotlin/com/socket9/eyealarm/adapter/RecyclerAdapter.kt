@@ -11,7 +11,7 @@ import com.socket9.eyealarm.viewgroup.AlarmInfoViewGroup
 /**
  * Created by Euro on 3/11/16 AD.
  */
-class RecyclerAdapter(val alarmCollectionList: List<Model.AlarmDao>) : RecyclerView.Adapter<RecyclerAdapter.AlarmInfoViewHolder>() {
+class RecyclerAdapter(val alarmCollectionList: List<Model.AlarmDao>, var alarmInfoInteractionListener: AlarmInfoInteractionListener) : RecyclerView.Adapter<RecyclerAdapter.AlarmInfoViewHolder>() {
     override fun onBindViewHolder(holder: AlarmInfoViewHolder?, position: Int) {
         holder!!.setModel(alarmCollectionList[position])
     }
@@ -25,16 +25,24 @@ class RecyclerAdapter(val alarmCollectionList: List<Model.AlarmDao>) : RecyclerV
         return alarmCollectionList.size
     }
 
-    class AlarmInfoViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
-        //        lateinit var alarmInfoViewGroup: AlarmInfoViewGroup
+    inner class AlarmInfoViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
         private var alarmInfoViewGroup: AlarmInfoViewGroup
 
         init {
             alarmInfoViewGroup = itemView?.findViewById(R.id.alarmInfoViewGroup) as AlarmInfoViewGroup
+
+            alarmInfoViewGroup.getEditObservable().subscribe { alarmInfoInteractionListener.onEdit(it) }
+
+            alarmInfoViewGroup.getDeleteObservable().subscribe { alarmInfoInteractionListener.onDelete(adapterPosition) }
         }
 
         fun setModel(alarmDao: Model.AlarmDao) {
             alarmInfoViewGroup.setAlarmDao(alarmDao)
         }
+    }
+
+    interface AlarmInfoInteractionListener {
+        fun onEdit(alarmDao: Model.AlarmDao)
+        fun onDelete(index: Int)
     }
 }

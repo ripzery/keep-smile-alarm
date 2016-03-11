@@ -8,12 +8,18 @@ import android.view.View
 import android.widget.TextView
 import com.socket9.eyealarm.R
 import com.socket9.eyealarm.model.dao.Model
+import kotlinx.android.synthetic.main.viewgroup_alarm_info.view.*
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.subjects.PublishSubject
 
 class AlarmInfoViewGroup : BaseCustomViewGroup {
-    lateinit private var alarmDao : Model.AlarmDao
-    lateinit private var containerView : View
+    lateinit private var alarmDao: Model.AlarmDao
+    lateinit private var containerView: View
     lateinit private var tvDate: TextView
     lateinit private var tvTime: TextView
+    private var publishEditSubject: PublishSubject<Model.AlarmDao> = PublishSubject.create()
+    private var publishDeleteSubject: PublishSubject<Int> = PublishSubject.create()
 
     constructor(context: Context) : super(context) {
         initInflate()
@@ -43,18 +49,31 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
         containerView = inflate(context, R.layout.viewgroup_alarm_info, this)
     }
 
-
     private fun initInstances() {
         // findViewById here
         tvDate = containerView.findViewById(R.id.tvDate) as TextView
         tvTime = containerView.findViewById(R.id.tvTime) as TextView
+
+        btnEdit.setOnClickListener { publishEditSubject.onNext(alarmDao) }
+        btnDelete.setOnClickListener {
+            //remove this card
+            publishDeleteSubject.onNext(1)
+        }
     }
 
-    fun setAlarmDao(alarmDao: Model.AlarmDao){
+    fun setAlarmDao(alarmDao: Model.AlarmDao) {
         this.alarmDao = alarmDao
 
         tvDate.text = alarmDao.datePicked.getDateFormat()
         tvTime.text = alarmDao.timePicked.getTimeFormat()
+    }
+
+    fun getEditObservable() : Observable<Model.AlarmDao> {
+        return publishEditSubject.subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun getDeleteObservable(): Observable<Int> {
+        return publishDeleteSubject.subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread())
     }
 
     private fun initWithAttrs(attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) {
