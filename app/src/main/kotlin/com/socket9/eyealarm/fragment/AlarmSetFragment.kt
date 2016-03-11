@@ -11,6 +11,7 @@ import com.socket9.eyealarm.R
 import com.socket9.eyealarm.dialog.DatePickerDialogFragment
 import com.socket9.eyealarm.dialog.TimePickerDialogFragment
 import com.socket9.eyealarm.extension.get
+import com.socket9.eyealarm.extension.log
 import com.socket9.eyealarm.extension.save
 import com.socket9.eyealarm.extension.toast
 import com.socket9.eyealarm.manager.GregorianCalendarConverterManager
@@ -129,6 +130,7 @@ class AlarmSetFragment : Fragment() {
         WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDate.timeInMillis)
 
         toast("Set alarm at ${alarmDao.timePicked.getTimeFormat()}")
+
     }
 
     private fun updateAlarmCollectionDao() {

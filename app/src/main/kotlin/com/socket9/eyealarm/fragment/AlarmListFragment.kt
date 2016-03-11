@@ -14,7 +14,9 @@ import com.socket9.eyealarm.dialog.TimePickerDialogFragment
 import com.socket9.eyealarm.extension.log
 import com.socket9.eyealarm.extension.save
 import com.socket9.eyealarm.extension.toast
+import com.socket9.eyealarm.manager.GregorianCalendarConverterManager
 import com.socket9.eyealarm.manager.SharePrefDaoManager
+import com.socket9.eyealarm.manager.WakeupAlarmManager
 import com.socket9.eyealarm.model.dao.Model
 import com.socket9.eyealarm.util.SharePref
 import kotlinx.android.synthetic.main.fragment_alarm_list.*
@@ -69,31 +71,68 @@ class AlarmListFragment : Fragment() {
         recyclerAdapter = RecyclerAdapter(alarmCollectionList, alarmInfoInteractionListener)
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
+
+        /* show text empty alarm if empty list */
+        if(alarmCollectionList.isEmpty()){
+            tvEmptyAlarm.visibility = View.VISIBLE
+        }
     }
 
     /** Method zone **/
+
+    private fun updateAlarm(datePicked: DatePickerDialogFragment.DatePicked, index: Int, it: TimePickerDialogFragment.TimePicked) {
+        var newAlarmDao = Model.AlarmDao(datePicked, it)
+
+        /* cancel alarm */
+        val oldWakeupTime = GregorianCalendarConverterManager.parseAlarmDao(alarmCollectionList[index]).timeInMillis
+        WakeupAlarmManager.cancelAlarm(oldWakeupTime)
+
+        /* update new alarmDao */
+        alarmCollectionList[index] = newAlarmDao
+
+        /* save to sharePref */
+        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
+
+        /* update card */
+        recyclerAdapter.updateAtPosition(index)
+
+        /* set new alarm */
+        val newWakeupTime = GregorianCalendarConverterManager.parseAlarmDao(newAlarmDao).timeInMillis
+        WakeupAlarmManager.broadcastWakeupAlarmIntent(newWakeupTime)
+
+        /* show toast */
+        toast("Set new alarm ${alarmCollectionList[index].datePicked.getDateFormat()}@${alarmCollectionList[index].timePicked.getTimeFormat()}")
+    }
+
+    private fun deleteAlarm(index: Int) {
+        val toDeleteAlarmDao = alarmCollectionList[index]
+
+        /* cancel alarm */
+        WakeupAlarmManager.cancelAlarm(GregorianCalendarConverterManager.parseAlarmDao(toDeleteAlarmDao).timeInMillis)
+
+        /* delete */
+        alarmCollectionList.removeAt(index)
+
+        /* remove card */
+        recyclerAdapter.removeAtPosition(index)
+
+        /* if empty, show empty text */
+        if(alarmCollectionList.isEmpty()){
+            tvEmptyAlarm.visibility = View.VISIBLE
+        }
+
+        /* update to share pref */
+        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
+
+        /* show toast delete */
+        toast("Delete alarm ${toDeleteAlarmDao.datePicked.getDateFormat()}@${toDeleteAlarmDao.timePicked.getTimeFormat()}")
+    }
 
     private fun showTimePickerDialog(datePicked: DatePickerDialogFragment.DatePicked, index: Int) {
         var timePickerDialog = TimePickerDialogFragment()
         timePickerDialog.show(childFragmentManager, "timePicker");
         timePickerDialog.getTimePickedObservable().subscribe {
-            var newAlarmDao = Model.AlarmDao(datePicked, it)
-
-            /* update new alarmDao */
-
-            alarmCollectionList[index] = newAlarmDao
-
-            /* save to sharePref */
-            save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
-
-            /* update card */
-            recyclerAdapter.updateAtPosition(index, newAlarmDao)
-
-            /* cancel alarm */
-
-
-            /* show toast */
-            toast("Set new alarm ${alarmCollectionList[index].datePicked.getDateFormat()}@${alarmCollectionList[index].timePicked.getTimeFormat()}")
+            updateAlarm(datePicked, index, it)
         }
     }
 
@@ -109,8 +148,7 @@ class AlarmListFragment : Fragment() {
 
     var alarmInfoInteractionListener = object : RecyclerAdapter.AlarmInfoInteractionListener {
         override fun onDelete(index: Int) {
-
-            log("$index")
+            deleteAlarm(index)
         }
 
         override fun onEdit(alarmDao: Model.AlarmDao, index: Int) {

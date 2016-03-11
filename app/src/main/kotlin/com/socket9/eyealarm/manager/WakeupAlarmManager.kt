@@ -32,7 +32,7 @@ object WakeupAlarmManager {
 
         /* set type and action note: action must not be null */
 
-        intent.action = ""
+        intent.action = "$wakeTime"
         intent.type = WAKEUP_ALARM
 
         /* set pending intent */
@@ -53,9 +53,12 @@ object WakeupAlarmManager {
         wakeupAlarmService.startActivity(wakeupIntent)
     }
 
-    fun cancelAlarm(wakeupAlarmService: IntentService) {
-        //TODO : implement cancel alarm
-
-
+    fun cancelAlarm(wakeTime:Long) {
+        val intent = Intent(Contextor.context, BootBroadcastReceiver::class.java)
+        intent.type = WAKEUP_ALARM
+        intent.action = "$wakeTime"
+        val alarmIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        val alarmManager = Contextor.context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(alarmIntent)
     }
 }

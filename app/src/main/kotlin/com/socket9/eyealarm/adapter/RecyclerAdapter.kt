@@ -29,9 +29,12 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
         return alarmCollectionList.size
     }
 
-    fun updateAtPosition(index: Int, alarmDao: Model.AlarmDao){
-        alarmCollectionList[index] = alarmDao
+    fun updateAtPosition(index: Int){
         notifyItemChanged(index)
+    }
+
+    fun removeAtPosition(index: Int){
+        notifyItemRemoved(index)
     }
 
     /** Inner class zone **/
