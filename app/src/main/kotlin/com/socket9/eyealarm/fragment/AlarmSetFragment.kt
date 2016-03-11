@@ -116,6 +116,8 @@ class AlarmSetFragment : Fragment() {
     }
 
     private fun startAlarmReceiver(alarmDate: GregorianCalendar, alarmDao: Model.AlarmDao) {
+    //        broadcast notification
+
 //        MyNotificationManager.broadcastNotificationIntent("Wakeup title",
 //                "Wakeup description",
 //                R.mipmap.icon,

@@ -14,20 +14,31 @@ import com.socket9.eyealarm.util.Contextor
  * Created by Euro on 3/10/16 AD.
  */
 object WakeupAlarmManager {
-    /** Variable **/
+    /** Variable zone **/
 
     val WAKEUP_ALARM = "WAKEUP_ALARM"
 
 
-    /** Method **/
+    /** Method zone**/
 
     fun broadcastWakeupAlarmIntent(wakeTime: Long){
+        /* get alarm manager */
         val alarmManager: AlarmManager = Contextor.context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        /* create intent */
         val intent: Intent = Intent(Contextor.context, BootBroadcastReceiver::class.java)
+
+        /* set type and action note: action must not be null */
+
         intent.action = ""
         intent.type = WAKEUP_ALARM
+
+        /* set pending intent */
+
         val alarmIntent: PendingIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-        Log.d("wakeTime", "$wakeTime")
+
+        /* set wake time */
+
         alarmManager.set(AlarmManager.RTC_WAKEUP, wakeTime, alarmIntent)
     }
 
@@ -36,9 +47,7 @@ object WakeupAlarmManager {
         val wakeupIntent = Intent(service, WakeTrackerActivity::class.java)
         wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//        wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         service.startActivity(wakeupIntent)
-
     }
 
     fun cancelAlarm(){
