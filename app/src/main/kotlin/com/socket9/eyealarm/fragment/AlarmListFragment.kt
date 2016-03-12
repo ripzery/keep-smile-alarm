@@ -13,10 +13,10 @@ import com.socket9.eyealarm.dialog.DatePickerDialogFragment
 import com.socket9.eyealarm.dialog.TimePickerDialogFragment
 import com.socket9.eyealarm.extension.save
 import com.socket9.eyealarm.extension.toast
-import com.socket9.eyealarm.util.CalendarConverter
 import com.socket9.eyealarm.manager.SharePrefDaoManager
 import com.socket9.eyealarm.manager.WakeupAlarmManager
 import com.socket9.eyealarm.model.dao.Model
+import com.socket9.eyealarm.util.CalendarConverter
 import com.socket9.eyealarm.util.SharePref
 import kotlinx.android.synthetic.main.fragment_alarm_list.*
 import java.util.*
@@ -56,7 +56,6 @@ class AlarmListFragment : Fragment() {
         }
 
         alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
-
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -67,17 +66,25 @@ class AlarmListFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerAdapter = RecyclerAdapter(alarmCollectionList, alarmInfoInteractionListener)
-        recyclerView.adapter = recyclerAdapter
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        initInstance()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
+        recyclerAdapter.setList(alarmCollectionList)
 
         /* show text empty alarm if empty list */
-        if(alarmCollectionList.isEmpty()){
-            tvEmptyAlarm.visibility = View.VISIBLE
-        }
+        tvEmptyAlarm.visibility = if(alarmCollectionList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     /** Method zone **/
+
+    private fun initInstance() {
+        recyclerAdapter = RecyclerAdapter(alarmCollectionList, alarmInfoInteractionListener)
+        recyclerView.adapter = recyclerAdapter
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+    }
 
     private fun updateAlarm(datePicked: Model.DatePicked, index: Int, it: Model.TimePicked) {
         var newAlarmDao = Model.AlarmDao(datePicked, it)
@@ -116,7 +123,7 @@ class AlarmListFragment : Fragment() {
         recyclerAdapter.removeAtPosition(index)
 
         /* if empty, show empty text */
-        if(alarmCollectionList.isEmpty()){
+        if (alarmCollectionList.isEmpty()) {
             tvEmptyAlarm.visibility = View.VISIBLE
         }
 

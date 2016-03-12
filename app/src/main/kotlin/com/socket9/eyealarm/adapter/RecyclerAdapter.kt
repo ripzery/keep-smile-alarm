@@ -40,6 +40,11 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
         notifyItemRemoved(index)
     }
 
+    fun setList(alarmCollectionList: ArrayList<Model.AlarmDao>){
+        this@RecyclerAdapter.alarmCollectionList = alarmCollectionList
+        notifyDataSetChanged()
+    }
+
     /** Inner class zone **/
 
     inner class AlarmInfoViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {

@@ -20,3 +20,9 @@ fun AppCompatActivity.replaceFragment(fragmentContainer: Int = R.id.contentConta
     .replace(fragmentContainer, fragment)
     .commit()
 }
+
+fun AppCompatActivity.addFragment(fragmentContainer: Int = R.id.contentContainer, fragment: Fragment){
+    supportFragmentManager.beginTransaction()
+            .add(fragmentContainer, fragment)
+            .commit()
+}

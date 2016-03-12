@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.socket9.eyealarm.extension.addFragment
 import com.socket9.eyealarm.extension.replaceFragment
 import com.socket9.eyealarm.fragment.AlarmListFragment
 import com.socket9.eyealarm.fragment.MainFragment
@@ -38,12 +39,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        actionDrawerToggle.syncState()
+//        actionDrawerToggle.syncState()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        actionDrawerToggle.onConfigurationChanged(newConfig)
+//        actionDrawerToggle.onConfigurationChanged(newConfig)
     }
 
     /** Method zone **/
@@ -54,7 +55,8 @@ class MainActivity : AppCompatActivity() {
         mainFragment = MainFragment.newInstance("mainFragment")
         alarmListFragment = AlarmListFragment.newInstance("alarmListFragment")
 
-        replaceFragment(R.id.contentContainer, mainFragment)
+        addFragment(fragment = alarmListFragment)
+        addFragment(R.id.contentContainer, mainFragment)
 
         setupDrawerListener()
     }
@@ -70,9 +72,9 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initToolbar() {
-        actionDrawerToggle = setupDrawerToggle()
+//        actionDrawerToggle = setupDrawerToggle()
         setSupportActionBar(toolbar)
-        drawerLayout.addDrawerListener(actionDrawerToggle)
+//        drawerLayout.addDrawerListener(actionDrawerToggle)
         navView.setCheckedItem(R.id.menu_main)
     }
 
