@@ -7,6 +7,7 @@ import android.view.MenuItem
 import com.socket9.eyealarm.R
 import com.socket9.eyealarm.extension.replaceFragment
 import com.socket9.eyealarm.fragment.AlarmSetFragment
+import com.socket9.eyealarm.fragment.WheelAlarmSetFragment
 
 /**
  * Created by Euro on 3/10/16 AD.
@@ -16,6 +17,7 @@ class AlarmSetActivity : AppCompatActivity(){
 
     /** Variable zone **/
     lateinit private var alarmSetFragment: AlarmSetFragment
+    lateinit private var wheelFragment: WheelAlarmSetFragment
 
 
     /** Lifecycle zone **/
@@ -47,6 +49,7 @@ class AlarmSetActivity : AppCompatActivity(){
         return super.onOptionsItemSelected(item)
     }
 
+
     /** Method zone **/
 
     private fun initInstance() {
@@ -54,7 +57,8 @@ class AlarmSetActivity : AppCompatActivity(){
         supportActionBar?.title = "Set Alarm"
 
         alarmSetFragment  = AlarmSetFragment.newInstance("alarmSetFragment")
-        replaceFragment(R.id.contentContainer, alarmSetFragment)
+        wheelFragment  = WheelAlarmSetFragment.newInstance("wheelDateTimeFragment")
+        replaceFragment(R.id.contentContainer, wheelFragment)
     }
 
     /** Listener zone **/

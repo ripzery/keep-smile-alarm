@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:gravity="center_horizontal">
 
     <android.support.design.widget.FloatingActionButton
@@ -16,9 +15,8 @@
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorAccent"
         android:layout_gravity="bottom|end"
-        app:borderWidth="@dimen/fab_border_width"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp"/>
-
+        app:elevation="3dp"
+        app:rippleColor="@android:color/white"
+        app:useCompatPadding="true"/>
 
 </FrameLayout>

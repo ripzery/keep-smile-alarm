@@ -4,8 +4,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import com.socket9.eyealarm.R
 import com.socket9.eyealarm.model.dao.Model
+import com.socket9.eyealarm.util.Contextor
 import com.socket9.eyealarm.viewgroup.AlarmInfoViewGroup
 import java.util.*
 
@@ -17,6 +19,8 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
     /** Override zone **/
 
     override fun onBindViewHolder(holder: AlarmInfoViewHolder?, position: Int) {
+//        var animScaleIn = AnimationUtils.loadAnimation(Contextor.context, R.anim.anim_scale_up)
+//        holder!!.alarmInfoViewGroup.startAnimation(animScaleIn)
         holder!!.setModel(alarmCollectionList[position])
     }
 
@@ -48,7 +52,7 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
     /** Inner class zone **/
 
     inner class AlarmInfoViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
-        private var alarmInfoViewGroup: AlarmInfoViewGroup
+        var alarmInfoViewGroup: AlarmInfoViewGroup
 
         init {
             alarmInfoViewGroup = itemView?.findViewById(R.id.alarmInfoViewGroup) as AlarmInfoViewGroup

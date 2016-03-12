@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import com.socket9.eyealarm.R
 import com.socket9.eyealarm.activity.AlarmSetActivity
 import com.socket9.eyealarm.activity.WakeTrackerActivity
@@ -56,10 +57,21 @@ class MainFragment : Fragment(){
         initInstance()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadAnimation()
+    }
+
     /** Method zone **/
 
     private fun initInstance() {
 //        btnWakeActivity.setOnClickListener { startActivity(Intent(activity, WakeTrackerActivity::class.java)) }
+        loadAnimation()
         btnAlarmActivity.setOnClickListener { startActivity(Intent(activity, AlarmSetActivity::class.java)) }
+    }
+
+    private fun loadAnimation(){
+        var anim = AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up)
+        btnAlarmActivity.startAnimation(anim)
     }
 }

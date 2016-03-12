@@ -52,4 +52,8 @@ class TemplateFragment : Fragment(){
     }
 
     /** Method zone **/
+
+    private fun initInstance(){
+
+    }
 }
