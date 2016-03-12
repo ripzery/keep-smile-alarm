@@ -14,12 +14,17 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.subjects.PublishSubject
 
 class AlarmInfoViewGroup : BaseCustomViewGroup {
+
+    /** Variable zone **/
+
     lateinit private var alarmDao: Model.AlarmDao
     lateinit private var containerView: View
     lateinit private var tvDate: TextView
     lateinit private var tvTime: TextView
     private var publishEditSubject: PublishSubject<Model.AlarmDao> = PublishSubject.create()
     private var publishDeleteSubject: PublishSubject<Int> = PublishSubject.create()
+
+    /** Constructor zone **/
 
     constructor(context: Context) : super(context) {
         initInflate()
@@ -45,6 +50,8 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
         initWithAttrs(attrs, defStyleAttr, defStyleRes)
     }
 
+    /** Method zone **/
+
     private fun initInflate() {
         containerView = inflate(context, R.layout.viewgroup_alarm_info, this)
     }
@@ -56,7 +63,6 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
 
         btnEdit.setOnClickListener { publishEditSubject.onNext(alarmDao) }
         btnDelete.setOnClickListener {
-            //remove this card
             publishDeleteSubject.onNext(1)
         }
     }
