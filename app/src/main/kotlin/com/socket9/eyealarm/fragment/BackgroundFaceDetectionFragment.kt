@@ -17,9 +17,9 @@ import com.google.android.gms.vision.MultiProcessor
 import com.google.android.gms.vision.Tracker
 import com.google.android.gms.vision.face.Face
 import com.google.android.gms.vision.face.FaceDetector
-import com.socket9.eyealarm.viewgroup.FaceGraphic
 import com.socket9.eyealarm.R
 import com.socket9.eyealarm.lib.viewgroup.GraphicOverlay
+import com.socket9.eyealarm.viewgroup.FaceGraphic
 import kotlinx.android.synthetic.main.fragment_face_preview.*
 import java.io.IOException
 
@@ -30,10 +30,14 @@ import java.io.IOException
 
 class BackgroundFaceDetectionFragment() : Fragment() {
 
+    /** Variable zone **/
+
     private var mCameraSource: CameraSource? = null
     private val TAG: String? = "FaceTrackerFragment"
     private var eyeThresholdSensitivity: Float = 0.5F
     private var faceTrackerListener: FaceTrackerListener? = null
+
+    /** Static method zone **/
 
     companion object {
         val ARG1 = "EYE_THRESHOLD_SENSITIVITY"
@@ -102,7 +106,6 @@ class BackgroundFaceDetectionFragment() : Fragment() {
         //        .setAction(com.google.android.gms.samples.vision.face.facetracker.R.string.ok, listener)
         //        .show();
     }
-
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
@@ -181,7 +184,6 @@ class BackgroundFaceDetectionFragment() : Fragment() {
         //        .setPositiveButton(com.google.android.gms.samples.vision.face.facetracker.R.string.ok, listener)
         //        .show();
     }
-
 
     /** Method zone **/
 

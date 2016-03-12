@@ -7,6 +7,7 @@ import android.support.v4.app.DialogFragment
 import android.text.format.DateFormat
 import android.widget.TimePicker
 import com.socket9.eyealarm.extension.log
+import com.socket9.eyealarm.model.dao.Model
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -19,7 +20,7 @@ import java.util.Calendar
 
 class TimePickerDialogFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener{
 
-    val timePickedSubject : PublishSubject<TimePicked> = PublishSubject.create()
+    val timePickedSubject : PublishSubject<Model.TimePicked> = PublishSubject.create()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val c: Calendar = Calendar.getInstance()
@@ -31,17 +32,11 @@ class TimePickerDialogFragment : DialogFragment(), TimePickerDialog.OnTimeSetLis
 
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         // Do something with the time chosen by the user
-        timePickedSubject.onNext(TimePicked(hourOfDay, minute))
+        timePickedSubject.onNext(Model.TimePicked(hourOfDay, minute))
     }
 
-    fun getTimePickedObservable(): Observable<TimePicked>{
+    fun getTimePickedObservable(): Observable<Model.TimePicked>{
         return timePickedSubject.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-    }
-
-    data class TimePicked(val hourOfDay: Int, val minute: Int){
-        fun getTimeFormat() : String{
-            return String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute)
-        }
     }
 
 }

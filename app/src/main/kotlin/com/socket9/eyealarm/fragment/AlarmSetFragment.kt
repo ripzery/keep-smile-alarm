@@ -14,7 +14,7 @@ import com.socket9.eyealarm.extension.get
 import com.socket9.eyealarm.extension.log
 import com.socket9.eyealarm.extension.save
 import com.socket9.eyealarm.extension.toast
-import com.socket9.eyealarm.manager.GregorianCalendarConverterManager
+import com.socket9.eyealarm.util.CalendarConverter
 import com.socket9.eyealarm.manager.MyNotificationManager
 import com.socket9.eyealarm.manager.SharePrefDaoManager
 import com.socket9.eyealarm.manager.WakeupAlarmManager
@@ -31,8 +31,8 @@ class AlarmSetFragment : Fragment() {
 
     /** Variable zone **/
     lateinit var param1: String
-    var currentDate: DatePickerDialogFragment.DatePicked? = null
-    var currentTime: TimePickerDialogFragment.TimePicked? = null
+    var currentDate: Model.DatePicked? = null
+    var currentTime: Model.TimePicked? = null
     var alarmCollectionDao: Model.AlarmCollectionDao? = null
 
     /** static method zone **/
@@ -98,7 +98,7 @@ class AlarmSetFragment : Fragment() {
 
     private fun setAlarm() {
         if (isSelectedDateTime()) {
-            var alarmDate = GregorianCalendarConverterManager.parseDateTimePicked(currentDate!!, currentTime!!)
+            var alarmDate = CalendarConverter.parseDateTimePicked(currentDate!!, currentTime!!)
 
             /* get alarmCollectionDao */
 

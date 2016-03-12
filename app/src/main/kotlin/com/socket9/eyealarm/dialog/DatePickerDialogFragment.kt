@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.widget.DatePicker
 import com.socket9.eyealarm.extension.log
+import com.socket9.eyealarm.model.dao.Model
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -16,7 +17,7 @@ import java.util.Calendar
  * Created by Euro on 3/10/16 AD.
  */
 class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetListener{
-    val datePickedSubject : PublishSubject<DatePickerDialogFragment.DatePicked> = PublishSubject.create()
+    val datePickedSubject : PublishSubject<Model.DatePicked> = PublishSubject.create()
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -30,18 +31,11 @@ class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        datePickedSubject.onNext(DatePicked(year, monthOfYear, dayOfMonth))
+        datePickedSubject.onNext(Model.DatePicked(year, monthOfYear, dayOfMonth))
     }
 
-    fun getDatePickedObservable(): Observable<DatePicked>{
+    fun getDatePickedObservable(): Observable<Model.DatePicked>{
         return datePickedSubject.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-    }
-
-
-    data class DatePicked(val year: Int, val monthOfYear: Int, val dayOfMonth: Int){
-        fun getDateFormat(): String{
-            return String.format("%02d", dayOfMonth) +"/"+ String.format("%02d", monthOfYear) + "/" + year
-        }
     }
 
 }

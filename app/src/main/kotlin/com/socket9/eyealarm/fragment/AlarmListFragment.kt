@@ -11,10 +11,9 @@ import com.socket9.eyealarm.R
 import com.socket9.eyealarm.adapter.RecyclerAdapter
 import com.socket9.eyealarm.dialog.DatePickerDialogFragment
 import com.socket9.eyealarm.dialog.TimePickerDialogFragment
-import com.socket9.eyealarm.extension.log
 import com.socket9.eyealarm.extension.save
 import com.socket9.eyealarm.extension.toast
-import com.socket9.eyealarm.manager.GregorianCalendarConverterManager
+import com.socket9.eyealarm.util.CalendarConverter
 import com.socket9.eyealarm.manager.SharePrefDaoManager
 import com.socket9.eyealarm.manager.WakeupAlarmManager
 import com.socket9.eyealarm.model.dao.Model
@@ -80,11 +79,11 @@ class AlarmListFragment : Fragment() {
 
     /** Method zone **/
 
-    private fun updateAlarm(datePicked: DatePickerDialogFragment.DatePicked, index: Int, it: TimePickerDialogFragment.TimePicked) {
+    private fun updateAlarm(datePicked: Model.DatePicked, index: Int, it: Model.TimePicked) {
         var newAlarmDao = Model.AlarmDao(datePicked, it)
 
         /* cancel alarm */
-        val oldWakeupTime = GregorianCalendarConverterManager.parseAlarmDao(alarmCollectionList[index]).timeInMillis
+        val oldWakeupTime = CalendarConverter.parseAlarmDao(alarmCollectionList[index]).timeInMillis
         WakeupAlarmManager.cancelAlarm(oldWakeupTime)
 
         /* update new alarmDao */
@@ -97,7 +96,7 @@ class AlarmListFragment : Fragment() {
         recyclerAdapter.updateAtPosition(index)
 
         /* set new alarm */
-        val newWakeupTime = GregorianCalendarConverterManager.parseAlarmDao(newAlarmDao).timeInMillis
+        val newWakeupTime = CalendarConverter.parseAlarmDao(newAlarmDao).timeInMillis
         WakeupAlarmManager.broadcastWakeupAlarmIntent(newWakeupTime)
 
         /* show toast */
@@ -108,7 +107,7 @@ class AlarmListFragment : Fragment() {
         val toDeleteAlarmDao = alarmCollectionList[index]
 
         /* cancel alarm */
-        WakeupAlarmManager.cancelAlarm(GregorianCalendarConverterManager.parseAlarmDao(toDeleteAlarmDao).timeInMillis)
+        WakeupAlarmManager.cancelAlarm(CalendarConverter.parseAlarmDao(toDeleteAlarmDao).timeInMillis)
 
         /* delete */
         alarmCollectionList.removeAt(index)
@@ -128,7 +127,7 @@ class AlarmListFragment : Fragment() {
         toast("Delete alarm ${toDeleteAlarmDao.datePicked.getDateFormat()}@${toDeleteAlarmDao.timePicked.getTimeFormat()}")
     }
 
-    private fun showTimePickerDialog(datePicked: DatePickerDialogFragment.DatePicked, index: Int) {
+    private fun showTimePickerDialog(datePicked: Model.DatePicked, index: Int) {
         var timePickerDialog = TimePickerDialogFragment()
         timePickerDialog.show(childFragmentManager, "timePicker");
         timePickerDialog.getTimePickedObservable().subscribe {
