@@ -2,12 +2,16 @@ package com.socket9.eyealarm.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.DatePicker
+import android.text.format.Time
+import android.view.*
+import android.view.animation.AnimationUtils
+import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment
+import com.codetroopers.betterpickers.recurrencepicker.EventRecurrence
+import com.codetroopers.betterpickers.recurrencepicker.EventRecurrenceFormatter
+import com.codetroopers.betterpickers.recurrencepicker.RecurrencePickerDialogFragment
 import com.google.gson.Gson
 import com.socket9.eyealarm.R
+import com.socket9.eyealarm.extension.log
 import com.socket9.eyealarm.extension.save
 import com.socket9.eyealarm.extension.toast
 import com.socket9.eyealarm.manager.SharePrefDaoManager
@@ -16,6 +20,7 @@ import com.socket9.eyealarm.model.dao.Model
 import com.socket9.eyealarm.util.CalendarConverter
 import com.socket9.eyealarm.util.SharePref
 import kotlinx.android.synthetic.main.fragment_wheel_date_time.*
+import kotlinx.android.synthetic.main.layout_date_time.*
 import java.util.*
 
 /**
@@ -28,6 +33,7 @@ class WheelAlarmSetFragment : Fragment() {
     lateinit private var alarmCollectionDao: Model.AlarmCollectionDao
     lateinit private var currentDate: Model.DatePicked
     lateinit private var currentTime: Model.TimePicked
+    private val mRrule: String? = ""
 
 
     /** Static method zone **/
@@ -52,6 +58,7 @@ class WheelAlarmSetFragment : Fragment() {
             /* if newly created */
             param1 = arguments.getString(ARG_1)
         }
+        setHasOptionsMenu(true);
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,9 +73,25 @@ class WheelAlarmSetFragment : Fragment() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_set_alarm, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menuRecurrence -> showRecurrenceDialog()
+        }
+        return true
+    }
+
     /** Method zone **/
 
     private fun initInstance() {
+
+        //        Glide.with(activity).load(R.drawable.wallpaper).into(ivBackground)
+
+        btnSelectDate.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up))
+
         val c: Calendar = Calendar.getInstance()
         val hour = c.get(Calendar.HOUR_OF_DAY)
         val minute = c.get(Calendar.MINUTE)
@@ -79,18 +102,52 @@ class WheelAlarmSetFragment : Fragment() {
         currentDate = Model.DatePicked(year, month, day)
         currentTime = Model.TimePicked(hour, minute)
 
+        tvAlarmOn.text = "Pick date ${currentDate.getDateFormat()}"
+        tvPickTime.text = "Pick time ${currentTime.getTimeFormat()}"
+
+
         time.setIs24HourView(false)
-        date.init(year, month, day, { datePicker, year, month, day ->
-            currentDate = Model.DatePicked(year, month, day)
-        })
+
+        btnSelectDate.setOnClickListener {
+            var cdp = CalendarDatePickerDialogFragment()
+                    .setOnDateSetListener { calendarDatePickerDialogFragment: CalendarDatePickerDialogFragment, year: Int, month: Int, day: Int ->
+                        currentDate = Model.DatePicked(year, month + 1, day)
+                        tvAlarmOn.text = "Pick date ${currentDate.getDateFormat()}"
+                    }
+                    .setFirstDayOfWeek(Calendar.SUNDAY)
+
+            cdp.show(childFragmentManager, "DatePicker")
+        }
+
         time.setOnTimeChangedListener({ timePicker, hour, min ->
             currentTime = Model.TimePicked(hour, min)
+            tvPickTime.text = "Pick time ${currentTime.getTimeFormat()}"
         })
+
 
         btnSetAlarm.setOnClickListener { setAlarm() }
     }
 
+    private fun showRecurrenceDialog() {
+        var bundle = Bundle();
+        var time = Time();
+        time.setToNow();
+        bundle.putLong(RecurrencePickerDialogFragment.BUNDLE_START_TIME_MILLIS, time.toMillis(false));
+        bundle.putString(RecurrencePickerDialogFragment.BUNDLE_TIME_ZONE, time.timezone);
+        bundle.putString(RecurrencePickerDialogFragment.BUNDLE_RRULE, mRrule);
+        bundle.putBoolean(RecurrencePickerDialogFragment.BUNDLE_HIDE_SWITCH_BUTTON, true);
 
+        var rpd = RecurrencePickerDialogFragment();
+        rpd.arguments = bundle;
+        rpd.setOnRecurrenceSetListener({
+            if (it != null) {
+                var eventRecur = EventRecurrence()
+                eventRecur.parse(it)
+                log(EventRecurrenceFormatter.getRepeatString(activity, resources, eventRecur, true))
+            }
+        });
+        rpd.show(childFragmentManager, "Recurrence Picker");
+    }
 
     private fun setAlarm() {
         var alarmDate = CalendarConverter.parseDateTimePicked(currentDate, currentTime)
@@ -125,6 +182,7 @@ class WheelAlarmSetFragment : Fragment() {
 
         toast("Set alarm at ${alarmDao.timePicked.getTimeFormat()}")
 
+        activity.finish()
     }
 
     private fun updateAlarmCollectionDao() {

@@ -1,0 +1,6 @@
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menuRecurrence"
+        android:title="Recurrence"
+        android:icon="@drawable/ic_alarm_black_24dp" />
+</menu>
