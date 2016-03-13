@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.fragment_wake_tracker.*
 
 class WakeTrackerFragment : Fragment() {
 
+    /** Variable zone **/
+
     private val STATE_LEFT_SCREEN = 0;
     private val STATE_CLOSE_EYE = 1;
     private val STATE_OPEN_EYE = 2;

@@ -1,0 +1,94 @@
+package com.socket9.eyealarm.interfaces
+
+import android.os.Bundle
+import android.text.format.Time
+import android.util.Log
+import com.codetroopers.betterpickers.recurrencepicker.EventRecurrence
+import com.codetroopers.betterpickers.recurrencepicker.RecurrencePickerDialogFragment
+import com.google.gson.Gson
+import com.socket9.eyealarm.extension.save
+import com.socket9.eyealarm.extension.toast
+import com.socket9.eyealarm.manager.SharePrefDaoManager
+import com.socket9.eyealarm.manager.WakeupAlarmManager
+import com.socket9.eyealarm.model.dao.Model
+import com.socket9.eyealarm.util.CalendarConverter
+import com.socket9.eyealarm.util.SharePref
+import java.util.*
+
+/**
+ * Created by Euro on 3/13/16 AD.
+ */
+
+
+interface AlarmSetInterface {
+    /** Variable zone **/
+
+    var alarmDao : Model.AlarmDao
+
+    /** Override method zone **/
+
+    fun onAlarmStarted(alarmDao: Model.AlarmDao)
+
+    fun onRecurrenceSetImpl(eventRecur: EventRecurrence)
+
+    /** Internal method zone **/
+
+    fun setAlarm() {
+        var alarmDate = CalendarConverter.parseAlarmDao(alarmDao)
+
+        /* update alarm collection in share preference */
+        updateAlarmCollectionDao()
+
+        /* start alarm */
+        startAlarmReceiver(alarmDate, alarmDao)
+    }
+
+    fun buildRecurrenceDialog() : RecurrencePickerDialogFragment {
+        var bundle = Bundle();
+        val rule = ""
+        var time = Time();
+        time.setToNow();
+        bundle.putLong(RecurrencePickerDialogFragment.BUNDLE_START_TIME_MILLIS, time.toMillis(false));
+        bundle.putString(RecurrencePickerDialogFragment.BUNDLE_TIME_ZONE, time.timezone);
+        bundle.putString(RecurrencePickerDialogFragment.BUNDLE_RRULE, rule);
+        bundle.putBoolean(RecurrencePickerDialogFragment.BUNDLE_HIDE_SWITCH_BUTTON, true);
+
+        var rpd = RecurrencePickerDialogFragment();
+        rpd.arguments = bundle;
+        rpd.setOnRecurrenceSetListener({
+            if (it != null) {
+                var eventRecur = EventRecurrence()
+                eventRecur.parse(it)
+                onRecurrenceSetImpl(eventRecur)
+            }
+        });
+
+        return rpd
+    }
+
+    private fun startAlarmReceiver(alarmDate: GregorianCalendar, alarmDao: Model.AlarmDao) {
+        //        broadcast notification
+
+        //        MyNotificationManager.broadcastNotificationIntent("Wakeup title",
+        //                "Wakeup description",
+        //                R.mipmap.icon,
+        //                alarmDate.timeInMillis,
+        //                alarmDao.hashCode().toLong())
+
+        WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDate.timeInMillis)
+
+        onAlarmStarted(alarmDao)
+    }
+
+    private fun updateAlarmCollectionDao() {
+        /* get alarmCollectionDao */
+        var alarmCollectionDao = SharePrefDaoManager.getAlarmCollectionDao()
+
+        /* add alarm dao */
+        alarmCollectionDao.alarmCollectionList.add(alarmDao)
+
+        /* save back to share preference */
+        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(alarmCollectionDao))
+    }
+
+}
