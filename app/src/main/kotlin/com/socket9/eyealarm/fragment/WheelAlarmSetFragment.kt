@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import android.view.animation.AnimationUtils
-import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment
 import com.codetroopers.betterpickers.recurrencepicker.EventRecurrence
 import com.codetroopers.betterpickers.recurrencepicker.EventRecurrenceFormatter
 import com.socket9.eyealarm.R
@@ -94,10 +93,14 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
         activity.finish()
     }
 
-    override fun onRecurrenceSetImpl(eventRecur: EventRecurrence) {
+    override fun onRecurrenceSet(eventRecur: EventRecurrence) {
         //TODO: Implement when set recurrence
 
         log(EventRecurrenceFormatter.getRepeatString(activity, resources, eventRecur, true))
+    }
+
+    override fun onDateSet(datePicked: Model.DatePicked) {
+        tvAlarmOn.text = "Pick date ${datePicked.getDateFormat()}"
     }
 
     /** Method zone **/
@@ -117,16 +120,7 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
 
         time.setIs24HourView(false)
 
-        btnSelectDate.setOnClickListener {
-            var cdp = CalendarDatePickerDialogFragment()
-                    .setOnDateSetListener { calendarDatePickerDialogFragment: CalendarDatePickerDialogFragment, year: Int, month: Int, day: Int ->
-                        currentDate = Model.DatePicked(year, month + 1, day)
-                        tvAlarmOn.text = "Pick date ${currentDate.getDateFormat()}"
-                    }
-                    .setFirstDayOfWeek(Calendar.SUNDAY)
-
-            cdp.show(childFragmentManager, "DatePicker")
-        }
+        btnSelectDate.setOnClickListener { buildDateDialog().show(childFragmentManager, "DatePicker") }
 
         time.setOnTimeChangedListener({ timePicker, hour, min ->
             currentTime = Model.TimePicked(hour, min)

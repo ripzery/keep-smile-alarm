@@ -3,6 +3,7 @@ package com.socket9.eyealarm.interfaces
 import android.os.Bundle
 import android.text.format.Time
 import android.util.Log
+import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment
 import com.codetroopers.betterpickers.recurrencepicker.EventRecurrence
 import com.codetroopers.betterpickers.recurrencepicker.RecurrencePickerDialogFragment
 import com.google.gson.Gson
@@ -13,6 +14,7 @@ import com.socket9.eyealarm.manager.WakeupAlarmManager
 import com.socket9.eyealarm.model.dao.Model
 import com.socket9.eyealarm.util.CalendarConverter
 import com.socket9.eyealarm.util.SharePref
+import kotlinx.android.synthetic.main.fragment_wheel_date_time.*
 import java.util.*
 
 /**
@@ -29,9 +31,11 @@ interface AlarmSetInterface {
 
     fun onAlarmStarted(alarmDao: Model.AlarmDao)
 
-    fun onRecurrenceSetImpl(eventRecur: EventRecurrence)
+    fun onDateSet(datePicked: Model.DatePicked)
 
-    /** Internal method zone **/
+    fun onRecurrenceSet(eventRecur: EventRecurrence)
+
+    /** Method zone **/
 
     fun setAlarm() {
         var alarmDate = CalendarConverter.parseAlarmDao(alarmDao)
@@ -41,6 +45,16 @@ interface AlarmSetInterface {
 
         /* start alarm */
         startAlarmReceiver(alarmDate, alarmDao)
+    }
+
+    fun buildDateDialog(): CalendarDatePickerDialogFragment {
+        var cdp = CalendarDatePickerDialogFragment()
+            .setOnDateSetListener { calendarDatePickerDialogFragment: CalendarDatePickerDialogFragment, year: Int, month: Int, day: Int ->
+                onDateSet(Model.DatePicked(year, month + 1, day))
+            }
+            .setFirstDayOfWeek(Calendar.SUNDAY)
+
+        return cdp
     }
 
     fun buildRecurrenceDialog() : RecurrencePickerDialogFragment {
@@ -59,12 +73,14 @@ interface AlarmSetInterface {
             if (it != null) {
                 var eventRecur = EventRecurrence()
                 eventRecur.parse(it)
-                onRecurrenceSetImpl(eventRecur)
+                onRecurrenceSet(eventRecur)
             }
         });
 
         return rpd
     }
+
+    /** Internal method zone **/
 
     private fun startAlarmReceiver(alarmDate: GregorianCalendar, alarmDao: Model.AlarmDao) {
         //        broadcast notification
