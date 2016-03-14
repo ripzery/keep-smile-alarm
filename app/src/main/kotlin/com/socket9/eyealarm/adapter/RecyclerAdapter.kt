@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import com.socket9.eyealarm.R
 import com.socket9.eyealarm.model.dao.Model
-import com.socket9.eyealarm.util.Contextor
 import com.socket9.eyealarm.viewgroup.AlarmInfoViewGroup
 import java.util.*
 
@@ -19,8 +18,8 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
     /** Override zone **/
 
     override fun onBindViewHolder(holder: AlarmInfoViewHolder?, position: Int) {
-//        var animScaleIn = AnimationUtils.loadAnimation(Contextor.context, R.anim.anim_scale_up)
-//        holder!!.alarmInfoViewGroup.startAnimation(animScaleIn)
+        //        var animScaleIn = AnimationUtils.loadAnimation(Contextor.context, R.anim.anim_scale_up)
+        //        holder!!.alarmInfoViewGroup.startAnimation(animScaleIn)
         holder!!.setModel(alarmCollectionList[position])
     }
 
@@ -36,15 +35,15 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
     /** Method zone **/
 
 
-    fun updateAtPosition(index: Int){
+    fun updateAtPosition(index: Int) {
         notifyItemChanged(index)
     }
 
-    fun removeAtPosition(index: Int){
+    fun removeAtPosition(index: Int) {
         notifyItemRemoved(index)
     }
 
-    fun setList(alarmCollectionList: ArrayList<Model.AlarmDao>){
+    fun setList(alarmCollectionList: ArrayList<Model.AlarmDao>) {
         this@RecyclerAdapter.alarmCollectionList = alarmCollectionList
         notifyDataSetChanged()
     }
@@ -57,9 +56,16 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
         init {
             alarmInfoViewGroup = itemView?.findViewById(R.id.alarmInfoViewGroup) as AlarmInfoViewGroup
 
+            alarmInfoViewGroup.setOnClickListener({
+
+            })
+
             alarmInfoViewGroup.getEditObservable().subscribe { alarmInfoInteractionListener.onEdit(it, adapterPosition) }
 
-            alarmInfoViewGroup.getDeleteObservable().subscribe { alarmInfoInteractionListener.onDelete(adapterPosition) }
+            alarmInfoViewGroup.getDeleteObservable().filter { adapterPosition != -1 }.subscribe {
+                alarmInfoViewGroup.startAnimation(AnimationUtils.loadAnimation(alarmInfoViewGroup.context, R.anim.anim_scale_down))
+                alarmInfoInteractionListener.onDelete(adapterPosition)
+            }
         }
 
         fun setModel(alarmDao: Model.AlarmDao) {

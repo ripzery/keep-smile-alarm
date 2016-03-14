@@ -23,9 +23,6 @@ import java.util.*
 
 
 interface AlarmSetInterface {
-    /** Variable zone **/
-
-    var alarmDao : Model.AlarmDao
 
     /** Override method zone **/
 
@@ -37,11 +34,11 @@ interface AlarmSetInterface {
 
     /** Method zone **/
 
-    fun setAlarm() {
+    fun setAlarm(alarmDao: Model.AlarmDao) {
         var alarmDate = CalendarConverter.parseAlarmDao(alarmDao)
 
         /* update alarm collection in share preference */
-        updateAlarmCollectionDao()
+        updateAlarmCollectionDao(alarmDao)
 
         /* start alarm */
         startAlarmReceiver(alarmDate, alarmDao)
@@ -96,7 +93,7 @@ interface AlarmSetInterface {
         onAlarmStarted(alarmDao)
     }
 
-    private fun updateAlarmCollectionDao() {
+    private fun updateAlarmCollectionDao(alarmDao: Model.AlarmDao) {
         /* get alarmCollectionDao */
         var alarmCollectionDao = SharePrefDaoManager.getAlarmCollectionDao()
 

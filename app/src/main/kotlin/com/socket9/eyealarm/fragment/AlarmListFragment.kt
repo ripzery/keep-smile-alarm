@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import com.google.gson.Gson
 import com.socket9.eyealarm.R
 import com.socket9.eyealarm.adapter.RecyclerAdapter
@@ -84,6 +85,10 @@ class AlarmListFragment : Fragment() {
         recyclerAdapter = RecyclerAdapter(alarmCollectionList, alarmInfoInteractionListener)
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
+
+        tvEmptyAlarm.setOnClickListener {
+            tvEmptyAlarm.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up_down))
+        }
     }
 
     private fun updateAlarm(datePicked: Model.DatePicked, index: Int, it: Model.TimePicked) {

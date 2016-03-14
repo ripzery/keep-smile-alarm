@@ -19,10 +19,6 @@ import java.util.*
  * Created by Euro on 3/10/16 AD.
  */
 class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
-    /** Override variable zone **/
-
-    lateinit override var alarmDao: Model.AlarmDao
-
     /** Variable zone **/
 
     private val c: Calendar = Calendar.getInstance()
@@ -34,6 +30,7 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
     lateinit var param1: String
     lateinit private var currentDate: Model.DatePicked
     lateinit private var currentTime: Model.TimePicked
+    lateinit var alarmDao: Model.AlarmDao
     private val mRrule: String? = ""
 
     /** Static method zone **/
@@ -108,7 +105,7 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
     private fun initInstance() {
 
         //        Glide.with(activity).load(R.drawable.wallpaper).into(ivBackground)
-        btnSelectDate.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up))
+//        btnSelectDate.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up))
 
         currentDate = Model.DatePicked(year, month, day)
         currentTime = Model.TimePicked(hour, minute)
@@ -127,6 +124,9 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
             tvPickTime.text = "Pick time ${currentTime.getTimeFormat()}"
         })
 
-        btnSetAlarm.setOnClickListener { setAlarm() }
+        btnSetAlarm.setOnClickListener {
+            alarmDao = Model.AlarmDao(currentDate, currentTime)
+            setAlarm(alarmDao)
+        }
     }
 }

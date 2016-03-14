@@ -4,6 +4,7 @@
     android:id="@+id/cardView"
     app:cardCornerRadius="4dp"
     android:layout_margin="16dp"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
