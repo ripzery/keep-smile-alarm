@@ -5,10 +5,8 @@ import android.app.IntentService
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.socket9.eyealarm.activity.WakeTrackerActivity
 import com.socket9.eyealarm.receiver.BootBroadcastReceiver
-import com.socket9.eyealarm.service.WakeupAlarmService
 import com.socket9.eyealarm.util.Contextor
 
 /**
@@ -20,10 +18,11 @@ object WakeupAlarmManager {
     val WAKEUP_ALARM = "WAKEUP_ALARM"
     val CANCEL_ALARM = "CANCEL_ALARM"
 
-
     /** Method zone**/
 
-    fun broadcastWakeupAlarmIntent(wakeTime: Long){
+    /* wakeTimeSum is summation of wakeupTime including repeat alarm time */
+
+    fun broadcastWakeupAlarmIntent(wakeTimeSum: Long) {
         /* get alarm manager */
         val alarmManager: AlarmManager = Contextor.context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -32,7 +31,7 @@ object WakeupAlarmManager {
 
         /* set type and action note: action must not be null */
 
-        intent.action = "$wakeTime"
+        intent.action = "$wakeTimeSum"
         intent.type = WAKEUP_ALARM
 
         /* set pending intent */
@@ -41,7 +40,7 @@ object WakeupAlarmManager {
 
         /* set wake time */
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, wakeTime, alarmIntent)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, wakeTimeSum, alarmIntent)
     }
 
     fun createAlarm(wakeupAlarmService: IntentService) {
@@ -53,10 +52,11 @@ object WakeupAlarmManager {
         wakeupAlarmService.startActivity(wakeupIntent)
     }
 
-    fun cancelAlarm(wakeTime:Long) {
+    /* wakeTimeSum is summation of wakeupTime including repeat alarm time */
+    fun cancelAlarm(wakeTimeSum: Long) {
         val intent = Intent(Contextor.context, BootBroadcastReceiver::class.java)
         intent.type = WAKEUP_ALARM
-        intent.action = "$wakeTime"
+        intent.action = "$wakeTimeSum"
         val alarmIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
         val alarmManager = Contextor.context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(alarmIntent)

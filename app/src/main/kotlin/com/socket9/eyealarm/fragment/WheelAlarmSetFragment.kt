@@ -11,7 +11,7 @@ import com.socket9.eyealarm.extension.log
 import com.socket9.eyealarm.extension.toast
 import com.socket9.eyealarm.interfaces.AlarmSetInterface
 import com.socket9.eyealarm.model.dao.Model
-import kotlinx.android.synthetic.main.fragment_wheel_date_time.*
+import kotlinx.android.synthetic.main.fragment_wheel_alarm.*
 import kotlinx.android.synthetic.main.layout_date_time.*
 import java.util.*
 
@@ -60,7 +60,7 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView: View = inflater!!.inflate(R.layout.fragment_wheel_date_time, container, false)
+        val rootView: View = inflater!!.inflate(R.layout.fragment_wheel_alarm, container, false)
 
         return rootView
     }
@@ -105,7 +105,7 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
     private fun initInstance() {
 
         //        Glide.with(activity).load(R.drawable.wallpaper).into(ivBackground)
-//        btnSelectDate.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up))
+        //        btnSelectDate.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up))
 
         currentDate = Model.DatePicked(year, month, day)
         currentTime = Model.TimePicked(hour, minute)
@@ -127,6 +127,16 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
         btnSetAlarm.setOnClickListener {
             alarmDao = Model.AlarmDao(currentDate, currentTime)
             setAlarm(alarmDao)
+        }
+
+        cbRepeat.setOnClickListener {
+            if(cbRepeat.isChecked){
+                layoutRepeat.visibility = View.VISIBLE
+                layoutRepeat.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_in))
+            }else{
+                layoutRepeat.visibility = View.GONE
+                layoutRepeat.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_out))
+            }
         }
     }
 }

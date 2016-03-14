@@ -21,7 +21,7 @@ object Model{
         }
     }
 
-    data class AlarmDao(var datePicked: DatePicked, var timePicked: TimePicked)
+    data class AlarmDao(var datePicked: DatePicked, var timePicked: TimePicked, var repeatDay: ArrayList<Int>)
 
     data class AlarmCollectionDao(var alarmCollectionList:ArrayList<AlarmDao>)
 }

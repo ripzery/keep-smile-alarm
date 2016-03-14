@@ -92,7 +92,7 @@ class AlarmListFragment : Fragment() {
     }
 
     private fun updateAlarm(datePicked: Model.DatePicked, index: Int, it: Model.TimePicked) {
-        var newAlarmDao = Model.AlarmDao(datePicked, it)
+        var newAlarmDao = Model.AlarmDao(datePicked, it, ArrayList())
 
         /* cancel alarm */
         val oldWakeupTime = CalendarConverter.parseAlarmDao(alarmCollectionList[index]).timeInMillis
