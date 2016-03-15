@@ -37,9 +37,9 @@ object WakeupAlarmManager {
         intent.type = WAKEUP_ALARM
 
         var wakeTime =
-        if(alarmDao.repeatDay.size != 0){
-            intent.putExtra(INTENT_BROADCAST_REPEAT_DAY, alarmDao.repeatDay)
-        }
+//        if(alarmDao.repeatDay.size != 0){
+//            intent.putExtra(INTENT_BROADCAST_REPEAT_DAY, alarmDao.repeatDay)
+//        }
 
         /* set pending intent */
         val alarmIntent: PendingIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
