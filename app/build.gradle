@@ -21,7 +21,7 @@ android {
   }
 
   defaultConfig {
-    applicationId "com.socket9.eyealarm"
+    applicationId "com.EWIT.FrenchCafe"
     minSdkVersion 17
     targetSdkVersion 23
     versionCode 1

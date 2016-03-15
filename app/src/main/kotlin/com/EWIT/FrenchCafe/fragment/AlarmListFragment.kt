@@ -19,6 +19,7 @@ import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.util.CalendarConverter
 import com.EWIT.FrenchCafe.util.SharePref
+import com.EWIT.FrenchCafe.util.WaketimeUtil
 import kotlinx.android.synthetic.main.fragment_alarm_list.*
 import java.util.*
 
@@ -95,8 +96,7 @@ class AlarmListFragment : Fragment() {
         var newAlarmDao = Model.AlarmDao(datePicked, it, ArrayList())
 
         /* cancel alarm */
-        val oldWakeupTime = CalendarConverter.parseAlarmDao(alarmCollectionList[index]).timeInMillis
-        WakeupAlarmManager.cancelAlarm(oldWakeupTime)
+        WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmCollectionList[index]))
 
         /* update new alarmDao */
         alarmCollectionList[index] = newAlarmDao
@@ -117,7 +117,7 @@ class AlarmListFragment : Fragment() {
         val toDeleteAlarmDao = alarmCollectionList[index]
 
         /* cancel alarm */
-        WakeupAlarmManager.cancelAlarm(CalendarConverter.parseAlarmDao(toDeleteAlarmDao).timeInMillis)
+        WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(toDeleteAlarmDao))
 
         /* delete */
         alarmCollectionList.removeAt(index)
