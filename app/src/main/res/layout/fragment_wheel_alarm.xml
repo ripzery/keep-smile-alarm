@@ -121,7 +121,7 @@
                 android:layout_below="@id/tvAlarmOn"
                 android:background="#1F000000"/>
 
-            <com.EWIT.FrenchCafé.viewgroup.RepeatDayViewGroup
+            <com.EWIT.FrenchCafe.viewgroup.RepeatDayViewGroup
                 android:id="@+id/repeatDayViewGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
