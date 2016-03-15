@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.socket9.eyealarm">
+    package="com.EWIT.FrenchCafé">
 
     <uses-feature android:name="android.hardware.camera"/>
 
@@ -12,7 +12,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
-        android:name=".BaseApp"
+        android:name="com.EWIT.FrenchCafé.BaseApp"
         android:supportsRtl="true"
         android:theme="@style/AppThemeWithActionBar">
 
@@ -22,7 +22,7 @@
             android:value="face"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.EWIT.FrenchCafé.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -34,23 +34,23 @@
 
 
         <activity
-            android:name=".FaceTrackerActivity"
+            android:name="com.EWIT.FrenchCafé.FaceTrackerActivity"
             android:screenOrientation="sensorPortrait"/>
         <activity
-            android:name=".activity.AlarmSetActivity"
+            android:name="com.EWIT.FrenchCafé.activity.AlarmSetActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.WakeTrackerActivity"
+            android:name="com.EWIT.FrenchCafé.activity.WakeTrackerActivity"
             android:showOnLockScreen="true"
             android:screenOrientation="sensorPortrait"/>
 
 
-        <service android:name=".service.NotificationService"/>
+        <service android:name="com.EWIT.FrenchCafé.service.NotificationService"/>
 
-        <service android:name=".service.WakeupAlarmService"/>
+        <service android:name="com.EWIT.FrenchCafé.service.WakeupAlarmService"/>
 
         <receiver
-            android:name=".receiver.BootBroadcastReceiver"
+            android:name="com.EWIT.FrenchCafé.receiver.BootBroadcastReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

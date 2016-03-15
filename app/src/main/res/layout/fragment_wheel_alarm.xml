@@ -93,7 +93,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatCheckBox
+                <CheckBox
                     android:id="@+id/cbRepeat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -121,16 +121,10 @@
                 android:layout_below="@id/tvAlarmOn"
                 android:background="#1F000000"/>
 
-            <LinearLayout
-                android:id="@+id/layoutRepeat"
+            <com.EWIT.FrenchCafé.viewgroup.RepeatDayViewGroup
+                android:id="@+id/repeatDayViewGroup"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include layout="@layout/layout_toggle_day_repeat"/>
-
-            </LinearLayout>
-
+                android:layout_height="wrap_content" />
 
             <Space
                 android:layout_width="1dp"

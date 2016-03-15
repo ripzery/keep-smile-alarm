@@ -8,12 +8,12 @@
     android:layout_height="match_parent"
     android:keepScreenOn="true">
 
-    <com.socket9.eyealarm.lib.viewgroup.CameraSourcePreview
+    <com.EWIT.FrenchCafé.lib.viewgroup.CameraSourcePreview
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <com.socket9.eyealarm.lib.viewgroup.GraphicOverlay
+    <com.EWIT.FrenchCafé.lib.viewgroup.GraphicOverlay
         android:id="@+id/faceOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
