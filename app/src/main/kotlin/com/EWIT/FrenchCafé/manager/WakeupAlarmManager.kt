@@ -36,7 +36,7 @@ object WakeupAlarmManager {
         intent.action = "${WaketimeUtil.calculationWaketimeSummation(alarmDao)}"
         intent.type = WAKEUP_ALARM
 
-        var wakeTime =
+//        var wakeTime =
 //        if(alarmDao.repeatDay.size != 0){
 //            intent.putExtra(INTENT_BROADCAST_REPEAT_DAY, alarmDao.repeatDay)
 //        }
