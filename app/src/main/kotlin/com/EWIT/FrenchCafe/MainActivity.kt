@@ -1,20 +1,20 @@
 package com.EWIT.FrenchCafe
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.AnimationUtils
+import com.EWIT.FrenchCafe.activity.AlarmSetActivity
 import com.EWIT.FrenchCafe.extension.addFragment
 import com.EWIT.FrenchCafe.extension.replaceFragment
 import com.EWIT.FrenchCafe.fragment.AlarmListFragment
 import com.EWIT.FrenchCafe.fragment.MainFragment
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.layout_toolbar.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,19 +32,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if(actionDrawerToggle.onOptionsItemSelected(item)) return true
+        if (actionDrawerToggle.onOptionsItemSelected(item)) return true
 
         return super.onOptionsItemSelected(item)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-//        actionDrawerToggle.syncState()
+        //        actionDrawerToggle.syncState()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-//        actionDrawerToggle.onConfigurationChanged(newConfig)
+        //        actionDrawerToggle.onConfigurationChanged(newConfig)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadAnimation()
     }
 
     /** Method zone **/
@@ -55,42 +60,50 @@ class MainActivity : AppCompatActivity() {
         mainFragment = MainFragment.newInstance("mainFragment")
         alarmListFragment = AlarmListFragment.newInstance("alarmListFragment")
 
-        addFragment(fragment = alarmListFragment)
-        addFragment(R.id.contentContainer, mainFragment)
+        replaceFragment(fragment = alarmListFragment)
+        //        addFragment(R.id.contentContainer, mainFragment)
 
-        setupDrawerListener()
+//        setupDrawerListener()
+        Glide.with(this).load(R.drawable.wallpaper).into(ivParallaxImage)
+        loadAnimation()
+        btnAlarmActivity.setOnClickListener { startActivity(Intent(this@MainActivity, AlarmSetActivity::class.java)) }
     }
 
-    private fun switchFragmentDrawer(fragment: Fragment, item: MenuItem) {
-        replaceFragment(R.id.contentContainer, fragment)
-        with(item){
-            this@MainActivity.title = title
-        }
-
-        drawerLayout.closeDrawers()
+    private fun loadAnimation() {
+        var anim = AnimationUtils.loadAnimation(this@MainActivity, R.anim.anim_scale_up)
+        btnAlarmActivity.startAnimation(anim)
     }
 
+//    private fun switchFragmentDrawer(fragment: Fragment, item: MenuItem) {
+//        replaceFragment(R.id.contentContainer, fragment)
+//        with(item) {
+//            this@MainActivity.title = title
+//        }
+//
+//        drawerLayout.closeDrawers()
+//    }
 
     private fun initToolbar() {
-//        actionDrawerToggle = setupDrawerToggle()
+        //        actionDrawerToggle = setupDrawerToggle()
         setSupportActionBar(toolbar)
-//        drawerLayout.addDrawerListener(actionDrawerToggle)
-        navView.setCheckedItem(R.id.menu_main)
+
+        //        drawerLayout.addDrawerListener(actionDrawerToggle)
+//        navView.setCheckedItem(R.id.menu_main)
     }
 
-    private fun setupDrawerToggle(): ActionBarDrawerToggle {
-        return ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
-    }
+//    private fun setupDrawerToggle(): ActionBarDrawerToggle {
+//        return ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
+//    }
 
     /** Listener zone **/
 
-    private fun setupDrawerListener(){
-        navView.setNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.menu_main -> switchFragmentDrawer(mainFragment, it)
-                R.id.menu_alarm_list -> switchFragmentDrawer(alarmListFragment, it)
-            }
-            true
-        }
-    }
+//    private fun setupDrawerListener() {
+//        navView.setNavigationItemSelectedListener {
+//            when (it.itemId) {
+//                R.id.menu_main -> switchFragmentDrawer(mainFragment, it)
+//                R.id.menu_alarm_list -> switchFragmentDrawer(alarmListFragment, it)
+//            }
+//            true
+//        }
+//    }
 }

@@ -47,7 +47,6 @@ class AlarmListFragment : Fragment() {
 
     }
 
-
     /** Activity method zone  **/
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,6 +105,7 @@ class AlarmListFragment : Fragment() {
 
         /* update card */
         recyclerAdapter.updateAtPosition(index)
+
 
         WakeupAlarmManager.broadcastWakeupAlarmIntent(newAlarmDao)
 
