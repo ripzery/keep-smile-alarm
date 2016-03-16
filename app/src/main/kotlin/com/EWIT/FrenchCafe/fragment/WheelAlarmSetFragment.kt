@@ -56,7 +56,6 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
             /* if newly created */
             param1 = arguments.getString(ARG_1)
         }
-        setHasOptionsMenu(true);
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -71,9 +70,6 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_set_alarm, menu)
-    }
 
     /** Override method zone **/
 

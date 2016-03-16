@@ -1,21 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context="com.EWIT.FrenchCafe.MainActivity">
 
+    <include layout="@layout/layout_toolbar" />
 
-    <FrameLayout
-        android:id="@+id/contentContainer"
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="@dimen/margin_padding_16"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<Switch-->
+            <!--android:id="@+id/alarmSwitch"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/alarm_set_smart_alarm"-->
+            <!--android:textOn="@string/alarm_set_smart_alarm"-->
+            <!--android:textOff="@string/manual_alarm"-->
+            <!--android:switchPadding="16dp"-->
+            <!--android:checked="true" />-->
+
+    <!--</LinearLayout>-->
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/contentContainer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@android:color/white">-->
+
+
+    <!--</FrameLayout>-->
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:tabTextColor="#80ffffff"
+        app:tabSelectedTextColor="@android:color/white"
+        app:tabGravity="fill"
+        app:tabMode="fixed" />
 
 
-    </FrameLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
 
-</FrameLayout>
+    </android.support.v4.view.ViewPager>
+
+
+</LinearLayout>

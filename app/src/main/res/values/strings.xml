@@ -12,4 +12,6 @@
     <string name="fragment_maps_alarm_set_dest">Set Destination</string>
     <string name="fragment_maps_alarm_time_destination">TIME TO DESTINATION</string>
     <string name="fragment_maps_alarm_destination_hint">Please set your destination</string>
+    <string name="alarm_set_smart_alarm">Smart alarm</string>
+    <string name="manual_alarm">Manual alarm</string>
 </resources>
