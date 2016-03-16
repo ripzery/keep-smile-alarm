@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorTealLighter"
+    android:padding="@dimen/margin_padding_16"
+    android:orientation="vertical"
+    tools:showIn="@layout/fragment_maps_alarm">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:text="@string/fragment_maps_alarm_step1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="@dimen/margin_padding_16"
+        android:text="@string/fragment_maps_alarm_step2"/>
+
+</LinearLayout>

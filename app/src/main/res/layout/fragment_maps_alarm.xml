@@ -1,36 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorTealLighter"
-        android:padding="@dimen/margin_padding_16"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:text="@string/fragment_maps_alarm_step1"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="@dimen/margin_padding_16"
-            android:text="@string/fragment_maps_alarm_step2"/>
-
-    </LinearLayout>
+    <!--<include layout="@layout/layout_maps_alarm_hint"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/margin_padding_16">
+        android:paddingTop="@dimen/margin_padding_16"
+        android:paddingLeft="@dimen/margin_padding_16"
+        android:paddingRight="@dimen/margin_padding_16">
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,6 +25,7 @@
         <include layout="@layout/layout_divider"/>
 
         <TextView
+            android:id="@+id/tvSetDestination"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/fragment_maps_alarm_destination_hint"
@@ -49,12 +34,14 @@
             android:layout_marginTop="@dimen/margin_padding_16"
             android:textSize="16sp"/>
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btnSetDest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/margin_padding_16"
             android:layout_marginTop="@dimen/margin_padding_16"
-            style="@style/SearchPlaceButton"
+            android:backgroundTint="@color/colorTeal"
+            android:textColor="@android:color/white"
             android:text="@string/fragment_maps_alarm_set_dest"/>
 
         <TextView
@@ -72,18 +59,18 @@
     </LinearLayout>
 
     <Space
-        android:layout_width="1dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnSetAlarm"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:layout_margin="@dimen/margin_padding_16"
+        android:layout_marginLeft="@dimen/margin_padding_16"
+        android:layout_marginRight="@dimen/margin_padding_16"
+        android:layout_marginBottom="@dimen/margin_padding_16"
         style="@style/SetAlarmButton"
         android:text="Set Alarm"/>
-
-
 
 </LinearLayout>
