@@ -10,10 +10,8 @@ import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.model.dao.Model
-import com.codetroopers.betterpickers.recurrencepicker.EventRecurrence
-import com.codetroopers.betterpickers.recurrencepicker.EventRecurrenceFormatter
 import kotlinx.android.synthetic.main.fragment_wheel_alarm.*
-import kotlinx.android.synthetic.main.layout_date_time.*
+import kotlinx.android.synthetic.main.layout_time_picker.*
 import java.util.*
 
 /**
@@ -77,28 +75,12 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
         inflater?.inflate(R.menu.menu_set_alarm, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.menuRecurrence -> buildRecurrenceDialog().show(childFragmentManager, "Recurrence Picker")
-        }
-        return true
-    }
-
     /** Override method zone **/
 
     override fun onAlarmStarted(alarmDao: Model.AlarmDao) {
         log(alarmDao.toString())
         toast("Set alarm at ${alarmDao.timePicked.getTimeFormat()}")
         activity.finish()
-    }
-
-    override fun onRecurrenceSet(eventRecur: EventRecurrence) {
-        // TODO: Remove this
-        log(EventRecurrenceFormatter.getRepeatString(activity, resources, eventRecur, true))
-    }
-
-    override fun onDateSet(datePicked: Model.DatePicked) {
-        tvAlarmOn.text = "Pick date ${datePicked.getDateFormat()}"
     }
 
     /** Method zone **/
@@ -122,8 +104,6 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
         tvPickTime.text = "Pick time ${currentTime.getTimeFormat()}"
 
         time.setIs24HourView(false)
-
-        btnSelectDate.setOnClickListener(btnSelectDateListener)
 
         time.setOnTimeChangedListener(timeChangedListener)
 
@@ -153,9 +133,4 @@ class WheelAlarmSetFragment : Fragment(), AlarmSetInterface {
         currentTime = Model.TimePicked(hour, min)
         tvPickTime.text = "Pick time ${currentTime.getTimeFormat()}"
     }
-
-    val btnSelectDateListener = { view: View ->
-        buildDateDialog().show(childFragmentManager, "DatePicker")
-    }
-
 }

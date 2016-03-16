@@ -15,9 +15,6 @@
         android:id="@+id/time"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:numbersTextColor="@android:color/white"
-        android:numbersSelectorColor="@android:color/white"
-        android:numbersBackgroundColor="@android:color/white"
         android:timePickerMode="spinner"/>
 
 </merge>

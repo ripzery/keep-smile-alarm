@@ -6,7 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.replaceFragment
-import com.EWIT.FrenchCafe.fragment.AlarmSetFragment
+import com.EWIT.FrenchCafe.fragment.MapsAlarmFragment
 import com.EWIT.FrenchCafe.fragment.WheelAlarmSetFragment
 
 /**
@@ -16,7 +16,7 @@ import com.EWIT.FrenchCafe.fragment.WheelAlarmSetFragment
 class AlarmSetActivity : AppCompatActivity(){
 
     /** Variable zone **/
-    lateinit private var alarmSetFragment: AlarmSetFragment
+    lateinit private var mapsAlarmFragment: MapsAlarmFragment
     lateinit private var wheelFragment: WheelAlarmSetFragment
 
 
@@ -56,9 +56,11 @@ class AlarmSetActivity : AppCompatActivity(){
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Set Alarm"
 
-        alarmSetFragment  = AlarmSetFragment.newInstance("alarmSetFragment")
-        wheelFragment  = WheelAlarmSetFragment.newInstance("wheelDateTimeFragment")
-        replaceFragment(R.id.contentContainer, wheelFragment)
+//        wheelFragment  = WheelAlarmSetFragment.newInstance("wheelDateTimeFragment")
+//        replaceFragment(R.id.contentContainer, wheelFragment)
+        mapsAlarmFragment = MapsAlarmFragment.newInstance("MapsAlarmFragment")
+        replaceFragment(R.id.contentContainer, mapsAlarmFragment)
+
     }
 
     /** Listener zone **/

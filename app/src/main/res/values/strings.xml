@@ -6,4 +6,10 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="api_key_google_maps_debug">AIzaSyC0ThbM2IRR64KJtycX7mm4M6lpcPi-MWM</string>
+    <string name="fragment_maps_alarm_step1">Step 1 : Choose destination</string>
+    <string name="fragment_maps_alarm_step2">Step 2 : Set time to destination</string>
+    <string name="fragment_maps_alarm_destination">DESTINATION</string>
+    <string name="fragment_maps_alarm_set_dest">Set Destination</string>
+    <string name="fragment_maps_alarm_time_destination">TIME TO DESTINATION</string>
+    <string name="fragment_maps_alarm_destination_hint">Please set your destination</string>
 </resources>

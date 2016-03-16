@@ -46,13 +46,7 @@
                     android:text="pick date "/>
 
 
-                <View
-                    android:id="@+id/divider1"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_below="@id/tvAlarmOn"
-                    android:background="#1F000000"/>
+                <include layout="@layout/layout_divider"/>
 
 
                 <Button
@@ -77,15 +71,9 @@
                 android:textStyle="bold"
                 android:textSize="20sp"/>
 
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="4dp"
-                android:layout_below="@id/tvAlarmOn"
-                android:background="#1F000000"/>
+            <include layout="@layout/layout_divider"/>
 
-            <include layout="@layout/layout_date_time"/>
+            <include layout="@layout/layout_time_picker"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -110,16 +98,9 @@
                     android:textStyle="bold"
                     android:textSize="20sp"/>
 
-
             </LinearLayout>
 
-            <View
-                android:id="@+id/divider4"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="4dp"
-                android:layout_below="@id/tvAlarmOn"
-                android:background="#1F000000"/>
+            <include layout="@layout/layout_divider"/>
 
             <com.EWIT.FrenchCafe.viewgroup.RepeatDayViewGroup
                 android:id="@+id/repeatDayViewGroup"
