@@ -8,8 +8,8 @@ import android.view.MenuItem
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.adapter.AlarmSetPagerAdapter
 import com.EWIT.FrenchCafe.extension.replaceFragment
-import com.EWIT.FrenchCafe.fragment.MapsAlarmFragment
-import com.EWIT.FrenchCafe.fragment.WheelAlarmSetFragment
+import com.EWIT.FrenchCafe.fragment.SmartAlarmFragment
+import com.EWIT.FrenchCafe.fragment.ManualAlarmFragment
 import kotlinx.android.synthetic.main.activity_alarm_set.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
 
@@ -20,8 +20,8 @@ import kotlinx.android.synthetic.main.layout_toolbar.*
 class AlarmSetActivity : AppCompatActivity(){
 
     /** Variable zone **/
-    lateinit private var mapsAlarmFragment: MapsAlarmFragment
-    lateinit private var wheelFragment: WheelAlarmSetFragment
+    lateinit private var smartAlarmFragment: SmartAlarmFragment
+    lateinit private var manualFragment: ManualAlarmFragment
 
 
     /** Lifecycle zone **/

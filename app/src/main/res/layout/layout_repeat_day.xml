@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:showIn="@layout/fragment_manual_alarm">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cbRepeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            />
+
+        <TextView
+            android:id="@+id/tvRepeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repeat"
+            android:fontFamily="sans-serif-thin"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/layout_divider"/>
+
+    <com.EWIT.FrenchCafe.viewgroup.RepeatDayViewGroup
+        android:id="@+id/repeatDayViewGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</merge>

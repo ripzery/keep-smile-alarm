@@ -4,8 +4,8 @@ import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import com.EWIT.FrenchCafe.fragment.MapsAlarmFragment
-import com.EWIT.FrenchCafe.fragment.WheelAlarmSetFragment
+import com.EWIT.FrenchCafe.fragment.SmartAlarmFragment
+import com.EWIT.FrenchCafe.fragment.ManualAlarmFragment
 
 /**
  * Created by Euro on 3/16/16 AD.
@@ -23,9 +23,9 @@ class AlarmSetPagerAdapter(var fm: FragmentManager, var context: Context) : Frag
     override fun getItem(index: Int): Fragment? {
         var showFragment: Fragment
         if (index == 0) {
-            showFragment = WheelAlarmSetFragment.newInstance("WheelAlarmFragment")
+            showFragment = ManualAlarmFragment.newInstance("WheelAlarmFragment")
         } else {
-            showFragment = MapsAlarmFragment.newInstance("MapsAlarmFragment")
+            showFragment = SmartAlarmFragment.newInstance("MapsAlarmFragment")
         }
 
         return showFragment

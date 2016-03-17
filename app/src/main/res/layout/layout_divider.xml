@@ -6,4 +6,4 @@
     android:layout_height="2dp"
     android:layout_marginTop="4dp"
     android:background="#1F000000"
-    tools:showIn="@layout/fragment_wheel_alarm"/>
+    tools:showIn="@layout/fragment_manual_alarm"/>
