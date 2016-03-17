@@ -12,7 +12,7 @@ import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.model.dao.Model
-import kotlinx.android.synthetic.main.fragment_wheel_alarm.*
+import kotlinx.android.synthetic.main.fragment_manual_alarm.*
 import kotlinx.android.synthetic.main.layout_repeat_day.*
 import kotlinx.android.synthetic.main.layout_time_picker.*
 import java.util.*

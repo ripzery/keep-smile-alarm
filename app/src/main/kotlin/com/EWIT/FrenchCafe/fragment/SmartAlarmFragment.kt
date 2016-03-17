@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -8,11 +9,12 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TimePicker
 import com.EWIT.FrenchCafe.R
+import com.EWIT.FrenchCafe.activity.MapsActivity
 import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.model.dao.Model
-import kotlinx.android.synthetic.main.fragment_maps_alarm.*
+import kotlinx.android.synthetic.main.fragment_smart_alarm.*
 import kotlinx.android.synthetic.main.layout_repeat_day.*
 import kotlinx.android.synthetic.main.layout_time_picker.*
 import java.util.*
@@ -98,7 +100,6 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
         tvDestTime.text = "${getString(R.string.fragment_maps_alarm_destination)} ${currentTime.getTimeFormat()}"
 
-
         time.setIs24HourView(false)
 
         time.setOnTimeChangedListener(timeChangedListener)
@@ -108,6 +109,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         cbRepeat.setOnClickListener(cbRepeatListener)
 
         cbRepeat.setOnClickListener(cbRepeatListener)
+
+        btnSetDest.setOnClickListener(btnSetDestListener)
     }
 
     /** Listener zone **/
@@ -130,5 +133,9 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     val timeChangedListener = { timePicker: TimePicker, hour: Int, min: Int ->
         currentTime = Model.TimePicked(hour, min)
         tvDestTime.text = "${getString(R.string.fragment_maps_alarm_destination)} ${currentTime.getTimeFormat()}"
+    }
+
+    val btnSetDestListener = { view: View ->
+        startActivity(Intent(activity, MapsActivity::class.java))
     }
 }

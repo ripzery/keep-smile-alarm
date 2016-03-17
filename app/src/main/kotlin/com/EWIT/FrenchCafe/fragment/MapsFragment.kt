@@ -6,14 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.EWIT.FrenchCafe.R
+import com.EWIT.FrenchCafe.extension.replaceFragment
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 /**
  * Created by Euro on 3/10/16 AD.
  */
-class MapsFragment : Fragment(){
-
+class MapsFragment : Fragment(), OnMapReadyCallback{
     /** Variable zone **/
     lateinit var param1: String
+    lateinit var supportMapsFragment: SupportMapFragment
 
 
     /** Static method zone **/
@@ -46,9 +52,21 @@ class MapsFragment : Fragment(){
         return rootView
     }
 
+    /** Override method zone **/
+
+    override fun onMapReady(map: GoogleMap?) {
+        map!!.addMarker(MarkerOptions()
+                .position(LatLng(0.02, 0.0))
+                .title("Marker"));
+    }
+
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
+        supportMapsFragment = SupportMapFragment.newInstance()
+        replaceFragment(R.id.mapContainer, supportMapsFragment)
+        supportMapsFragment.getMapAsync(this)
     }
 
     /** Method zone **/

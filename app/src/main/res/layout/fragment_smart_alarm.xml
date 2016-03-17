@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widget.NestedScrollView
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -9,8 +9,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-
+        android:descendantFocusability="blocksDescendants">
         <!--<include layout="@layout/layout_maps_alarm_hint"/>-->
 
         <LinearLayout
@@ -24,6 +23,34 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/title_text_size"
+                android:text="@string/fragment_maps_alarm_start"/>
+
+            <include layout="@layout/layout_divider"/>
+
+            <TextView
+                android:id="@+id/tvSetStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_maps_alarm_start_hint"
+                android:layout_gravity="center_horizontal"
+                android:alpha="0.54"
+                android:layout_marginTop="@dimen/margin_padding_16"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/btnSetStart"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height_56"
+                android:layout_marginTop="@dimen/margin_padding_16"
+                android:theme="@style/BaseButton.Red"
+                android:text="@string/fragment_maps_alarm_set_start"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:textSize="@dimen/title_text_size"
                 android:text="@string/fragment_maps_alarm_destination"/>
 
@@ -39,14 +66,12 @@
                 android:layout_marginTop="@dimen/margin_padding_16"
                 android:textSize="16sp"/>
 
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:id="@+id/btnSetDest"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/margin_padding_16"
+                android:layout_height="@dimen/button_height_56"
                 android:layout_marginTop="@dimen/margin_padding_16"
-                android:backgroundTint="@color/colorTeal"
-                android:textColor="@android:color/white"
+                android:theme="@style/BaseButton.Teal"
                 android:text="@string/fragment_maps_alarm_set_dest"/>
 
             <TextView
@@ -71,15 +96,15 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:id="@+id/btnSetAlarm"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="@dimen/button_height_64"
             android:layout_margin="@dimen/margin_padding_16"
-            style="@style/SetAlarmButton"
+            android:theme="@style/BaseButton.Pink"
             android:text="Set Alarm"/>
 
     </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>
 

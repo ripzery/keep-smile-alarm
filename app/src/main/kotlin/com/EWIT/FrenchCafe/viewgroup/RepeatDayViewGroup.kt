@@ -17,7 +17,7 @@ class RepeatDayViewGroup : BaseCustomViewGroup {
     /** Variable zone **/
     lateinit private var containerView: View
     private var listCheckedDay = ArrayList<Int>()
-    private var observableCheckedDay: PublishSubject<ArrayList<Int>> = PublishSubject.create()
+    lateinit private var observableCheckedDay: PublishSubject<ArrayList<Int>>
 
 
     /** Constructor zone **/
@@ -25,6 +25,7 @@ class RepeatDayViewGroup : BaseCustomViewGroup {
     constructor(context: Context) : super(context) {
         initInflate()
         initInstances()
+
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -44,6 +45,7 @@ class RepeatDayViewGroup : BaseCustomViewGroup {
         initInflate()
         initInstances()
         initWithAttrs(attrs, defStyleAttr, defStyleRes)
+
     }
 
 
@@ -55,6 +57,10 @@ class RepeatDayViewGroup : BaseCustomViewGroup {
 
     private fun initInstances() {
         // findViewById here
+        if (!isInEditMode) {
+            observableCheckedDay = PublishSubject.create()
+        }
+
         btnSun.setOnCheckedChangeListener(onCheckedChangeListener)
         btnMon.setOnCheckedChangeListener(onCheckedChangeListener)
         btnTue.setOnCheckedChangeListener(onCheckedChangeListener)
