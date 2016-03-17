@@ -29,6 +29,7 @@ class MapsActivity : AppCompatActivity(){
         val REQUEST_CODE_START = 1
         val REQUEST_CODE_DEST = 2
         val RETURN_INTENT_EXTRA_LATLNG = "latLng"
+        val RETURN_INTENT_EXTRA_PLACE = "place"
     }
 
     /** Lifecycle  zone **/
@@ -52,6 +53,12 @@ class MapsActivity : AppCompatActivity(){
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+        if(item?.itemId == android.R.id.home){
+            finish()
+            return true
+        }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -77,6 +84,8 @@ class MapsActivity : AppCompatActivity(){
 
     private fun initToolbar() {
         toolbarTitle = intent.getStringExtra(EXTRA_TOOLBAR_TITLE)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = toolbarTitle
     }
 

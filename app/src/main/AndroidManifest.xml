@@ -27,6 +27,10 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="face"/>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="afecd6b52175568d2af1c42b69cd51e92dd7bff4" />
+
         <activity
             android:name="com.EWIT.FrenchCafe.MainActivity"
             android:screenOrientation="portrait"

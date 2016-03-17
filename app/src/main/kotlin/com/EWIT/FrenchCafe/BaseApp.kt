@@ -10,6 +10,8 @@ import com.EWIT.FrenchCafe.extension.get
 import com.EWIT.FrenchCafe.receiver.BootBroadcastReceiver
 import com.EWIT.FrenchCafe.util.Contextor
 import com.EWIT.FrenchCafe.util.SharePref
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
 
 /**
  * Created by Euro on 3/10/16 AD.
@@ -25,6 +27,7 @@ class BaseApp : Application(){
 
         val isFirstTime : Boolean = get(SharePref.SHARE_PREF_KEY_IS_FIRST_TIME, false) as Boolean
 
+        Fabric.with(this, Crashlytics());
 
         /* Set always enable broadcast receiver no matter reboot */
         if(isFirstTime){

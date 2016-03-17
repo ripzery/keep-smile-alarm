@@ -1,6 +1,7 @@
 package com.EWIT.FrenchCafe.fragment
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.fragment_maps.*
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider
+import rx.Observable
 import rx.Subscription
 
 /**
@@ -32,15 +34,15 @@ import rx.Subscription
 class MapsFragment : Fragment(), OnMapReadyCallback {
     /** Variable zone **/
     var isDest: Boolean = false
-    lateinit private var currentLocation: Location
     lateinit private var supportMapsFragment: SupportMapFragment
     lateinit private var locationProvider: ReactiveLocationProvider
     lateinit private var locationRequestSubscription: Subscription
     lateinit private var lastKnownLocationSubscription: Subscription
     lateinit private var mMap: GoogleMap
+    lateinit private var progressDialog: ProgressDialog
     private val locationRequest = LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-            .setNumUpdates(3)
+            .setNumUpdates(1)
             .setInterval(1000);
 
     /** Static method zone **/
@@ -79,16 +81,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     override fun onStop() {
         super.onStop()
-        lastKnownLocationSubscription.unsubscribe()
-        locationRequestSubscription.unsubscribe()
+        try {
+            lastKnownLocationSubscription.unsubscribe()
+            locationRequestSubscription.unsubscribe()
+        }catch(e: Exception){
+            e.printStackTrace()
+        }
     }
 
     /** Override method zone **/
 
     override fun onMapReady(map: GoogleMap?) {
         mMap = map!!
-        lastKnownLocationSubscription = ReactiveLocationProvider(activity).lastKnownLocation.subscribe { moveToLocation(map, it) }
-        locationRequestSubscription = locationProvider.getUpdatedLocation(locationRequest).subscribe { moveToLocation(map, it) }
+        mMap.isMyLocationEnabled = true
+        startSubscribeUserLastKnownLocation()
+        startSubscribeUserLocation()
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -98,11 +105,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     /** Method zone **/
 
+    fun userNotEnabledLocation() {
+        toast("Please enabled location setting first")
+        activity.finish()
+    }
+
+    fun userEnabledLocation() {
+        log("User enabled location")
+        startSubscribeUserLocation()
+    }
+
     private fun initInstance() {
 
         supportMapsFragment = SupportMapFragment.newInstance()
         replaceFragment(R.id.mapContainer, supportMapsFragment)
         supportMapsFragment.getMapAsync(this)
+
         locationProvider = ReactiveLocationProvider(activity)
 
         locationProvider.checkLocationSettings(LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
@@ -121,46 +139,76 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         btnStartLocation.visibility = if (isDest) View.GONE else View.VISIBLE
         btnDestLocation.visibility = if (isDest) View.VISIBLE else View.GONE
 
-        ivPickLocation.setImageDrawable(ContextCompat.getDrawable(activity, if(isDest) R.drawable.ic_place_teal_24dp else R.drawable.ic_place_red_24dp ))
+        ivPickLocation.setImageDrawable(ContextCompat.getDrawable(activity, if (isDest) R.drawable.ic_place_teal_24dp else R.drawable.ic_place_red_24dp))
 
         btnStartLocation.setOnClickListener(onPickLocationListener)
         btnDestLocation.setOnClickListener(onPickLocationListener)
     }
 
-    fun userNotEnabledLocation() {
-        toast("Please enabled location setting first")
-        activity.finish()
+    private fun startSubscribeUserLocation() {
+        locationRequestSubscription = locationProvider.getUpdatedLocation(locationRequest)
+                .subscribe {
+                    moveToLocation(mMap, it)
+                }
     }
 
-    fun userEnabledLocation() {
-        log("User enabled location")
-        locationRequestSubscription = locationProvider.getUpdatedLocation(locationRequest).subscribe { moveToLocation(mMap, it) }
-
+    private fun startSubscribeUserLastKnownLocation() {
+        lastKnownLocationSubscription = ReactiveLocationProvider(activity).lastKnownLocation
+            .subscribe {
+                moveToLocation(mMap, it)
+            }
     }
 
-    private fun moveToLocation(map: GoogleMap?, location: Location) {
-        currentLocation = location
+    private fun animateToLocation(map: GoogleMap?, location: Location) {
+        enablePickLocationButton(false)
 
-        map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(with(location) { LatLng(latitude, longitude) }, 17.0f), object : GoogleMap.CancelableCallback{
+        map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(with(location) { LatLng(latitude, longitude) }, 17.0f), object : GoogleMap.CancelableCallback {
             override fun onCancel() {
-
+                enablePickLocationButton(true)
             }
 
             override fun onFinish() {
-                btnStartLocation.isEnabled = true
-                btnDestLocation.isEnabled = true
+                enablePickLocationButton(true)
             }
 
         })
     }
 
+    private fun moveToLocation(map: GoogleMap?, location: Location){
+        map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(with(location) { LatLng(latitude, longitude) }, 17.0f))
+        enablePickLocationButton(true)
+
+    }
+
+    private fun enablePickLocationButton(isEnable: Boolean){
+        btnStartLocation.isEnabled = isEnable
+        btnDestLocation.isEnabled = isEnable
+    }
+
+    private fun getCenterLatLngPlaceObservable(): Observable<Pair<LatLng, String>> {
+        val centerLatLng = mMap.cameraPosition.target
+
+        return locationProvider.getReverseGeocodeObservable(centerLatLng.latitude, centerLatLng.longitude, 1)
+                .map { "${it[0].getAddressLine(0)} ${it[0].getAddressLine(1)}" }
+                .map { centerLatLng to it }
+    }
+
     /** Listener zone **/
 
     var onPickLocationListener = { view: View ->
-        val intent = Intent()
-        intent.putExtra(MapsActivity.RETURN_INTENT_EXTRA_LATLNG, "${currentLocation.latitude}, ${currentLocation.longitude}")
-        log(currentLocation.toString())
-        activity.setResult(Activity.RESULT_OK, intent)
-        activity.finish()
+
+        /* don't remove val */
+        progressDialog = ProgressDialog.show(activity, "Please wait", "Loading place name...", true)
+
+        val subscription = getCenterLatLngPlaceObservable()
+            .subscribe {
+                progressDialog.dismiss()
+                var (latLng, place) = it
+                val intent = Intent()
+                intent.putExtra(MapsActivity.RETURN_INTENT_EXTRA_LATLNG, "${latLng.latitude}, ${latLng.longitude}")
+                intent.putExtra(MapsActivity.RETURN_INTENT_EXTRA_PLACE, place)
+                activity.setResult(Activity.RESULT_OK, intent)
+                activity.finish()
+            }
     }
 }
