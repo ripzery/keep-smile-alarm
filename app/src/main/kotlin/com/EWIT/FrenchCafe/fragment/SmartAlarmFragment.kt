@@ -1,12 +1,12 @@
 package com.EWIT.FrenchCafe.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.TimePicker
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.activity.MapsActivity
@@ -40,10 +40,10 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
 
     /** Static method zone **/
-    companion object{
+    companion object {
         val ARG_1 = "ARG_1"
 
-        fun newInstance(param1:String) : SmartAlarmFragment {
+        fun newInstance(param1: String): SmartAlarmFragment {
             var bundle: Bundle = Bundle()
             bundle.putString(ARG_1, param1)
             val smartAlarmFragment: SmartAlarmFragment = SmartAlarmFragment()
@@ -57,7 +57,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             /* if newly created */
             param1 = arguments.getString(ARG_1)
         }
@@ -72,7 +72,18 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initInstance()
-        
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == Activity.RESULT_OK){
+            when(requestCode){
+                MapsActivity.REQUEST_CODE_START -> tvSetStart.text = data!!.getStringExtra(MapsActivity.RETURN_INTENT_EXTRA_LATLNG)
+                MapsActivity.REQUEST_CODE_DEST -> tvSetDestination.text = data!!.getStringExtra(MapsActivity.RETURN_INTENT_EXTRA_LATLNG)
+            }
+        }
+
     }
 
     /** Override method zone **/
@@ -83,10 +94,9 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         activity.finish()
     }
 
-
     /** Method zone **/
 
-    private fun initInstance(){
+    private fun initInstance() {
 
         currentDate = Model.DatePicked(year, month, day)
         currentTime = Model.TimePicked(hour, minute)
@@ -111,6 +121,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         cbRepeat.setOnClickListener(cbRepeatListener)
 
         btnSetDest.setOnClickListener(btnSetDestListener)
+
+        btnSetStart.setOnClickListener(btnSetStartListener)
     }
 
     /** Listener zone **/
@@ -118,10 +130,10 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     val cbRepeatListener = { view: View ->
         if (cbRepeat.isChecked) {
             repeatDayViewGroup.visibility = View.VISIBLE
-//            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_in))
+            //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_in))
         } else {
             repeatDayViewGroup.visibility = View.GONE
-//            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_out))
+            //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_out))
         }
     }
 
@@ -135,7 +147,13 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         tvDestTime.text = "${getString(R.string.fragment_maps_alarm_destination)} ${currentTime.getTimeFormat()}"
     }
 
+    val btnSetStartListener = { view: View ->
+        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Start"),
+                MapsActivity.REQUEST_CODE_START)
+    }
+
     val btnSetDestListener = { view: View ->
-        startActivity(Intent(activity, MapsActivity::class.java))
+        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Destination"),
+                MapsActivity.REQUEST_CODE_DEST)
     }
 }

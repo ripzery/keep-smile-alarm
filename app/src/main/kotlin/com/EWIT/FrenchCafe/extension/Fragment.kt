@@ -14,7 +14,11 @@ import com.EWIT.FrenchCafe.util.SharePref
  */
 
 fun Fragment.log(msg: String? = "Hello") {
-    Log.d(activity.localClassName, msg)
+    try {
+        Log.d(activity.localClassName, msg)
+    }catch(e: Exception){
+        e.printStackTrace()
+    }
 }
 
 fun Fragment.replaceFragment(fragmentContainer: Int = R.id.contentContainer, fragment: Fragment) {

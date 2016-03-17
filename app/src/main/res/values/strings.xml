@@ -17,4 +17,6 @@
     <string name="alarm_set_smart_alarm">Smart alarm</string>
     <string name="manual_alarm">Manual alarm</string>
     <string name="fragment_maps_alarm_start">START</string>
+    <string name="fragment_map_btn_start">SET START LOCATION</string>
+    <string name="fragment_map_btn_dest">SET DESTINATION LOCATION</string>
 </resources>

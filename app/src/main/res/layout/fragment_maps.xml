@@ -1,7 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mapContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/mapContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/ivPickLocation"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"
+        android:alpha="0.54"
+        android:src="@drawable/ic_place_teal_24dp"/>
+    
+    <Button
+        android:id="@+id/btnStartLocation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height_64"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/margin_padding_16"
+        android:enabled="false"
+        android:text="@string/fragment_map_btn_start"
+        android:theme="@style/BaseButton.Red"/>
+
+    <Button
+        android:id="@+id/btnDestLocation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height_64"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/margin_padding_16"
+        android:enabled="false"
+        android:visibility="gone"
+        android:text="@string/fragment_map_btn_dest"
+        android:theme="@style/BaseButton.Teal"/>
 
 </FrameLayout>
