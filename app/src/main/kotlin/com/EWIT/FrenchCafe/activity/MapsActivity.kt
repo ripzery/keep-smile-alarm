@@ -10,6 +10,8 @@ import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.replaceFragment
 import com.EWIT.FrenchCafe.fragment.MapsFragment
+import com.google.android.gms.location.places.Place
+import com.google.android.gms.location.places.ui.PlacePicker
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -21,6 +23,7 @@ class MapsActivity : AppCompatActivity(){
     /** Variable zone **/
     lateinit private var mapsFragment: MapsFragment
     lateinit private var toolbarTitle: String
+
 
 
     /** Static variable **/
@@ -77,10 +80,13 @@ class MapsActivity : AppCompatActivity(){
 
     private fun initInstance() {
         initToolbar()
-        mapsFragment = MapsFragment.newInstance(toolbarTitle.equals("Pick Destination"))
-        replaceFragment(R.id.contentContainer, mapsFragment)
-    }
 
+
+
+
+//        mapsFragment = MapsFragment.newInstance(toolbarTitle.equals("Pick Destination"))
+//        replaceFragment(R.id.contentContainer, mapsFragment)
+    }
 
     private fun initToolbar() {
         toolbarTitle = intent.getStringExtra(EXTRA_TOOLBAR_TITLE)

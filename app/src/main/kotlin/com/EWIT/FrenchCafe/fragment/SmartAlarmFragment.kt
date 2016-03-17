@@ -14,6 +14,8 @@ import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.model.dao.Model
+import com.google.android.gms.location.places.Place
+import com.google.android.gms.location.places.ui.PlacePicker
 import kotlinx.android.synthetic.main.fragment_smart_alarm.*
 import kotlinx.android.synthetic.main.layout_repeat_day.*
 import kotlinx.android.synthetic.main.layout_time_picker.*
@@ -25,6 +27,8 @@ import java.util.*
 class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
     /** Variable zone **/
+    val START_PLACE_PICKER_REQUEST = 4;
+    val DESTINATION_PLACE_PICKER_REQUEST = 5;
     lateinit var param1: String
     private val c: Calendar = Calendar.getInstance()
     private val hour = c.get(Calendar.HOUR_OF_DAY)
@@ -36,6 +40,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     lateinit private var currentDate: Model.DatePicked
     lateinit private var currentTime: Model.TimePicked
     lateinit var alarmDao: Model.AlarmDao
+    lateinit private var builder: PlacePicker.IntentBuilder
+
     private val mRrule: String? = ""
 
 
@@ -79,6 +85,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK){
             when(requestCode){
+                START_PLACE_PICKER_REQUEST -> tvSetStart.text = PlacePicker.getPlace(activity, data).name
+                DESTINATION_PLACE_PICKER_REQUEST -> tvSetDestination.text = PlacePicker.getPlace(activity, data).name
                 MapsActivity.REQUEST_CODE_START -> tvSetStart.text = data!!.getStringExtra(MapsActivity.RETURN_INTENT_EXTRA_PLACE)
                 MapsActivity.REQUEST_CODE_DEST -> tvSetDestination.text = data!!.getStringExtra(MapsActivity.RETURN_INTENT_EXTRA_PLACE)
             }
@@ -105,6 +113,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
             log(it.toString())
             repeatDayList = it
         }
+
+        builder  = PlacePicker.IntentBuilder();
 
         alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
 
@@ -148,12 +158,15 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     }
 
     val btnSetStartListener = { view: View ->
-        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Start"),
-                MapsActivity.REQUEST_CODE_START)
+        startActivityForResult(builder.build(activity), START_PLACE_PICKER_REQUEST);
+
+//        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Start"),
+//                MapsActivity.REQUEST_CODE_START)
     }
 
     val btnSetDestListener = { view: View ->
-        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Destination"),
-                MapsActivity.REQUEST_CODE_DEST)
+        startActivityForResult(builder.build(activity), DESTINATION_PLACE_PICKER_REQUEST)
+//        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Destination"),
+//                MapsActivity.REQUEST_CODE_DEST)
     }
 }

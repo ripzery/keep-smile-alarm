@@ -24,6 +24,10 @@
             android:value="@string/api_key_google_maps_debug" />
 
         <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/api_key_google_maps_debug" />
+
+        <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="face"/>
 
