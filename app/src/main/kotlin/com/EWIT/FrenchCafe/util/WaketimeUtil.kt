@@ -50,10 +50,10 @@ object WaketimeUtil {
     /* decide if time is past, alarm will set tomorrow else today  */
     fun decideWakeupTimeMillis(alarmDao: Model.AlarmDao): Long {
         val todayNow = Calendar.getInstance()
-        return if (CalendarAlarmConverter.parseAlarmDao(alarmDao).minBefore(todayNow)) getNextDayTimeInMillis(alarmDao) else CalendarAlarmConverter.parseAlarmDao(alarmDao).timeInMillis
+        return if (alarmDao.toCalendar().minBefore(todayNow)) getNextDayTimeInMillis(alarmDao) else alarmDao.toCalendar().timeInMillis
     }
 
     private fun getNextDayTimeInMillis(alarmDao: Model.AlarmDao): Long {
-        return CalendarAlarmConverter.parseAlarmDao(alarmDao).timeInMillis + 24 * 60 * 60 * 1000
+        return alarmDao.toCalendar().timeInMillis + 24 * 60 * 60 * 1000
     }
 }

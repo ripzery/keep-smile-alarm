@@ -33,5 +33,4 @@ object CalendarAlarmConverter {
         return Model.TimeWake(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
     }
 
-
 }

@@ -21,12 +21,14 @@ object Model{
     @PaperParcel
     data class DatePicked(val year: Int, val monthOfYear: Int, val dayOfMonth: Int): PaperParcelable {
         fun getDateFormat(): String{
-            return String.format("%02d", dayOfMonth) +"/"+ String.format("%02d", monthOfYear) + "/" + year
+            return String.format("%02d", dayOfMonth) +"/"+ String.format("%02d", monthOfYear+1) + "/" + year
         }
     }
 
     @PaperParcel
-    data class PlacePicked(val arrivalPlace: PlaceDetail, val departurePlace: PlaceDetail, val arriveTime: Long): PaperParcelable
+    data class PlacePicked(val arrivalPlace: PlaceDetail, val departurePlace: PlaceDetail, val arriveTime: Long, val travelTime: Long): PaperParcelable{
+
+    }
 
     @PaperParcel
     data class PlaceDetail(val name: String, val latLng: PlaceLatLng)
@@ -35,7 +37,15 @@ object Model{
     data class PlaceLatLng(val latitude: Double, val longitude: Double) : PaperParcelable
 
     @PaperParcel
-    data class AlarmDao(var datePicked: DatePicked, var timeWake: TimeWake, var repeatDay: List<Int>, var placePicked: PlacePicked? = null): PaperParcelable
+    data class AlarmDao(var datePicked: DatePicked, var timeWake: TimeWake, var repeatDay: List<Int>, var placePicked: PlacePicked? = null): PaperParcelable{
+        fun toCalendar(): Calendar{
+            return GregorianCalendar(datePicked.year,
+                    datePicked.monthOfYear,
+                    datePicked.dayOfMonth,
+                    timeWake.hourOfDay,
+                    timeWake.minute)
+        }
+    }
 
     @PaperParcel
     data class AlarmCollectionDao(var alarmCollectionList:ArrayList<AlarmDao>): PaperParcelable

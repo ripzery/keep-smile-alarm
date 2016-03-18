@@ -2,6 +2,7 @@ package com.EWIT.FrenchCafe.extension
 
 import android.util.Log
 import com.EWIT.FrenchCafe.util.SharePref
+import java.util.*
 
 /**
  * Created by Euro on 3/10/16 AD.
@@ -28,4 +29,12 @@ fun <T> Any.get(id: String, defaultValue : T) : Any {
         is Float -> return sp!!.getFloat(id, defaultValue)
         else -> throw IllegalArgumentException("Can get only [Int, String, Long, Boolean, Float] !")
     }
+}
+
+fun Any.currentMillis() : Long{
+    return Calendar.getInstance().timeInMillis
+}
+
+fun Any.mCalendar() : Calendar{
+    return Calendar.getInstance()
 }

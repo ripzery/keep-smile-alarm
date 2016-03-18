@@ -8,7 +8,6 @@ import android.content.Intent
 import com.EWIT.FrenchCafe.activity.WakeTrackerActivity
 import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.receiver.BootBroadcastReceiver
-import com.EWIT.FrenchCafe.util.CalendarAlarmConverter
 import com.EWIT.FrenchCafe.util.Contextor
 import com.EWIT.FrenchCafe.util.WaketimeUtil
 
@@ -38,7 +37,7 @@ object WakeupAlarmManager {
         intent.type = WAKEUP_ALARM
 
         /* if user also set repeat day */
-        if(alarmDao.repeatDay.size != 0){
+        if (alarmDao.repeatDay.size != 0) {
             intent.putExtra(INTENT_BROADCAST_REPEAT_DAY, alarmDao.repeatDay.toIntArray())
         }
 
@@ -46,7 +45,7 @@ object WakeupAlarmManager {
         val alarmIntent: PendingIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
         /* set wake time */
-        alarmManager.set(AlarmManager.RTC_WAKEUP, CalendarAlarmConverter.parseAlarmDao(alarmDao).timeInMillis , alarmIntent)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDao.toCalendar().timeInMillis, alarmIntent)
     }
 
     fun startAlarm(wakeupAlarmService: IntentService) {

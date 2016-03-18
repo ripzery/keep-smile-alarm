@@ -27,7 +27,6 @@ class AlarmSetActivity : AppCompatActivity(){
     private var alarmDao : Model.AlarmDao? = null
     private var editIndex : Int = -1
 
-
     /** Static variable **/
 
     companion object{

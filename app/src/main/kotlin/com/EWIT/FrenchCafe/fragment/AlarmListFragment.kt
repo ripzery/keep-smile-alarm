@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import com.google.gson.Gson
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.activity.AlarmSetActivity
 import com.EWIT.FrenchCafe.adapter.RecyclerAdapter
@@ -20,9 +19,9 @@ import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
-import com.EWIT.FrenchCafe.util.CalendarAlarmConverter
 import com.EWIT.FrenchCafe.util.SharePref
 import com.EWIT.FrenchCafe.util.WaketimeUtil
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_alarm_list.*
 import java.util.*
 
@@ -79,7 +78,7 @@ class AlarmListFragment : Fragment() {
         recyclerAdapter.setList(alarmCollectionList)
 
         /* show text empty alarm if empty list */
-        tvEmptyAlarm.visibility = if(alarmCollectionList.isEmpty()) View.VISIBLE else View.GONE
+        tvEmptyAlarm.visibility = if (alarmCollectionList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     /** Method zone **/
@@ -164,13 +163,13 @@ class AlarmListFragment : Fragment() {
         }
 
         override fun onEdit(alarmDao: Model.AlarmDao, index: Int) {
-//            showDatePickerDialog(index)
+            //            showDatePickerDialog(index)
 
             // start activity AlarmSetActivity
             log(alarmDao.toString())
 
-            val intent:Intent = Intent(activity, AlarmSetActivity::class.java)
-            val bundle:Bundle = Bundle()
+            val intent: Intent = Intent(activity, AlarmSetActivity::class.java)
+            val bundle: Bundle = Bundle()
             bundle.putParcelable(AlarmSetActivity.EXTRA_ALARM_DAO, alarmDao)
             bundle.putInt(AlarmSetActivity.EXTRA_EDIT_INDEX, index)
             intent.putExtras(bundle)

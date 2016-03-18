@@ -1,6 +1,7 @@
 package com.EWIT.FrenchCafe.fragment
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,15 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TimePicker
 import com.EWIT.FrenchCafe.R
-import com.EWIT.FrenchCafe.extension.log
-import com.EWIT.FrenchCafe.extension.toast
+import com.EWIT.FrenchCafe.extension.*
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.model.dao.NetworkModel
 import com.EWIT.FrenchCafe.network.HttpManager
-import com.EWIT.FrenchCafe.util.CalendarAlarmConverter
 import com.EWIT.FrenchCafe.util.WaketimeUtil
-import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlacePicker
 import kotlinx.android.synthetic.main.fragment_smart_alarm.*
 import kotlinx.android.synthetic.main.layout_repeat_day.*
@@ -34,7 +32,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     /** Variable zone **/
     val START_PLACE_PICKER_REQUEST = 4;
     val DESTINATION_PLACE_PICKER_REQUEST = 5;
-    val PERSONAL_TIME_OFFSET = 60 * 60 * 1000
+
     private val c: Calendar = Calendar.getInstance()
     private val hour = c.get(Calendar.HOUR_OF_DAY)
     private val minute = c.get(Calendar.MINUTE)
@@ -57,6 +55,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     companion object {
         val ARG_1 = "ARG_1"
         val ARG_2 = "ARG_2"
+        val PERSONAL_TIME_OFFSET = 60 * 60 * 1000
 
         fun newInstance(param1: Model.AlarmDao?, editIndex: Int): SmartAlarmFragment {
             var bundle: Bundle = Bundle()
@@ -169,12 +168,10 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     }
 
     private fun initEditData(alarmDao: Model.AlarmDao) {
-        currentDate = alarmDao.datePicked
-        currentTime = CalendarAlarmConverter.parseTimeInMillisToTimeWake(alarmDao.placePicked!!.arriveTime)
+        currentDate = mCalendar().toDatePicked()
+        currentTime = Calendar.getInstance().toTimeWake(alarmDao.placePicked!!.arriveTime)
         time.currentHour = currentTime.hourOfDay
         time.currentMinute = currentTime.minute
-        currentDate = alarmDao.datePicked
-        currentTime = currentTime
 
         startPlace = alarmDao.placePicked!!.departurePlace
         destPlace = alarmDao.placePicked!!.arrivalPlace
@@ -216,8 +213,11 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         log("$startLatLng / $destLatLng -> $arrivalTime ")
 
         return travelInfoArrivalObservable
+                .doOnNext { if (it.rows.size == 0) throw ArrayIndexOutOfBoundsException(it.errorMessage) }
                 .flatMap { HttpManager.getTravelDurationDeparture(startLatLng, destLatLng, calculateApproxDepartureTime(arrivalTime, it.rows[0].elements[0].duration.value * 1000).toString()) }
-                .flatMap { Observable.just(it.rows[0].elements[0].durationInTraffic) }
+                .flatMap {
+                    Observable.just(it.rows[0].elements[0].durationInTraffic)
+                }
     }
 
     private fun calculateRealDepartureTime(durationInTraffic: Long, arrivalTime: Long): Long {
@@ -226,6 +226,31 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
     private fun calculateApproxDepartureTime(arrivalTime: Long, duration: Long): Long {
         return arrivalTime - duration
+    }
+
+    private fun generateAlarmDao(durationInTraffic: NetworkModel.ElementValue): Model.AlarmDao? {
+        log(durationInTraffic.toString())
+
+        /* initialize alarmDao from current date and time */
+        alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
+
+        /* calculate which time user should wakeup in millis*/
+        val realDepartureTime: Long = calculateRealDepartureTime(durationInTraffic.value * 1000,
+                alarmDao!!.toCalendar().timeInMillis)
+
+        /* initialize model keep where is user destination and start */
+        val placePicked = Model.PlacePicked(destPlace!!,
+                startPlace!!,
+                alarmDao!!.toCalendar().timeInMillis,
+                durationInTraffic.value * 1000)
+
+        /* set new alarmDao to the correct wakeup time, set repeat day list, and also placePicked */
+        alarmDao = Model.AlarmDao(mCalendar().toDatePicked(realDepartureTime),
+                mCalendar().toTimeWake(realDepartureTime),
+                repeatDayList,
+                placePicked)
+
+        return alarmDao
     }
 
     /** Listener zone **/
@@ -237,38 +262,17 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     val btnSetAlarmListener = { view: View ->
 
         if (isPickLocation() || alarmDao?.placePicked != null) {
+
+            val progressDialog = ProgressDialog.show(activity, "Please wait", "Calculating travel time..", true)
+
             val durationInTrafficObservable: Observable<NetworkModel.ElementValue> = getCalculateDurationInTrafficObservable()
-            travelInfoSubscription = durationInTrafficObservable.subscribe ({ durationInTraffic ->
-
-                log(durationInTraffic.toString())
-
-                /* initialize alarmDao from current date and time */
-                alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
-
-                /* calculate which time user should wakeup in millis*/
-                val realDepartureTime: Long = calculateRealDepartureTime(durationInTraffic.value * 1000,
-                        CalendarAlarmConverter.parseAlarmDao(alarmDao!!).timeInMillis)
-
-                /* initialize model keep where is user destination and start */
-                val placePicked = Model.PlacePicked(destPlace!!,
-                        startPlace!!,
-                        CalendarAlarmConverter.parseAlarmDao(alarmDao!!).timeInMillis)
-
-                /* set new alarmDao to the correct wakeup time, set repeat day list, and also placePicked */
-                alarmDao = Model.AlarmDao(CalendarAlarmConverter.parseTimeInMillisToDatePicked(realDepartureTime),
-                        CalendarAlarmConverter.parseTimeInMillisToTimeWake(realDepartureTime),
-                        repeatDayList,
-                        placePicked)
-
-                if(editIndex == -1) {
-                    setAlarm(alarmDao!!)
-                }else{
-                    updateAlarm(alarmDao!!, editIndex)
-                }
-            }, { error ->
-                toast("Embarrassing, error has occurred -> ${error.message}")
-                error.printStackTrace()
-            })
+            travelInfoSubscription = durationInTrafficObservable
+                    .map { generateAlarmDao(it) }
+                    .doOnTerminate { progressDialog.dismiss() }
+                    .subscribe ({ it ->
+                        if (editIndex == -1) setAlarm(it!!)
+                        else updateAlarm(it!!, editIndex)
+                    }, { error -> toast("Embarrassing, error has occurred -> ${error.message}") })
         } else {
             toast("Please pick departure location")
         }
