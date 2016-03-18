@@ -30,10 +30,9 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     private val month = c.get(Calendar.MONTH)
     private val year = c.get(Calendar.YEAR)
     private var repeatDayList: List<Int> = listOf()
-    lateinit var param1: String
     lateinit private var currentDate: Model.DatePicked
     lateinit private var currentTime: Model.TimeWake
-    lateinit var alarmDao: Model.AlarmDao
+    private var alarmDao: Model.AlarmDao? = null
     private val mRrule: String? = ""
 
     /** Static method zone **/
@@ -41,9 +40,9 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     companion object {
         val ARG_1 = "ARG_1"
 
-        fun newInstance(param1: String): ManualAlarmFragment {
+        fun newInstance(alarmDao: Model.AlarmDao?): ManualAlarmFragment {
             var bundle: Bundle = Bundle()
-            bundle.putString(ARG_1, param1)
+            bundle.putParcelable(ARG_1, alarmDao)
             val manualAlarmFragment: ManualAlarmFragment = ManualAlarmFragment()
             manualAlarmFragment.arguments = bundle
             return manualAlarmFragment
@@ -57,7 +56,8 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             /* if newly created */
-            param1 = arguments.getString(ARG_1)
+            alarmDao = arguments.getParcelable<Model.AlarmDao>(ARG_1)
+
         }
     }
 
@@ -88,15 +88,21 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         //        Glide.with(activity).load(R.drawable.wallpaper).into(ivBackground)
         //        btnSelectDate.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up))
 
-        currentDate = Model.DatePicked(year, month, day)
-        currentTime = Model.TimeWake(hour, minute)
+        if(alarmDao != null){
+
+            initEditData(alarmDao!!)
+
+        }else{
+            currentDate = Model.DatePicked(year, month, day)
+            currentTime = Model.TimeWake(hour, minute)
+            alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
+        }
+
 
         repeatDayViewGroup.getCheckedDayObservable().map { it.sorted() }.subscribe {
             log(it.toString())
             repeatDayList = it
         }
-
-        alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
 
         tvAlarmOn.text = "Pick date ${currentDate.getDateFormat()}"
         tvPickTime.text = "Pick time ${currentTime.getTimeFormat()}"
@@ -105,26 +111,49 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
 
         time.setOnTimeChangedListener(timeChangedListener)
 
+
         btnSetAlarm.setOnClickListener(btnSetAlarmListener)
 
         cbRepeat.setOnClickListener(cbRepeatListener)
     }
 
+    private fun toggleRepeatDayVisible() {
+        if (cbRepeat.isChecked) {
+            repeatDayViewGroup.visibility = View.VISIBLE
+            //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_in))
+        } else {
+            repeatDayViewGroup.visibility = View.GONE
+            //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_out))
+        }
+    }
+
+    private fun initEditData(alarmDao: Model.AlarmDao){
+        time.setCurrentHour(alarmDao.timeWake.hourOfDay)
+//        time.hour = alarmDao.timeWake.hourOfDay
+        time.setCurrentMinute(alarmDao.timeWake.minute)
+        currentDate = alarmDao.datePicked
+        currentTime = alarmDao.timeWake
+
+        if(alarmDao.repeatDay.size != 0){
+            cbRepeat.isChecked = true
+            repeatDayViewGroup.setCheckedDay(alarmDao.repeatDay)
+        }else{
+            cbRepeat.isChecked = false
+        }
+
+        toggleRepeatDayVisible()
+
+    }
+
     /** Listener zone **/
 
     val cbRepeatListener = { view: View ->
-        if (cbRepeat.isChecked) {
-            repeatDayViewGroup.visibility = View.VISIBLE
-//            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_in))
-        } else {
-            repeatDayViewGroup.visibility = View.GONE
-//            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_out))
-        }
+        toggleRepeatDayVisible()
     }
 
     val btnSetAlarmListener = { view: View ->
         alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
-        setAlarm(alarmDao)
+        setAlarm(alarmDao!!)
     }
 
     val timeChangedListener = { timePicker: TimePicker, hour: Int, min: Int ->

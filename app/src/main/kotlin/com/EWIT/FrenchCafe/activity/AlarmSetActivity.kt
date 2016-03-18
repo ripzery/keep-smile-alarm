@@ -11,6 +11,7 @@ import com.EWIT.FrenchCafe.adapter.AlarmSetPagerAdapter
 import com.EWIT.FrenchCafe.extension.replaceFragment
 import com.EWIT.FrenchCafe.fragment.SmartAlarmFragment
 import com.EWIT.FrenchCafe.fragment.ManualAlarmFragment
+import com.EWIT.FrenchCafe.model.dao.Model
 import kotlinx.android.synthetic.main.activity_alarm_set.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
 
@@ -23,7 +24,14 @@ class AlarmSetActivity : AppCompatActivity(){
     /** Variable zone **/
     lateinit private var smartAlarmFragment: SmartAlarmFragment
     lateinit private var manualFragment: ManualAlarmFragment
+    private var alarmDao : Model.AlarmDao? = null
 
+
+    /** Static variable **/
+
+    companion object{
+        val EXTRA_ALARM_DAO = "ALARMDAO"
+    }
 
     /** Lifecycle zone **/
 
@@ -60,22 +68,28 @@ class AlarmSetActivity : AppCompatActivity(){
     private fun initInstance() {
         initToolbar()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Set Alarm"
 
+        if(intent.extras != null)
+            alarmDao = intent.extras.getParcelable<Model.AlarmDao>(EXTRA_ALARM_DAO)
 
-//        wheelFragment  = WheelAlarmSetFragment.newInstance("wheelDateTimeFragment")
-//        replaceFragment(R.id.contentContainer, wheelFragment)
-//        mapsAlarmFragment = MapsAlarmFragment.newInstance("MapsAlarmFragment")
-//        replaceFragment(R.id.contentContainer, mapsAlarmFragment)
+        if(alarmDao == null){ // set new alarm mod
+
+            supportActionBar?.title = "Set Alarm"
+
+        }else{ // edit mode
+
+            supportActionBar?.title = "Edit Alarm"
+
+        }
 
         var fm = supportFragmentManager
-
-        val adapter = AlarmSetPagerAdapter(fm, this@AlarmSetActivity)
-
+        val adapter = AlarmSetPagerAdapter(fm, this@AlarmSetActivity, alarmDao)
         viewPager.adapter = adapter
-
         tabLayout.setupWithViewPager(viewPager)
 
+        if(alarmDao?.placePicked != null){
+            tabLayout.getTabAt(2)?.select()
+        }
     }
 
     private fun initToolbar() {

@@ -8,6 +8,8 @@ import com.EWIT.FrenchCafe.util.CalendarAlarmConverter
 import com.EWIT.FrenchCafe.util.SharePref
 import com.EWIT.FrenchCafe.util.WaketimeUtil
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.layout_repeat_day.*
+import kotlinx.android.synthetic.main.layout_time_picker.*
 
 /**
  * Created by Euro on 3/13/16 AD.
@@ -15,6 +17,7 @@ import com.google.gson.Gson
 
 
 interface AlarmSetInterface {
+
 
     /** Override method zone **/
 
@@ -33,6 +36,7 @@ interface AlarmSetInterface {
         /* start alarm */
         startAlarmReceiver(correctedAlarmDao)
     }
+
 
     /** Internal method zone **/
 

@@ -85,8 +85,18 @@ class RepeatDayViewGroup : BaseCustomViewGroup {
         */
     }
 
-    fun getListCheckedDay(): ArrayList<Int> {
-        return listCheckedDay
+    fun setCheckedDay(repeatDay: List<Int>){
+        for(day in repeatDay){
+            when(day){
+                Calendar.SUNDAY -> btnSun.isChecked = true
+                Calendar.MONDAY -> btnMon.isChecked = true
+                Calendar.TUESDAY -> btnTue.isChecked = true
+                Calendar.WEDNESDAY -> btnWed.isChecked = true
+                Calendar.THURSDAY -> btnThu.isChecked = true
+                Calendar.FRIDAY -> btnFri.isChecked = true
+                Calendar.SATURDAY -> btnSat.isChecked = true
+            }
+        }
     }
 
     fun getCheckedDayObservable(): Observable<ArrayList<Int>> {

@@ -6,12 +6,13 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.EWIT.FrenchCafe.fragment.SmartAlarmFragment
 import com.EWIT.FrenchCafe.fragment.ManualAlarmFragment
+import com.EWIT.FrenchCafe.model.dao.Model
 
 /**
  * Created by Euro on 3/16/16 AD.
  */
 
-class AlarmSetPagerAdapter(var fm: FragmentManager, var context: Context) : FragmentPagerAdapter(fm) {
+class AlarmSetPagerAdapter(var fm: FragmentManager, var context: Context, var alarmDao: Model.AlarmDao?) : FragmentPagerAdapter(fm) {
 
     private val PAGE_COUNT: Int = 2
     private val PAGE_TITLES = listOf("Manual Alarm", "Smart Alarm")
@@ -22,10 +23,13 @@ class AlarmSetPagerAdapter(var fm: FragmentManager, var context: Context) : Frag
 
     override fun getItem(index: Int): Fragment? {
         var showFragment: Fragment
+
         if (index == 0) {
-            showFragment = ManualAlarmFragment.newInstance("WheelAlarmFragment")
+            val manualAlarm = if(alarmDao?.placePicked == null) alarmDao else null
+            showFragment = ManualAlarmFragment.newInstance(manualAlarm)
         } else {
-            showFragment = SmartAlarmFragment.newInstance("MapsAlarmFragment")
+            val smartAlarm = if(alarmDao?.placePicked != null) alarmDao else null
+            showFragment = SmartAlarmFragment.newInstance(smartAlarm)
         }
 
         return showFragment

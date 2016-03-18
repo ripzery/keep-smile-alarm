@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -9,9 +10,11 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import com.google.gson.Gson
 import com.EWIT.FrenchCafe.R
+import com.EWIT.FrenchCafe.activity.AlarmSetActivity
 import com.EWIT.FrenchCafe.adapter.RecyclerAdapter
 import com.EWIT.FrenchCafe.dialog.DatePickerDialogFragment
 import com.EWIT.FrenchCafe.dialog.TimePickerDialogFragment
+import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.save
 import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
@@ -161,7 +164,16 @@ class AlarmListFragment : Fragment() {
         }
 
         override fun onEdit(alarmDao: Model.AlarmDao, index: Int) {
-            showDatePickerDialog(index)
+//            showDatePickerDialog(index)
+
+            // start activity AlarmSetActivity
+            log(alarmDao.toString())
+
+            val intent:Intent = Intent(activity, AlarmSetActivity::class.java)
+            val bundle:Bundle = Bundle()
+            bundle.putParcelable(AlarmSetActivity.EXTRA_ALARM_DAO, alarmDao)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
     }
 }
