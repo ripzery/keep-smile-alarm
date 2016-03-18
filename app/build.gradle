@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.github.triplet.play'
-apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
 
 String getJavaHome(String version) {
@@ -12,10 +11,6 @@ String getJavaHome(String version) {
     standardOutput = stdout;
   }
   return stdout.toString().trim()
-}
-
-play {
-  jsonFile = file('FrenchCafe-ServiceAccountKey.json')
 }
 
 kapt {
@@ -37,8 +32,8 @@ android {
     applicationId "com.EWIT.FrenchCafe"
     minSdkVersion 19
     targetSdkVersion 23
-    versionCode 8
-    versionName '1.1.6'
+    versionCode 10
+    versionName '1.1.7'
     signingConfig signingConfigs.FrenchCafe
   }
   retrolambda {
@@ -62,8 +57,7 @@ android {
     }
   }
   sourceSets {
-    main.kotlin.srcDirs += 'src/main/kotlin'
-    main.java.srcDirs += 'src/main/java'
+    main.java.srcDirs += 'src/main/kotlin'
   }
 }
 
@@ -106,7 +100,6 @@ buildscript {
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
-    classpath 'com.github.triplet.gradle:play-publisher:1.1.4'
   }
 }
 

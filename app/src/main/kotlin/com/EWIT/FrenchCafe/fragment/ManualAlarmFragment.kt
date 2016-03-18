@@ -9,6 +9,8 @@ import android.view.animation.AnimationUtils
 import android.widget.TimePicker
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.log
+import com.EWIT.FrenchCafe.extension.mCalendar
+import com.EWIT.FrenchCafe.extension.toDatePicked
 import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.model.dao.Model
@@ -134,7 +136,8 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         time.setCurrentHour(alarmDao.timeWake.hourOfDay)
 //        time.hour = alarmDao.timeWake.hourOfDay
         time.setCurrentMinute(alarmDao.timeWake.minute)
-        currentDate = alarmDao.datePicked
+        log("takeEffect!")
+        currentDate = mCalendar().toDatePicked()
         currentTime = alarmDao.timeWake
 
         if(alarmDao.repeatDay.size != 0){

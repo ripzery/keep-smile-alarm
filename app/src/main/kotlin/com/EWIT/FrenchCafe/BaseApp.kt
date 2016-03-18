@@ -29,6 +29,8 @@ class BaseApp : Application(){
 
         Fabric.with(this, Crashlytics());
 
+        Log.d("Test","Hahaho Yeh!!!!!")
+
         /* Set always enable broadcast receiver no matter reboot */
         if(isFirstTime){
            val receiver = ComponentName(this@BaseApp, BootBroadcastReceiver::class.java )
