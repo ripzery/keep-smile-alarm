@@ -172,6 +172,7 @@ class AlarmListFragment : Fragment() {
             val intent:Intent = Intent(activity, AlarmSetActivity::class.java)
             val bundle:Bundle = Bundle()
             bundle.putParcelable(AlarmSetActivity.EXTRA_ALARM_DAO, alarmDao)
+            bundle.putInt(AlarmSetActivity.EXTRA_EDIT_INDEX, index)
             intent.putExtras(bundle)
             startActivity(intent)
         }

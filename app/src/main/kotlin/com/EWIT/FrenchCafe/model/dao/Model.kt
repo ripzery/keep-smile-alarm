@@ -1,7 +1,6 @@
 package com.EWIT.FrenchCafe.model.dao
 
-import com.EWIT.FrenchCafe.dialog.DatePickerDialogFragment
-import com.EWIT.FrenchCafe.dialog.TimePickerDialogFragment
+import com.google.android.gms.maps.model.LatLng
 import nz.bradcampbell.paperparcel.PaperParcel
 import nz.bradcampbell.paperparcel.PaperParcelable
 import java.util.*
@@ -27,7 +26,13 @@ object Model{
     }
 
     @PaperParcel
-    data class PlacePicked(val arrivalPlace: String, val departurePlace: String, val arriveTime: Long): PaperParcelable
+    data class PlacePicked(val arrivalPlace: PlaceDetail, val departurePlace: PlaceDetail, val arriveTime: Long): PaperParcelable
+
+    @PaperParcel
+    data class PlaceDetail(val name: String, val latLng: PlaceLatLng)
+
+    @PaperParcel
+    data class PlaceLatLng(val latitude: Double, val longitude: Double) : PaperParcelable
 
     @PaperParcel
     data class AlarmDao(var datePicked: DatePicked, var timeWake: TimeWake, var repeatDay: List<Int>, var placePicked: PlacePicked? = null): PaperParcelable

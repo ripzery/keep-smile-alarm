@@ -1,6 +1,7 @@
 package com.EWIT.FrenchCafe.interfaces
 
 import com.EWIT.FrenchCafe.extension.save
+import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
@@ -10,6 +11,7 @@ import com.EWIT.FrenchCafe.util.WaketimeUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.layout_repeat_day.*
 import kotlinx.android.synthetic.main.layout_time_picker.*
+import java.util.*
 
 /**
  * Created by Euro on 3/13/16 AD.
@@ -35,6 +37,23 @@ interface AlarmSetInterface {
 
         /* start alarm */
         startAlarmReceiver(correctedAlarmDao)
+    }
+
+    fun updateAlarm(alarmDao: Model.AlarmDao, index: Int) {
+
+        var alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
+
+        /* cancel alarm */
+        WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmCollectionList[index]))
+
+        /* update new alarmDao */
+        alarmCollectionList[index] = alarmDao
+
+        /* save to sharePref */
+        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
+
+        startAlarmReceiver(alarmDao)
+
     }
 
 

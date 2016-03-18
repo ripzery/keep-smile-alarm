@@ -12,7 +12,7 @@ import com.EWIT.FrenchCafe.model.dao.Model
  * Created by Euro on 3/16/16 AD.
  */
 
-class AlarmSetPagerAdapter(var fm: FragmentManager, var context: Context, var alarmDao: Model.AlarmDao?) : FragmentPagerAdapter(fm) {
+class AlarmSetPagerAdapter(var fm: FragmentManager, var context: Context, var alarmDao: Model.AlarmDao?, var editIndex: Int = -1) : FragmentPagerAdapter(fm) {
 
     private val PAGE_COUNT: Int = 2
     private val PAGE_TITLES = listOf("Manual Alarm", "Smart Alarm")
@@ -26,10 +26,10 @@ class AlarmSetPagerAdapter(var fm: FragmentManager, var context: Context, var al
 
         if (index == 0) {
             val manualAlarm = if(alarmDao?.placePicked == null) alarmDao else null
-            showFragment = ManualAlarmFragment.newInstance(manualAlarm)
+            showFragment = ManualAlarmFragment.newInstance(manualAlarm, editIndex)
         } else {
             val smartAlarm = if(alarmDao?.placePicked != null) alarmDao else null
-            showFragment = SmartAlarmFragment.newInstance(smartAlarm)
+            showFragment = SmartAlarmFragment.newInstance(smartAlarm, editIndex)
         }
 
         return showFragment

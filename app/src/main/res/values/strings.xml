@@ -10,7 +10,7 @@
     <string name="api_key_distance_matrix">AIzaSyANhGgdpE1BxMsD2dmivn5pza0Hal07-eo</string>
     <string name="fragment_maps_alarm_step1">Step 1 : Choose destination</string>
     <string name="fragment_maps_alarm_step2">Step 2 : Set time to destination</string>
-    <string name="fragment_maps_alarm_destination">DESTINATION</string>
+    <string name="fragment_maps_alarm_destination">ARRIVAL TIME</string>
     <string name="fragment_maps_alarm_set_start">Set Start</string>
     <string name="fragment_maps_alarm_set_dest">Set Destination</string>
     <string name="fragment_maps_alarm_time_destination">TIME TO DESTINATION</string>

@@ -18,3 +18,7 @@ fun Calendar.minBefore(b: Calendar) : Boolean {
 
     return false
 }
+
+fun Calendar.getTimeFormat() : String{
+    return String.format("%02d", get(Calendar.HOUR_OF_DAY)) + ":" + String.format("%02d", get(Calendar.MINUTE))
+}

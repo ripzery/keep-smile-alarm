@@ -33,16 +33,19 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     lateinit private var currentDate: Model.DatePicked
     lateinit private var currentTime: Model.TimeWake
     private var alarmDao: Model.AlarmDao? = null
+    private var editIndex: Int = -1
     private val mRrule: String? = ""
 
     /** Static method zone **/
 
     companion object {
         val ARG_1 = "ARG_1"
+        val ARG_2 = "ARG_2"
 
-        fun newInstance(alarmDao: Model.AlarmDao?): ManualAlarmFragment {
+        fun newInstance(alarmDao: Model.AlarmDao?, editIndex: Int): ManualAlarmFragment {
             var bundle: Bundle = Bundle()
             bundle.putParcelable(ARG_1, alarmDao)
+            bundle.putInt(ARG_2, editIndex)
             val manualAlarmFragment: ManualAlarmFragment = ManualAlarmFragment()
             manualAlarmFragment.arguments = bundle
             return manualAlarmFragment
@@ -57,7 +60,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         if (savedInstanceState == null) {
             /* if newly created */
             alarmDao = arguments.getParcelable<Model.AlarmDao>(ARG_1)
-
+            editIndex = arguments.getInt(ARG_2)
         }
     }
 
@@ -136,6 +139,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
 
         if(alarmDao.repeatDay.size != 0){
             cbRepeat.isChecked = true
+            repeatDayList = alarmDao.repeatDay
             repeatDayViewGroup.setCheckedDay(alarmDao.repeatDay)
         }else{
             cbRepeat.isChecked = false
@@ -153,7 +157,11 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
 
     val btnSetAlarmListener = { view: View ->
         alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
-        setAlarm(alarmDao!!)
+        if(editIndex == -1) {
+            setAlarm(alarmDao!!)
+        }else{
+            updateAlarm(alarmDao!!, editIndex)
+        }
     }
 
     val timeChangedListener = { timePicker: TimePicker, hour: Int, min: Int ->

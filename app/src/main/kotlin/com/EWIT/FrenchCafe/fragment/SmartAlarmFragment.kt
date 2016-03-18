@@ -47,19 +47,21 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     private var alarmDao: Model.AlarmDao? = null
     lateinit private var builder: PlacePicker.IntentBuilder
     private var travelInfoSubscription: Subscription? = null
-    private var startPlace: Place? = null
-    private var destPlace: Place? = null
-
+    private var startPlace: Model.PlaceDetail? = null
+    private var destPlace: Model.PlaceDetail? = null
+    private var editIndex: Int = -1
     private val mRrule: String? = ""
 
 
     /** Static method zone **/
     companion object {
         val ARG_1 = "ARG_1"
+        val ARG_2 = "ARG_2"
 
-        fun newInstance(param1: Model.AlarmDao?): SmartAlarmFragment {
+        fun newInstance(param1: Model.AlarmDao?, editIndex: Int): SmartAlarmFragment {
             var bundle: Bundle = Bundle()
             bundle.putParcelable(ARG_1, param1)
+            bundle.putInt(ARG_2, editIndex)
             val smartAlarmFragment: SmartAlarmFragment = SmartAlarmFragment()
             smartAlarmFragment.arguments = bundle
             return smartAlarmFragment
@@ -74,6 +76,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         if (savedInstanceState == null) {
             /* if newly created */
             alarmDao = arguments.getParcelable<Model.AlarmDao>(ARG_1)
+            editIndex = arguments.getInt(ARG_2)
         }
     }
 
@@ -94,12 +97,14 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 START_PLACE_PICKER_REQUEST -> {
-                    startPlace = PlacePicker.getPlace(activity, data)
+                    val place = PlacePicker.getPlace(activity, data)
+                    startPlace = Model.PlaceDetail(place.name.toString(), Model.PlaceLatLng(place.latLng.latitude, place.latLng.longitude))
                     tvSetStart.text = startPlace?.name
                     //                    checkedPickLocation()
                 }
                 DESTINATION_PLACE_PICKER_REQUEST -> {
-                    destPlace = PlacePicker.getPlace(activity, data)
+                    val place = PlacePicker.getPlace(activity, data)
+                    destPlace = Model.PlaceDetail(place.name.toString(), Model.PlaceLatLng(place.latLng.latitude, place.latLng.longitude))
                     tvSetDestination.text = destPlace?.name
                     //                    checkedPickLocation()
                 }
@@ -146,7 +151,6 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
         builder = PlacePicker.IntentBuilder();
 
-
         tvDestTime.text = "${getString(R.string.fragment_maps_alarm_destination)} ${currentTime.getTimeFormat()}"
 
         time.setIs24HourView(false)
@@ -165,14 +169,19 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     }
 
     private fun initEditData(alarmDao: Model.AlarmDao) {
-        time.currentHour = alarmDao.timeWake.hourOfDay
-        time.currentMinute = alarmDao.timeWake.minute
         currentDate = alarmDao.datePicked
-        currentTime = alarmDao.timeWake
+        currentTime = CalendarAlarmConverter.parseTimeInMillisToTimeWake(alarmDao.placePicked!!.arriveTime)
+        time.currentHour = currentTime.hourOfDay
+        time.currentMinute = currentTime.minute
+        currentDate = alarmDao.datePicked
+        currentTime = currentTime
 
+        startPlace = alarmDao.placePicked!!.departurePlace
+        destPlace = alarmDao.placePicked!!.arrivalPlace
 
         if (alarmDao.repeatDay.size != 0) {
             cbRepeat.isChecked = true
+            repeatDayList = alarmDao.repeatDay
             repeatDayViewGroup.setCheckedDay(alarmDao.repeatDay)
         } else {
             cbRepeat.isChecked = false
@@ -180,8 +189,18 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
         toggleRepeatDayVisible()
 
-        tvSetStart.text = alarmDao.placePicked?.departurePlace
-        tvSetDestination.text = alarmDao.placePicked?.arrivalPlace
+        tvSetStart.text = alarmDao.placePicked?.departurePlace?.name
+        tvSetDestination.text = alarmDao.placePicked?.arrivalPlace?.name
+    }
+
+    private fun toggleRepeatDayVisible() {
+        if (cbRepeat.isChecked) {
+            repeatDayViewGroup.visibility = View.VISIBLE
+            //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_in))
+        } else {
+            repeatDayViewGroup.visibility = View.GONE
+            //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_out))
+        }
     }
 
     private fun isPickLocation(): Boolean {
@@ -215,19 +234,9 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         toggleRepeatDayVisible()
     }
 
-    private fun toggleRepeatDayVisible() {
-        if (cbRepeat.isChecked) {
-            repeatDayViewGroup.visibility = View.VISIBLE
-            //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_in))
-        } else {
-            repeatDayViewGroup.visibility = View.GONE
-            //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_out))
-        }
-    }
-
     val btnSetAlarmListener = { view: View ->
 
-        if (isPickLocation()) {
+        if (isPickLocation() || alarmDao?.placePicked != null) {
             val durationInTrafficObservable: Observable<NetworkModel.ElementValue> = getCalculateDurationInTrafficObservable()
             travelInfoSubscription = durationInTrafficObservable.subscribe ({ durationInTraffic ->
 
@@ -241,8 +250,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                         CalendarAlarmConverter.parseAlarmDao(alarmDao!!).timeInMillis)
 
                 /* initialize model keep where is user destination and start */
-                val placePicked = Model.PlacePicked(startPlace!!.name.toString(),
-                        destPlace!!.name.toString(),
+                val placePicked = Model.PlacePicked(destPlace!!,
+                        startPlace!!,
                         CalendarAlarmConverter.parseAlarmDao(alarmDao!!).timeInMillis)
 
                 /* set new alarmDao to the correct wakeup time, set repeat day list, and also placePicked */
@@ -251,7 +260,11 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                         repeatDayList,
                         placePicked)
 
-                setAlarm(alarmDao!!)
+                if(editIndex == -1) {
+                    setAlarm(alarmDao!!)
+                }else{
+                    updateAlarm(alarmDao!!, editIndex)
+                }
             }, { error ->
                 toast("Embarrassing, error has occurred -> ${error.message}")
                 error.printStackTrace()

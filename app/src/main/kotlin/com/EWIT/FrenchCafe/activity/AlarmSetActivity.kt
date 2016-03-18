@@ -25,12 +25,14 @@ class AlarmSetActivity : AppCompatActivity(){
     lateinit private var smartAlarmFragment: SmartAlarmFragment
     lateinit private var manualFragment: ManualAlarmFragment
     private var alarmDao : Model.AlarmDao? = null
+    private var editIndex : Int = -1
 
 
     /** Static variable **/
 
     companion object{
         val EXTRA_ALARM_DAO = "ALARMDAO"
+        val EXTRA_EDIT_INDEX = "EDIT_INDEX"
     }
 
     /** Lifecycle zone **/
@@ -69,8 +71,10 @@ class AlarmSetActivity : AppCompatActivity(){
         initToolbar()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if(intent.extras != null)
+        if(intent.extras != null) {
             alarmDao = intent.extras.getParcelable<Model.AlarmDao>(EXTRA_ALARM_DAO)
+            editIndex = intent.extras.getInt(EXTRA_EDIT_INDEX)
+        }
 
         if(alarmDao == null){ // set new alarm mod
 
@@ -83,12 +87,12 @@ class AlarmSetActivity : AppCompatActivity(){
         }
 
         var fm = supportFragmentManager
-        val adapter = AlarmSetPagerAdapter(fm, this@AlarmSetActivity, alarmDao)
+        val adapter = AlarmSetPagerAdapter(fm, this@AlarmSetActivity, alarmDao, editIndex)
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
 
         if(alarmDao?.placePicked != null){
-            tabLayout.getTabAt(2)?.select()
+            tabLayout.getTabAt(1)?.select()
         }
     }
 
