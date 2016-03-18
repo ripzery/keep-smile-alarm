@@ -69,9 +69,8 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
 
     fun setAlarmDao(alarmDao: Model.AlarmDao) {
         this.alarmDao = alarmDao
-
         tvDate.text = alarmDao.datePicked.getDateFormat()
-        tvTime.text = alarmDao.timePicked.getTimeFormat()
+        tvTime.text = alarmDao.timeWake.getTimeFormat()
     }
 
     fun getEditObservable() : Observable<Model.AlarmDao> {

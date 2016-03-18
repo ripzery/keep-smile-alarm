@@ -4,7 +4,9 @@ import com.EWIT.FrenchCafe.extension.save
 import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
+import com.EWIT.FrenchCafe.util.CalendarAlarmConverter
 import com.EWIT.FrenchCafe.util.SharePref
+import com.EWIT.FrenchCafe.util.WaketimeUtil
 import com.google.gson.Gson
 
 /**
@@ -21,14 +23,24 @@ interface AlarmSetInterface {
     /** Method zone **/
 
     fun setAlarm(alarmDao: Model.AlarmDao) {
+
+        /* check if the time is past or not, if pass set date to tomorrow */
+        var correctedAlarmDao = shouldWakeTomorrow(alarmDao)
+
         /* update alarm collection in share preference */
-        updateAlarmCollectionDao(alarmDao)
+        updateAlarmCollectionDao(correctedAlarmDao)
 
         /* start alarm */
-        startAlarmReceiver(alarmDao)
+        startAlarmReceiver(correctedAlarmDao)
     }
 
     /** Internal method zone **/
+
+    private fun shouldWakeTomorrow(alarmDao: Model.AlarmDao) : Model.AlarmDao{
+        val wakeTimeInMillis = WaketimeUtil.decideWakeupTimeMillis(alarmDao)
+        alarmDao.datePicked = CalendarAlarmConverter.parseTimeInMillisToDatePicked(wakeTimeInMillis)
+        return alarmDao
+    }
 
     private fun startAlarmReceiver(alarmDao: Model.AlarmDao) {
         //        broadcast notification

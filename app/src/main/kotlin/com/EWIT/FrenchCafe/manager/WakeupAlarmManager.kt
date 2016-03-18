@@ -8,7 +8,7 @@ import android.content.Intent
 import com.EWIT.FrenchCafe.activity.WakeTrackerActivity
 import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.receiver.BootBroadcastReceiver
-import com.EWIT.FrenchCafe.util.CalendarConverter
+import com.EWIT.FrenchCafe.util.CalendarAlarmConverter
 import com.EWIT.FrenchCafe.util.Contextor
 import com.EWIT.FrenchCafe.util.WaketimeUtil
 
@@ -46,7 +46,7 @@ object WakeupAlarmManager {
         val alarmIntent: PendingIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
         /* set wake time */
-        alarmManager.set(AlarmManager.RTC_WAKEUP, CalendarConverter.parseAlarmDao(alarmDao).timeInMillis , alarmIntent)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, CalendarAlarmConverter.parseAlarmDao(alarmDao).timeInMillis , alarmIntent)
     }
 
     fun startAlarm(wakeupAlarmService: IntentService) {

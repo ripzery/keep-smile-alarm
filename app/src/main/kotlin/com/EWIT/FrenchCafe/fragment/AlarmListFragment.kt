@@ -17,7 +17,7 @@ import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
-import com.EWIT.FrenchCafe.util.CalendarConverter
+import com.EWIT.FrenchCafe.util.CalendarAlarmConverter
 import com.EWIT.FrenchCafe.util.SharePref
 import com.EWIT.FrenchCafe.util.WaketimeUtil
 import kotlinx.android.synthetic.main.fragment_alarm_list.*
@@ -91,7 +91,7 @@ class AlarmListFragment : Fragment() {
         }
     }
 
-    private fun updateAlarm(datePicked: Model.DatePicked, index: Int, it: Model.TimePicked) {
+    private fun updateAlarm(datePicked: Model.DatePicked, index: Int, it: Model.TimeWake) {
         var newAlarmDao = Model.AlarmDao(datePicked, it, ArrayList())
 
         /* cancel alarm */
@@ -110,7 +110,7 @@ class AlarmListFragment : Fragment() {
         WakeupAlarmManager.broadcastWakeupAlarmIntent(newAlarmDao)
 
         /* show toast */
-        toast("Set new alarm ${alarmCollectionList[index].datePicked.getDateFormat()}@${alarmCollectionList[index].timePicked.getTimeFormat()}")
+        toast("Set new alarm ${alarmCollectionList[index].datePicked.getDateFormat()}@${alarmCollectionList[index].timeWake.getTimeFormat()}")
     }
 
     private fun deleteAlarm(index: Int) {
@@ -134,7 +134,7 @@ class AlarmListFragment : Fragment() {
         save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
 
         /* show toast delete */
-        toast("Delete alarm ${toDeleteAlarmDao.datePicked.getDateFormat()}@${toDeleteAlarmDao.timePicked.getTimeFormat()}")
+        toast("Delete alarm ${toDeleteAlarmDao.datePicked.getDateFormat()}@${toDeleteAlarmDao.timeWake.getTimeFormat()}")
     }
 
     private fun showTimePickerDialog(datePicked: Model.DatePicked, index: Int) {

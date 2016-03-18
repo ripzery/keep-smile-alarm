@@ -20,7 +20,7 @@ import java.util.Calendar
 
 class TimePickerDialogFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener{
 
-    val timePickedSubject : PublishSubject<Model.TimePicked> = PublishSubject.create()
+    val timeWakeSubject: PublishSubject<Model.TimeWake> = PublishSubject.create()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val c: Calendar = Calendar.getInstance()
@@ -32,11 +32,11 @@ class TimePickerDialogFragment : DialogFragment(), TimePickerDialog.OnTimeSetLis
 
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         // Do something with the time chosen by the user
-        timePickedSubject.onNext(Model.TimePicked(hourOfDay, minute))
+        timeWakeSubject.onNext(Model.TimeWake(hourOfDay, minute))
     }
 
-    fun getTimePickedObservable(): Observable<Model.TimePicked>{
-        return timePickedSubject.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+    fun getTimePickedObservable(): Observable<Model.TimeWake>{
+        return timeWakeSubject.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
     }
 
 }

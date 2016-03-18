@@ -32,7 +32,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     private var repeatDayList: List<Int> = listOf()
     lateinit var param1: String
     lateinit private var currentDate: Model.DatePicked
-    lateinit private var currentTime: Model.TimePicked
+    lateinit private var currentTime: Model.TimeWake
     lateinit var alarmDao: Model.AlarmDao
     private val mRrule: String? = ""
 
@@ -77,7 +77,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
 
     override fun onAlarmStarted(alarmDao: Model.AlarmDao) {
         log(alarmDao.toString())
-        toast("Set alarm at ${alarmDao.timePicked.getTimeFormat()}")
+        toast("Set alarm at ${alarmDao.timeWake.getTimeFormat()}")
         activity.finish()
     }
 
@@ -89,7 +89,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         //        btnSelectDate.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up))
 
         currentDate = Model.DatePicked(year, month, day)
-        currentTime = Model.TimePicked(hour, minute)
+        currentTime = Model.TimeWake(hour, minute)
 
         repeatDayViewGroup.getCheckedDayObservable().map { it.sorted() }.subscribe {
             log(it.toString())
@@ -128,7 +128,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     }
 
     val timeChangedListener = { timePicker: TimePicker, hour: Int, min: Int ->
-        currentTime = Model.TimePicked(hour, min)
+        currentTime = Model.TimeWake(hour, min)
         tvPickTime.text = "Pick time ${currentTime.getTimeFormat()}"
     }
 }

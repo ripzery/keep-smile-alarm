@@ -9,7 +9,7 @@ import java.util.*
  */
 
 object Model{
-    data class TimePicked(val hourOfDay: Int, val minute: Int){
+    data class TimeWake(val hourOfDay: Int, val minute: Int){
         fun getTimeFormat() : String{
             return String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute)
         }
@@ -21,7 +21,9 @@ object Model{
         }
     }
 
-    data class AlarmDao(var datePicked: DatePicked, var timePicked: TimePicked, var repeatDay: List<Int>)
+    data class PlacePicked(val arrivalPlace: String, val departurePlace: String, val arriveTime: Long)
+
+    data class AlarmDao(var datePicked: DatePicked, var timeWake: TimeWake, var repeatDay: List<Int>, var placePicked: PlacePicked? = null)
 
     data class AlarmCollectionDao(var alarmCollectionList:ArrayList<AlarmDao>)
 }

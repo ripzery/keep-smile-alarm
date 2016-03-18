@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.util
 
+import com.EWIT.FrenchCafe.extension.minBefore
 import com.EWIT.FrenchCafe.model.dao.Model
 import java.util.*
 
@@ -25,7 +26,7 @@ object WaketimeUtil {
 
                 calendar.set(Calendar.DAY_OF_WEEK, day)
 
-                with(alarmDao.timePicked) {
+                with(alarmDao.timeWake) {
                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                     calendar.set(Calendar.MINUTE, minute)
                 }
@@ -49,10 +50,10 @@ object WaketimeUtil {
     /* decide if time is past, alarm will set tomorrow else today  */
     fun decideWakeupTimeMillis(alarmDao: Model.AlarmDao): Long {
         val todayNow = Calendar.getInstance()
-        return if (CalendarConverter.parseAlarmDao(alarmDao).before(todayNow)) getNextDayTimeInMillis(alarmDao) else CalendarConverter.parseAlarmDao(alarmDao).timeInMillis
+        return if (CalendarAlarmConverter.parseAlarmDao(alarmDao).minBefore(todayNow)) getNextDayTimeInMillis(alarmDao) else CalendarAlarmConverter.parseAlarmDao(alarmDao).timeInMillis
     }
 
     private fun getNextDayTimeInMillis(alarmDao: Model.AlarmDao): Long {
-        return CalendarConverter.parseAlarmDao(alarmDao).timeInMillis + 24 * 60 * 60 * 1000
+        return CalendarAlarmConverter.parseAlarmDao(alarmDao).timeInMillis + 24 * 60 * 60 * 1000
     }
 }
