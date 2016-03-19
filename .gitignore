@@ -32,3 +32,7 @@ proguard/
 
 #Log Files
 *.log
+server/French.Model/obj/
+server/French.Services/obj/
+server/S9.Utility/obj/
+server/French.API/obj/
