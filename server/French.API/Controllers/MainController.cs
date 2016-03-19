@@ -20,9 +20,6 @@ namespace French.Web.Controllers
     /// </summary>
     public class MainController : Controller
     {
-        //private static string version = WebContext.AppVersion;
-        //private UserService userService = new UserService();
-
         /// <summary>
         /// 
         /// </summary>
@@ -33,14 +30,14 @@ namespace French.Web.Controllers
         {
             return View();
         }
-
+        
         /// <summary>
         /// 
         /// </summary>
         [HttpGet]
         [AllowAnonymous]
         //[ActionSessionState(System.Web.SessionState.SessionStateBehavior.Required)]
-        public void GetDistanceMatrix(string source, string destination)
+        public void GetDistanceMatrix(string source, string destination, string departureTime, string arrivalTime, string trafficModel)
         {
             string json = "";
 
@@ -50,6 +47,10 @@ namespace French.Web.Controllers
                 string URL = WebContext.GoogleAPIURL;
                 URL = URL.Replace("[SOURCE]", source);
                 URL = URL.Replace("[DESTINATION]", destination);
+                URL = URL.Replace("[DEPARTURE_TIME]", departureTime);
+                URL = URL.Replace("[ARRIVAL_TIME]", arrivalTime);
+                URL = URL.Replace("[TRAFFIC_MODEL]", trafficModel);
+
                 URL = URL.Replace("[KEY]", WebContext.GoogleAPIKey);
                 json = webClient.DownloadString(URL);
             }

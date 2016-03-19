@@ -211,7 +211,6 @@
     </Content>
     <None Include="Properties\PublishProfiles\API.pubxml" />
     <None Include="Properties\PublishProfiles\navigo.pubxml" />
-    <Content Include="tech_readme.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
