@@ -59,23 +59,6 @@ namespace French.Services
         public static string GetThumbnailFileName(string imageFileName)
         {
             return FileUtil.GetFileNameWithoutExtension(imageFileName) + "_t" + FileUtil.GetFileExtension(imageFileName);
-        }
-
-
-        /*/
-        public static string GetImageRejectFlagString(int flag)
-        {
-            string strResult = "";
-
-            foreach (Navigo_Enum.PHOTO_REJECT_REASON_FLAG f in EnumList<Navigo_Enum.PHOTO_REJECT_REASON_FLAG>.List())
-            {
-                // concatenate string
-                if (0 < (flag & (int)f))
-                    strResult += f.ToDescription() + " ";
-            }
-
-            return strResult;
-        }
-        /*/        
+        }                
     }
 }
