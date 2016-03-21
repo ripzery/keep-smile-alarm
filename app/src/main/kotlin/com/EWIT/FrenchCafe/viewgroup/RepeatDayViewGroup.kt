@@ -2,6 +2,7 @@ package com.EWIT.FrenchCafe.viewgroup
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.View
 import android.widget.CompoundButton
@@ -71,23 +72,37 @@ class RepeatDayViewGroup : BaseCustomViewGroup {
     }
 
     private fun initWithAttrs(attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) {
-        /*
-        TypedArray a = getContext().getTheme().obtainStyledAttributes(
+
+        var a: TypedArray = context.theme.obtainStyledAttributes(
                 attrs,
-                R.styleable.StyleableName,
+                R.styleable.RepeatDayViewGroup,
                 defStyleAttr, defStyleRes);
 
         try {
 
+            val isEnabled: Boolean = a.getBoolean(R.styleable.RepeatDayViewGroup_isEnabled, true)
+
+            initEnabled(isEnabled)
+
         } finally {
             a.recycle();
         }
-        */
+
     }
 
-    fun setCheckedDay(repeatDay: List<Int>){
-        for(day in repeatDay){
-            when(day){
+    fun initEnabled(isEnabled: Boolean) {
+        btnSun.isEnabled = isEnabled
+        btnMon.isEnabled = isEnabled
+        btnTue.isEnabled = isEnabled
+        btnWed.isEnabled = isEnabled
+        btnThu.isEnabled = isEnabled
+        btnFri.isEnabled = isEnabled
+        btnSat.isEnabled = isEnabled
+    }
+
+    fun setCheckedDay(repeatDay: List<Int>) {
+        for (day in repeatDay) {
+            when (day) {
                 Calendar.SUNDAY -> btnSun.isChecked = true
                 Calendar.MONDAY -> btnMon.isChecked = true
                 Calendar.TUESDAY -> btnTue.isChecked = true
@@ -97,6 +112,19 @@ class RepeatDayViewGroup : BaseCustomViewGroup {
                 Calendar.SATURDAY -> btnSat.isChecked = true
             }
         }
+    }
+
+    fun resetCheckedDay() {
+        btnSun.isChecked = false
+        btnMon.isChecked = false
+        btnTue.isChecked = false
+        btnWed.isChecked = false
+        btnThu.isChecked = false
+        btnFri.isChecked = false
+        btnSat.isChecked = false
+
+        listCheckedDay.clear()
+        observableCheckedDay.onNext(listCheckedDay)
     }
 
     fun getCheckedDayObservable(): Observable<ArrayList<Int>> {

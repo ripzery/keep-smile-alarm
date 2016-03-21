@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.model.dao
 
+import com.EWIT.FrenchCafe.extension.mCalendar
 import com.google.android.gms.maps.model.LatLng
 import nz.bradcampbell.paperparcel.PaperParcel
 import nz.bradcampbell.paperparcel.PaperParcelable
@@ -27,11 +28,17 @@ object Model{
 
     @PaperParcel
     data class PlacePicked(val arrivalPlace: PlaceDetail, val departurePlace: PlaceDetail, val arriveTime: Long, val travelTime: Long): PaperParcelable{
-
+        fun getReadableTime(arriveTime: Long): String{
+            val calendar = mCalendar()
+            calendar.timeInMillis = arriveTime
+            with(calendar){
+                return String.format("%02d", get(Calendar.HOUR_OF_DAY)) +":" + String.format("%02d", get(Calendar.MINUTE))
+            }
+        }
     }
 
     @PaperParcel
-    data class PlaceDetail(val name: String, val latLng: PlaceLatLng)
+    data class PlaceDetail(val id: String, val name: String, val latLng: PlaceLatLng): PaperParcelable
 
     @PaperParcel
     data class PlaceLatLng(val latitude: Double, val longitude: Double) : PaperParcelable

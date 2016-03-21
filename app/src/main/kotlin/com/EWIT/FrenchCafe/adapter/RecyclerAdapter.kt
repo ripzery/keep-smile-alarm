@@ -1,6 +1,7 @@
 package com.EWIT.FrenchCafe.adapter
 
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,9 +27,11 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
 
         if (position > lastPosition) {
             var animScaleIn = AnimationUtils.loadAnimation(holder!!.alarmInfoViewGroup.context, R.anim.anim_scale_up)
-            holder!!.alarmInfoViewGroup.startAnimation(animScaleIn)
+            holder.alarmInfoViewGroup.startAnimation(animScaleIn)
             lastPosition = position
         }
+
+        Log.d("Adapter", alarmCollectionList[position].toString())
 
         holder!!.setModel(alarmCollectionList[position])
     }
@@ -71,16 +74,14 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
         init {
             alarmInfoViewGroup = itemView?.findViewById(R.id.alarmInfoViewGroup) as AlarmInfoViewGroup
 
-            alarmInfoViewGroup.setOnClickListener({
-
-            })
-
             alarmInfoViewGroup.getEditObservable().subscribe { alarmInfoInteractionListener.onEdit(it, adapterPosition) }
 
             alarmInfoViewGroup.getDeleteObservable().filter { adapterPosition != -1 }.subscribe {
                 //                alarmInfoViewGroup.startAnimation(AnimationUtils.loadAnimation(alarmInfoViewGroup.context, R.anim.anim_scale_down))
                 alarmInfoInteractionListener.onDelete(adapterPosition)
             }
+
+            alarmInfoViewGroup.getSwitchObservable().subscribe { alarmInfoInteractionListener.onCheckedChange(it.first, it.second) }
         }
 
         fun setModel(alarmDao: Model.AlarmDao) {
@@ -91,6 +92,7 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
     /** Listener zone  **/
 
     interface AlarmInfoInteractionListener {
+        fun onCheckedChange(alarmDao: Model.AlarmDao, isChecked: Boolean)
         fun onEdit(alarmDao: Model.AlarmDao, index: Int)
         fun onDelete(index: Int)
     }

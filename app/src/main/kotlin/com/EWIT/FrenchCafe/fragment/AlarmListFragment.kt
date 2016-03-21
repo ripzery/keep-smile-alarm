@@ -77,7 +77,12 @@ class AlarmListFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                AlarmSetActivity.RESULT_CODE_EDIT -> log("user edit")
+                AlarmSetActivity.RESULT_CODE_EDIT -> {
+                    log("user edit")
+                    val index = data!!.getIntExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, 0)
+                    alarmCollectionList[index] = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList[index]
+                    recyclerAdapter.updateAtPosition(index)
+                }
             }
         } else {
             // user cancel
@@ -87,7 +92,7 @@ class AlarmListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        log("onResume : 4nd")
+        log("onResume : 15 Na ")
         //        alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
         //        recyclerAdapter.setList(alarmCollectionList)
 
@@ -110,28 +115,6 @@ class AlarmListFragment : Fragment() {
             tvEmptyAlarm.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up_down))
         }
     }
-
-    //    private fun updateAlarm(datePicked: Model.DatePicked, index: Int, it: Model.TimeWake) {
-    //        var newAlarmDao = Model.AlarmDao(datePicked, it, ArrayList())
-    //
-    //        /* cancel alarm */
-    //        WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmCollectionList[index]))
-    //
-    //        /* update new alarmDao */
-    //        alarmCollectionList[index] = newAlarmDao
-    //
-    //        /* save to sharePref */
-    //        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
-    //
-    //        /* update card */
-    //        recyclerAdapter.updateAtPosition(index)
-    //
-    //
-    //        WakeupAlarmManager.broadcastWakeupAlarmIntent(newAlarmDao)
-    //
-    //        /* show toast */
-    //        toast("Set new alarm ${alarmCollectionList[index].datePicked.getDateFormat()}@${alarmCollectionList[index].timeWake.getTimeFormat()}")
-    //    }
 
     fun onAddedNewItem() {
         val newItem: Model.AlarmDao = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList.takeLast(1)[0]
@@ -200,6 +183,11 @@ class AlarmListFragment : Fragment() {
             bundle.putInt(AlarmSetActivity.EXTRA_EDIT_INDEX, index)
             intent.putExtras(bundle)
             startActivityForResult(intent, AlarmSetActivity.RESULT_CODE_EDIT)
+        }
+
+        override fun onCheckedChange(alarmDao: Model.AlarmDao, isChecked: Boolean) {
+            // TODO : Do something when switch change state
+            toast( if(isChecked) "Set alarm at ${alarmDao.timeWake.getTimeFormat()}" else "Cancel alarm at ${alarmDao.timeWake.getTimeFormat()}" )
         }
     }
 }

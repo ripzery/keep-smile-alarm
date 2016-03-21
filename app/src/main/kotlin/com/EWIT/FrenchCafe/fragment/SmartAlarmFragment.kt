@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TimePicker
 import com.EWIT.FrenchCafe.R
+import com.EWIT.FrenchCafe.activity.AlarmSetActivity
 import com.EWIT.FrenchCafe.extension.*
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.model.dao.Model
@@ -97,13 +98,13 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
             when (requestCode) {
                 START_PLACE_PICKER_REQUEST -> {
                     val place = PlacePicker.getPlace(activity, data)
-                    startPlace = Model.PlaceDetail(place.name.toString(), Model.PlaceLatLng(place.latLng.latitude, place.latLng.longitude))
+                    startPlace = Model.PlaceDetail(place.id, place.name.toString(), Model.PlaceLatLng(place.latLng.latitude, place.latLng.longitude))
                     tvSetStart.text = startPlace?.name
                     //                    checkedPickLocation()
                 }
                 DESTINATION_PLACE_PICKER_REQUEST -> {
                     val place = PlacePicker.getPlace(activity, data)
-                    destPlace = Model.PlaceDetail(place.name.toString(), Model.PlaceLatLng(place.latLng.latitude, place.latLng.longitude))
+                    destPlace = Model.PlaceDetail(place.id, place.name.toString(), Model.PlaceLatLng(place.latLng.latitude, place.latLng.longitude))
                     tvSetDestination.text = destPlace?.name
                     //                    checkedPickLocation()
                 }
@@ -124,7 +125,9 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     override fun onAlarmStarted(alarmDao: Model.AlarmDao) {
         log(alarmDao.toString())
         toast("Set alarm at ${alarmDao.timeWake.getTimeFormat()}")
-        activity.setResult(Activity.RESULT_OK)
+        val data:Intent = Intent()
+        data.putExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, editIndex)
+        activity.setResult(Activity.RESULT_OK, data)
         activity.finish()
     }
 
@@ -199,6 +202,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
             //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_in))
         } else {
             repeatDayViewGroup.visibility = View.GONE
+            repeatDayViewGroup.resetCheckedDay()
             //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_out))
         }
     }

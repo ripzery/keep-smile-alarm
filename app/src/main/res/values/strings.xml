@@ -22,4 +22,5 @@
     <string name="fragment_map_btn_start">SET START LOCATION</string>
     <string name="fragment_map_btn_dest">SET DESTINATION LOCATION</string>
     <string name="fragment_smart_alarm_destination_title">DESTINATION</string>
+    <string name="viewgroup_alarm_info_switch_name">show repeat day</string>
 </resources>

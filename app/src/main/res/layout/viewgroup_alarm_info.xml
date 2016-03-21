@@ -8,49 +8,125 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/container"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvDate"
+        <RelativeLayout
+            android:id="@+id/container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="Date" />
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_below="@id/tvDate"
-            android:textSize="16sp"
-            android:text="Time"/>
+            <FrameLayout
+                android:id="@+id/layoutArrival"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnEdit"
-            android:text="Edit"
-            android:layout_alignBaseline="@id/tvDate"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:textColor="@color/colorPrimary"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_gravity="bottom"
+                    android:paddingBottom="@dimen/margin_padding_16"
+                    android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnDelete"
-            android:text="Delete"
-            android:layout_below="@id/btnEdit"
-            android:layout_alignBaseline="@id/tvTime"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:textColor="@color/colorRed"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/tvArrivalPlace"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Place name"
+                        android:textSize="28sp"/>
 
-    </RelativeLayout>
+                    <TextView
+                        android:id="@+id/tvArrivalTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="07:30"
+                        android:layout_marginTop="8dp"
+                        android:textSize="20sp"/>
+                </LinearLayout>
+
+
+            </FrameLayout>
+
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layoutArrival"
+                android:layout_marginTop="16dp"
+                android:textSize="40sp"
+                android:text="Time"/>
+
+            <Switch
+                android:id="@+id/btnSwitch"
+                android:layout_alignParentRight="true"
+                android:layout_alignBaseline="@id/tvTime"
+                android:checked="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/layoutRepeatDay"
+                android:layout_width="match_parent"
+                android:layout_below="@id/tvTime"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                android:layout_height="wrap_content">
+
+                <Switch
+                    android:id="@+id/switchRepeatDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/viewgroup_alarm_info_switch_name"
+                    android:backgroundTint="@color/colorTeal"
+                    android:textColor="#80000000"
+                    android:switchPadding="8dp"
+                    />
+
+                <include layout="@layout/layout_divider"/>
+
+
+                <com.EWIT.FrenchCafe.viewgroup.RepeatDayViewGroup
+                    android:id="@+id/repeatDay"
+                    app:isEnabled="false"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnEdit"
+                android:text="Edit"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_height="wrap_content"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:layout_below="@id/layoutRepeatDay"
+                android:layout_alignParentRight="true"
+                android:visibility="visible"
+                android:textColor="@color/colorRed"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"/>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
 
 </android.support.v7.widget.CardView>

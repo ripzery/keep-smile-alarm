@@ -1,6 +1,7 @@
 package com.EWIT.FrenchCafe.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TimePicker
 import com.EWIT.FrenchCafe.R
+import com.EWIT.FrenchCafe.activity.AlarmSetActivity
 import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.mCalendar
 import com.EWIT.FrenchCafe.extension.toDatePicked
@@ -84,7 +86,9 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     override fun onAlarmStarted(alarmDao: Model.AlarmDao) {
         log(alarmDao.toString())
         toast("Set alarm at ${alarmDao.timeWake.getTimeFormat()}")
-        activity.setResult(Activity.RESULT_OK)
+        val data:Intent = Intent()
+        data.putExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, editIndex)
+        activity.setResult(Activity.RESULT_OK, data)
         activity.finish()
     }
 
@@ -130,6 +134,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
             //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_in))
         } else {
             repeatDayViewGroup.visibility = View.GONE
+            repeatDayViewGroup.resetCheckedDay()
             //            repeatDayViewGroup.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_fade_out))
         }
     }
