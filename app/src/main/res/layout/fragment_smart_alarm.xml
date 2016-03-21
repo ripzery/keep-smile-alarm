@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:textSize="@dimen/title_text_size"
-                android:text="@string/fragment_maps_alarm_destination"/>
+                android:text="@string/fragment_smart_alarm_destination_title"/>
 
             <include layout="@layout/layout_divider"/>
 

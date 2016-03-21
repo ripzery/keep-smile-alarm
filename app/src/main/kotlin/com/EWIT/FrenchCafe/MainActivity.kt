@@ -7,9 +7,11 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.view.View
 import android.view.animation.AnimationUtils
 import com.EWIT.FrenchCafe.activity.AlarmSetActivity
 import com.EWIT.FrenchCafe.extension.addFragment
+import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.replaceFragment
 import com.EWIT.FrenchCafe.fragment.AlarmListFragment
 import com.EWIT.FrenchCafe.fragment.MainFragment
@@ -47,6 +49,20 @@ class MainActivity : AppCompatActivity() {
         //        actionDrawerToggle.onConfigurationChanged(newConfig)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == RESULT_OK){
+            when(requestCode){
+                AlarmSetActivity.RESULT_CODE_ADD -> {
+                    log("user add")
+                    alarmListFragment.onAddedNewItem()
+                }
+            }
+        }else{
+            log("user cancel")
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         loadAnimation()
@@ -66,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 //        setupDrawerListener()
         Glide.with(this).load(R.drawable.wallpaper).into(ivParallaxImage)
         loadAnimation()
-        btnAlarmActivity.setOnClickListener { startActivity(Intent(this@MainActivity, AlarmSetActivity::class.java)) }
+        btnAlarmActivity.setOnClickListener (onAlarmClickListener)
     }
 
     private fun loadAnimation() {
@@ -96,6 +112,10 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     /** Listener zone **/
+
+    val onAlarmClickListener = { view: View ->
+        startActivityForResult(Intent(this@MainActivity, AlarmSetActivity::class.java), AlarmSetActivity.RESULT_CODE_ADD)
+    }
 
 //    private fun setupDrawerListener() {
 //        navView.setNavigationItemSelectedListener {

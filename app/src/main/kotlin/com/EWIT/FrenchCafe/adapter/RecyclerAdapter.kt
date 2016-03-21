@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.model.dao.Model
+import com.EWIT.FrenchCafe.util.Contextor
 import com.EWIT.FrenchCafe.viewgroup.AlarmInfoViewGroup
 import java.util.*
 
@@ -15,11 +16,20 @@ import java.util.*
  */
 class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var alarmInfoInteractionListener: AlarmInfoInteractionListener) : RecyclerView.Adapter<RecyclerAdapter.AlarmInfoViewHolder>() {
 
+    var lastPosition: Int = -1
+
     /** Override zone **/
 
     override fun onBindViewHolder(holder: AlarmInfoViewHolder?, position: Int) {
         //        var animScaleIn = AnimationUtils.loadAnimation(Contextor.context, R.anim.anim_scale_up)
         //        holder!!.alarmInfoViewGroup.startAnimation(animScaleIn)
+
+        if (position > lastPosition) {
+            var animScaleIn = AnimationUtils.loadAnimation(holder!!.alarmInfoViewGroup.context, R.anim.anim_scale_up)
+            holder!!.alarmInfoViewGroup.startAnimation(animScaleIn)
+            lastPosition = position
+        }
+
         holder!!.setModel(alarmCollectionList[position])
     }
 
@@ -41,6 +51,11 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
 
     fun removeAtPosition(index: Int) {
         notifyItemRemoved(index)
+        lastPosition--
+    }
+
+    fun addAtPosition(index: Int) {
+        notifyItemInserted(index)
     }
 
     fun setList(alarmCollectionList: ArrayList<Model.AlarmDao>) {
@@ -63,7 +78,7 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
             alarmInfoViewGroup.getEditObservable().subscribe { alarmInfoInteractionListener.onEdit(it, adapterPosition) }
 
             alarmInfoViewGroup.getDeleteObservable().filter { adapterPosition != -1 }.subscribe {
-                alarmInfoViewGroup.startAnimation(AnimationUtils.loadAnimation(alarmInfoViewGroup.context, R.anim.anim_scale_down))
+                //                alarmInfoViewGroup.startAnimation(AnimationUtils.loadAnimation(alarmInfoViewGroup.context, R.anim.anim_scale_down))
                 alarmInfoInteractionListener.onDelete(adapterPosition)
             }
         }

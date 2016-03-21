@@ -18,7 +18,7 @@ import rx.schedulers.Schedulers
  */
 object HttpManager {
 
-    val BASE_URL = "https://maps.googleapis.com/maps/api/distancematrix/"
+    val BASE_URL = "http://frenchcafe.socket9.com/main/"
     var retrofit: Retrofit? = null
     val API_KEY = Contextor.context!!.getString(R.string.api_key_distance_matrix)
 
@@ -39,23 +39,23 @@ object HttpManager {
 
     fun getTravelDurationArrival(origin: String, destination: String, arrivalTime: String): Observable<NetworkModel.TravelInfo> {
         return getInstance()
-                .getTravelDurationByArrival(origin, destination, arrivalTime, API_KEY)
+                .getTravelDurationByArrival(origin, destination, arrivalTime)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun getTravelDurationDeparture(origin: String, destination: String, departureTime: String): Observable<NetworkModel.TravelInfo> {
         return getInstance()
-                .getTravelDurationByDeparture(origin, destination, departureTime, API_KEY)
+                .getTravelDurationByDeparture(origin, destination, departureTime)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
 }
 
 interface ApiService{
-    @GET("json")
-    fun getTravelDurationByDeparture(@Query("origins") origins: String,@Query("destinations") destinations: String, @Query("departure_time") departureTime: String, @Query("key") key: String) : Observable<NetworkModel.TravelInfo>
+    @GET("getDistanceMatrix")
+    fun getTravelDurationByDeparture(@Query("source") origins: String,@Query("destination") destinations: String, @Query("departureTime") departureTime: String) : Observable<NetworkModel.TravelInfo>
 
-    @GET("json")
-    fun getTravelDurationByArrival(@Query("origins") origins: String,@Query("destinations") destinations: String, @Query("arrival_time") departureTime: String, @Query("key") key: String) : Observable<NetworkModel.TravelInfo>
+    @GET("getDistanceMatrix")
+    fun getTravelDurationByArrival(@Query("source") origins: String,@Query("destination") destinations: String, @Query("arrivalTime") departureTime: String) : Observable<NetworkModel.TravelInfo>
 }

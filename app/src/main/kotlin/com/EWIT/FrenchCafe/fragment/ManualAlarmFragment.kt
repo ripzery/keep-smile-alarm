@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -83,6 +84,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     override fun onAlarmStarted(alarmDao: Model.AlarmDao) {
         log(alarmDao.toString())
         toast("Set alarm at ${alarmDao.timeWake.getTimeFormat()}")
+        activity.setResult(Activity.RESULT_OK)
         activity.finish()
     }
 

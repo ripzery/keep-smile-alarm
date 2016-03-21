@@ -124,6 +124,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     override fun onAlarmStarted(alarmDao: Model.AlarmDao) {
         log(alarmDao.toString())
         toast("Set alarm at ${alarmDao.timeWake.getTimeFormat()}")
+        activity.setResult(Activity.RESULT_OK)
         activity.finish()
     }
 
@@ -153,6 +154,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         tvDestTime.text = "${getString(R.string.fragment_maps_alarm_destination)} ${currentTime.getTimeFormat()}"
 
         time.setIs24HourView(false)
+
+        // TODO : Init your location and show progress view in start
 
         time.setOnTimeChangedListener(timeChangedListener)
 
@@ -201,6 +204,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     }
 
     private fun isPickLocation(): Boolean {
+        // TODO : Check only arrival location
         return startPlace != null && destPlace != null
     }
 
@@ -274,7 +278,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                         else updateAlarm(it!!, editIndex)
                     }, { error -> toast("Embarrassing, error has occurred -> ${error.message}") })
         } else {
-            toast("Please pick departure location")
+            toast("Please pick arrival location")
         }
     }
 
@@ -284,6 +288,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     }
 
     val btnSetStartListener = { view: View ->
+
+        // TODO: Check if location setting enabled
         startActivityForResult(builder.build(activity), START_PLACE_PICKER_REQUEST);
 
         //        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Start"),
@@ -291,6 +297,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     }
 
     val btnSetDestListener = { view: View ->
+        // TODO: Check if location setting enabled
         startActivityForResult(builder.build(activity), DESTINATION_PLACE_PICKER_REQUEST)
         //        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Destination"),
         //                MapsActivity.REQUEST_CODE_DEST)

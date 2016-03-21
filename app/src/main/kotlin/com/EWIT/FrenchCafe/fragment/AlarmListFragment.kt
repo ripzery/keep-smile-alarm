@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -11,8 +12,6 @@ import android.view.animation.AnimationUtils
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.activity.AlarmSetActivity
 import com.EWIT.FrenchCafe.adapter.RecyclerAdapter
-import com.EWIT.FrenchCafe.dialog.DatePickerDialogFragment
-import com.EWIT.FrenchCafe.dialog.TimePickerDialogFragment
 import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.save
 import com.EWIT.FrenchCafe.extension.toast
@@ -54,8 +53,11 @@ class AlarmListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
+
             /* if newly created */
             param1 = arguments.getString(ARG_1)
+        } else {
+
         }
 
         alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
@@ -63,7 +65,6 @@ class AlarmListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView: View = inflater!!.inflate(R.layout.fragment_alarm_list, container, false)
-
         return rootView
     }
 
@@ -72,13 +73,30 @@ class AlarmListFragment : Fragment() {
         initInstance()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                AlarmSetActivity.RESULT_CODE_EDIT -> log("user edit")
+            }
+        } else {
+            // user cancel
+            log("user cancel")
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
-        recyclerAdapter.setList(alarmCollectionList)
+        log("onResume : 4nd")
+        //        alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
+        //        recyclerAdapter.setList(alarmCollectionList)
 
         /* show text empty alarm if empty list */
         tvEmptyAlarm.visibility = if (alarmCollectionList.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    override fun onPause() {
+        super.onPause()
     }
 
     /** Method zone **/
@@ -93,26 +111,34 @@ class AlarmListFragment : Fragment() {
         }
     }
 
-    private fun updateAlarm(datePicked: Model.DatePicked, index: Int, it: Model.TimeWake) {
-        var newAlarmDao = Model.AlarmDao(datePicked, it, ArrayList())
+    //    private fun updateAlarm(datePicked: Model.DatePicked, index: Int, it: Model.TimeWake) {
+    //        var newAlarmDao = Model.AlarmDao(datePicked, it, ArrayList())
+    //
+    //        /* cancel alarm */
+    //        WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmCollectionList[index]))
+    //
+    //        /* update new alarmDao */
+    //        alarmCollectionList[index] = newAlarmDao
+    //
+    //        /* save to sharePref */
+    //        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
+    //
+    //        /* update card */
+    //        recyclerAdapter.updateAtPosition(index)
+    //
+    //
+    //        WakeupAlarmManager.broadcastWakeupAlarmIntent(newAlarmDao)
+    //
+    //        /* show toast */
+    //        toast("Set new alarm ${alarmCollectionList[index].datePicked.getDateFormat()}@${alarmCollectionList[index].timeWake.getTimeFormat()}")
+    //    }
 
-        /* cancel alarm */
-        WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmCollectionList[index]))
+    fun onAddedNewItem() {
+        val newItem: Model.AlarmDao = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList.takeLast(1)[0]
+        alarmCollectionList.add(newItem)
+        recyclerAdapter.addAtPosition(alarmCollectionList.lastIndex)
 
-        /* update new alarmDao */
-        alarmCollectionList[index] = newAlarmDao
-
-        /* save to sharePref */
-        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
-
-        /* update card */
-        recyclerAdapter.updateAtPosition(index)
-
-
-        WakeupAlarmManager.broadcastWakeupAlarmIntent(newAlarmDao)
-
-        /* show toast */
-        toast("Set new alarm ${alarmCollectionList[index].datePicked.getDateFormat()}@${alarmCollectionList[index].timeWake.getTimeFormat()}")
+        //        recyclerAdapter.setList(alarmCollectionList)
     }
 
     private fun deleteAlarm(index: Int) {
@@ -139,21 +165,21 @@ class AlarmListFragment : Fragment() {
         toast("Delete alarm ${toDeleteAlarmDao.datePicked.getDateFormat()}@${toDeleteAlarmDao.timeWake.getTimeFormat()}")
     }
 
-    private fun showTimePickerDialog(datePicked: Model.DatePicked, index: Int) {
-        var timePickerDialog = TimePickerDialogFragment()
-        timePickerDialog.show(childFragmentManager, "timePicker");
-        timePickerDialog.getTimePickedObservable().subscribe {
-            updateAlarm(datePicked, index, it)
-        }
-    }
-
-    private fun showDatePickerDialog(index: Int) {
-        var datePickerDialog = DatePickerDialogFragment()
-        datePickerDialog.show(childFragmentManager, "datePicker");
-        datePickerDialog.getDatePickedObservable().subscribe {
-            showTimePickerDialog(it, index)
-        }
-    }
+    //    private fun showTimePickerDialog(datePicked: Model.DatePicked, index: Int) {
+    //        var timePickerDialog = TimePickerDialogFragment()
+    //        timePickerDialog.show(childFragmentManager, "timePicker");
+    //        timePickerDialog.getTimePickedObservable().subscribe {
+    //            updateAlarm(datePicked, index, it)
+    //        }
+    //    }
+    //
+    //    private fun showDatePickerDialog(index: Int) {
+    //        var datePickerDialog = DatePickerDialogFragment()
+    //        datePickerDialog.show(childFragmentManager, "datePicker");
+    //        datePickerDialog.getDatePickedObservable().subscribe {
+    //            showTimePickerDialog(it, index)
+    //        }
+    //    }
 
     /** Listener zone **/
 
@@ -173,7 +199,7 @@ class AlarmListFragment : Fragment() {
             bundle.putParcelable(AlarmSetActivity.EXTRA_ALARM_DAO, alarmDao)
             bundle.putInt(AlarmSetActivity.EXTRA_EDIT_INDEX, index)
             intent.putExtras(bundle)
-            startActivity(intent)
+            startActivityForResult(intent, AlarmSetActivity.RESULT_CODE_EDIT)
         }
     }
 }

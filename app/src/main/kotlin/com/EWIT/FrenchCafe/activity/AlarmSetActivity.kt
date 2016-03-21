@@ -32,6 +32,8 @@ class AlarmSetActivity : AppCompatActivity(){
     companion object{
         val EXTRA_ALARM_DAO = "ALARMDAO"
         val EXTRA_EDIT_INDEX = "EDIT_INDEX"
+        val RESULT_CODE_ADD = 1
+        val RESULT_CODE_EDIT = 2
     }
 
     /** Lifecycle zone **/

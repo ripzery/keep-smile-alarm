@@ -13,12 +13,13 @@
     <string name="fragment_maps_alarm_destination">ARRIVAL TIME</string>
     <string name="fragment_maps_alarm_set_start">Set Start</string>
     <string name="fragment_maps_alarm_set_dest">Set Destination</string>
-    <string name="fragment_maps_alarm_time_destination">TIME TO DESTINATION</string>
-    <string name="fragment_maps_alarm_start_hint">Please set your start</string>
+    <string name="fragment_maps_alarm_time_destination">ARRIVAL TIME</string>
+    <string name="fragment_maps_alarm_start_hint">Your location</string>
     <string name="fragment_maps_alarm_destination_hint">Please set your destination</string>
     <string name="alarm_set_smart_alarm">Smart alarm</string>
     <string name="manual_alarm">Manual alarm</string>
-    <string name="fragment_maps_alarm_start">START</string>
+    <string name="fragment_maps_alarm_start">START (optional)</string>
     <string name="fragment_map_btn_start">SET START LOCATION</string>
     <string name="fragment_map_btn_dest">SET DESTINATION LOCATION</string>
+    <string name="fragment_smart_alarm_destination_title">DESTINATION</string>
 </resources>
