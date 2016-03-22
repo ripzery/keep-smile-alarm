@@ -18,6 +18,7 @@ import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.model.dao.NetworkModel
 import com.EWIT.FrenchCafe.network.HttpManager
 import com.EWIT.FrenchCafe.util.WaketimeUtil
+import com.fernandocejas.frodo.annotation.RxLogObservable
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
@@ -28,6 +29,8 @@ import kotlinx.android.synthetic.main.layout_time_picker.*
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider
 import rx.Observable
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import java.util.*
 
@@ -75,7 +78,6 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         val ARG_2 = "ARG_2"
         val PERSONAL_TIME_OFFSET = 60 * 60 * 1000
         val CHECK_LOCATION_SETTING_REQUEST = 6
-
 
         fun newInstance(param1: Model.AlarmDao?, editIndex: Int): SmartAlarmFragment {
             var bundle: Bundle = Bundle()
@@ -141,10 +143,10 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
     /** Override method zone **/
 
-    fun onLocationSettingResult(isAccept: Boolean){
+    fun onLocationSettingResult(isAccept: Boolean) {
         isEnabledLocation = isAccept
         locationSettingObservable.onNext(isEnabledLocation)
-        if(!isEnabledLocation) toast("Please enable location setting")
+        if (!isEnabledLocation) toast("Please enable location setting")
     }
 
     override fun onAlarmStarted(alarmDao: Model.AlarmDao) {
@@ -237,6 +239,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         return destPlace != null
     }
 
+    @RxLogObservable(RxLogObservable.Scope.STREAM)
     private fun getCalculateDurationInTrafficObservable(): Observable<NetworkModel.ElementValue> {
         val startLatLng = "${startPlace!!.latLng.latitude},${startPlace!!.latLng.longitude}"
         val destLatLng = "${destPlace!!.latLng.latitude},${destPlace!!.latLng.longitude}"
@@ -253,6 +256,31 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                 }
     }
 
+    @RxLogObservable
+    private fun getStartLocationObservable(progressDialog: ProgressDialog): Observable<Model.AlarmDao?>? {
+        startCheckLocationSetting()
+
+        return locationSettingObservable
+                .doOnNext { if (!it) progressDialog.dismiss() }
+                .filter { it }
+                .flatMap { locationProvider.getUpdatedLocation(locationRequest) }
+                .flatMap {
+                    startPlace = Model.PlaceDetail("", "${it.latitude},${it.longitude}", Model.PlaceLatLng(it.latitude, it.longitude))
+                    locationProvider.getReverseGeocodeObservable(it.latitude, it.longitude, 1)
+                }
+                .map {
+                    if (it.size > 0 && it != null) {
+                        startPlace?.name = it[0].featureName
+                    }
+                    it
+                }
+                .flatMap {
+                    getCalculateDurationInTrafficObservable()
+                }
+                .map { generateAlarmDao(it) }
+                .doOnTerminate { progressDialog.dismiss() }
+    }
+
     private fun calculateRealDepartureTime(durationInTraffic: Long, arrivalTime: Long): Long {
         return arrivalTime - durationInTraffic - PERSONAL_TIME_OFFSET
     }
@@ -261,19 +289,21 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         return arrivalTime - duration
     }
 
-    private fun getLocationSettingObservable(): Observable<Boolean> {
-        return locationProvider
+    private fun startCheckLocationSetting() {
+        locationProvider
                 .checkLocationSettings(locationSetting)
-                .doOnNext {
+                .subscribe {
                     if (it.status.statusCode == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
                         try {
                             it.status.startResolutionForResult(activity, CHECK_LOCATION_SETTING_REQUEST)
                         } catch(ex: IntentSender.SendIntentException) {
                             ex.printStackTrace()
                         }
+                    } else {
+                        isEnabledLocation = true
+                        locationSettingObservable.onNext(isEnabledLocation)
                     }
                 }
-                .flatMap { locationSettingObservable }
     }
 
     private fun generateAlarmDao(durationInTraffic: NetworkModel.ElementValue): Model.AlarmDao? {
@@ -315,45 +345,12 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
             isEnabledLocation = false
             if (startPlace == null) {
-                travelInfoSubscription =
-                        locationProvider
-                            .checkLocationSettings(locationSetting)
-                            .subscribe {
-                                if (it.status.statusCode == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
-                                    try {
-                                        it.status.startResolutionForResult(activity, CHECK_LOCATION_SETTING_REQUEST)
-                                    } catch(ex: IntentSender.SendIntentException) {
-                                        ex.printStackTrace()
-                                    }
-                                } else {
-                                    isEnabledLocation = true
-                                    locationSettingObservable.onNext(isEnabledLocation)
-                                }
-                            }
 
-
-               travelInfoSubscription = locationSettingObservable
-                        .doOnNext { if(!it) progressDialog.dismiss() }
-                        .filter { it }
-                        .flatMap { locationProvider.getUpdatedLocation(locationRequest) }
-                        .flatMap {
-                            startPlace = Model.PlaceDetail("", "${it.latitude},${it.longitude}", Model.PlaceLatLng(it.latitude, it.longitude))
-                            locationProvider.getReverseGeocodeObservable(it.latitude, it.longitude, 1)
-                        }
-                        .map {
-                            if (it.size > 0 && it != null) {
-                                startPlace?.name = it[0].featureName
-                            }
-                            it
-                        }
-                        .flatMap {
-                            getCalculateDurationInTrafficObservable()
-                        }
-                        .map { generateAlarmDao(it) }
-                        .doOnTerminate { progressDialog.dismiss() }
-                        .subscribe ({ it ->
+                travelInfoSubscription = getStartLocationObservable(progressDialog)
+                        ?.subscribeOn(Schedulers.io())
+                        ?.observeOn(AndroidSchedulers.mainThread())
+                        ?.subscribe ({ it ->
                             progressDialog.dismiss()
-                            //                            tvSetStart.text = startPlace?.name
                             if (editIndex == -1) {
                                 setAlarm(it!!)
                             } else {
