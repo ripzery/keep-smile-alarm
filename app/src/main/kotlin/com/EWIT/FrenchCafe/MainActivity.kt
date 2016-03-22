@@ -13,7 +13,9 @@ import com.EWIT.FrenchCafe.activity.AlarmSetActivity
 import com.EWIT.FrenchCafe.extension.addFragment
 import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.replaceFragment
+import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.fragment.AlarmListFragment
+import com.EWIT.FrenchCafe.fragment.BlankTemplate
 import com.EWIT.FrenchCafe.fragment.MainFragment
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        toast("MainActivity 9")
         initInstance()
     }
 
@@ -74,9 +77,9 @@ class MainActivity : AppCompatActivity() {
         initToolbar()
 
         mainFragment = MainFragment.newInstance("mainFragment")
-        alarmListFragment = AlarmListFragment.newInstance("alarmListFragment")
-
-        replaceFragment(fragment = alarmListFragment)
+//        alarmListFragment = AlarmListFragment.newInstance("alarmListFragment")
+        val blankFragment = BlankTemplate.newInstance()
+        replaceFragment(fragment = blankFragment)
         //        addFragment(R.id.contentContainer, mainFragment)
 
 //        setupDrawerListener()

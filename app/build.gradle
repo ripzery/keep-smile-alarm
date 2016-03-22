@@ -1,3 +1,8 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
+
 buildscript {
   ext.kotlin_version = '1.0.1'
   repositories {
@@ -6,19 +11,9 @@ buildscript {
     maven { url 'https://jitpack.io' }
   }
   dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
-    classpath 'com.android.tools.build:gradle:2.0.0-beta7'
-    classpath 'me.tatarka:gradle-retrolambda:3.2.4'
-    classpath 'io.fabric.tools:gradle:1.+'
   }
 }
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'io.fabric'
 
 String getJavaHome(String version) {
   def stdout = new ByteArrayOutputStream()
@@ -36,6 +31,7 @@ kapt {
 android {
   compileSdkVersion 23
   buildToolsVersion "23.0.2"
+
   defaultConfig {
     applicationId "com.EWIT.FrenchCafe"
     minSdkVersion 19
@@ -43,14 +39,10 @@ android {
     versionCode 13
     versionName '1.2.0'
   }
-  retrolambda {
-    jdk System.getenv("JAVA8_HOME") ?: getJavaHome("1.8")
-    oldJdk System.getenv("JAVA7_HOME") ?: getJavaHome("1.7")
-    // ...
-  }
+
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
   }
 
   buildTypes {
@@ -63,6 +55,7 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
+
   sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
   }
@@ -90,8 +83,8 @@ dependencies {
   compile 'com.squareup.retrofit2:retrofit:2.0.0'
   compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
   compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-  compile 'com.github.grandstaish.paperparcel:paperparcel-kotlin:1.0.0-beta6'
-  kapt 'com.github.grandstaish.paperparcel:compiler:1.0.0-beta6'
+  compile 'com.github.grandstaish.paperparcel:paperparcel-kotlin:1.0.0-beta7'
+  kapt 'com.github.grandstaish.paperparcel:compiler:1.0.0-beta7'
   compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
     transitive = true;
   }
