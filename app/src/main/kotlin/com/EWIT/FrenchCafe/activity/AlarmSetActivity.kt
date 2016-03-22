@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.FragmentManager
@@ -22,8 +23,7 @@ import kotlinx.android.synthetic.main.layout_toolbar.*
 class AlarmSetActivity : AppCompatActivity(){
 
     /** Variable zone **/
-    lateinit private var smartAlarmFragment: SmartAlarmFragment
-    lateinit private var manualFragment: ManualAlarmFragment
+    lateinit private var adapter: AlarmSetPagerAdapter
     private var alarmDao : Model.AlarmDao? = null
     private var editIndex : Int = -1
 
@@ -57,6 +57,14 @@ class AlarmSetActivity : AppCompatActivity(){
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(SmartAlarmFragment.CHECK_LOCATION_SETTING_REQUEST == requestCode){
+            adapter.onLocationSettingResult(resultCode == RESULT_OK)
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId){
             android.R.id.home -> finish()
@@ -88,7 +96,7 @@ class AlarmSetActivity : AppCompatActivity(){
         }
 
         var fm = supportFragmentManager
-        val adapter = AlarmSetPagerAdapter(fm, this@AlarmSetActivity, alarmDao, editIndex)
+        adapter = AlarmSetPagerAdapter(fm, this@AlarmSetActivity, alarmDao, editIndex)
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
 

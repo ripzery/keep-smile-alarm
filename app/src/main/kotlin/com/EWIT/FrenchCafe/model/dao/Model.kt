@@ -38,7 +38,7 @@ object Model{
     }
 
     @PaperParcel
-    data class PlaceDetail(val id: String, val name: String, val latLng: PlaceLatLng): PaperParcelable
+    data class PlaceDetail(val id: String, var name: String, val latLng: PlaceLatLng): PaperParcelable
 
     @PaperParcel
     data class PlaceLatLng(val latitude: Double, val longitude: Double) : PaperParcelable

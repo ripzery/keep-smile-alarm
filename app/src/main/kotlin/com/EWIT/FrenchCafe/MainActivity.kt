@@ -3,19 +3,16 @@ package com.EWIT.FrenchCafe
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import com.EWIT.FrenchCafe.activity.AlarmSetActivity
-import com.EWIT.FrenchCafe.extension.addFragment
 import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.replaceFragment
 import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.fragment.AlarmListFragment
-import com.EWIT.FrenchCafe.fragment.BlankTemplate
 import com.EWIT.FrenchCafe.fragment.MainFragment
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
@@ -32,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        toast("MainActivity 9")
         initInstance()
     }
 
@@ -54,14 +50,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == RESULT_OK){
-            when(requestCode){
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
                 AlarmSetActivity.RESULT_CODE_ADD -> {
                     log("user add")
                     alarmListFragment.onAddedNewItem()
                 }
             }
-        }else{
+        } else {
             log("user cancel")
         }
     }
@@ -77,12 +73,12 @@ class MainActivity : AppCompatActivity() {
         initToolbar()
 
         mainFragment = MainFragment.newInstance("mainFragment")
-//        alarmListFragment = AlarmListFragment.newInstance("alarmListFragment")
-        val blankFragment = BlankTemplate.newInstance()
-        replaceFragment(fragment = blankFragment)
+        alarmListFragment = AlarmListFragment.newInstance("alarmListFragment")
+        //        val blankFragment = BlankTemplate.newInstance()
+        replaceFragment(fragment = alarmListFragment)
         //        addFragment(R.id.contentContainer, mainFragment)
 
-//        setupDrawerListener()
+        //        setupDrawerListener()
         Glide.with(this).load(R.drawable.wallpaper).into(ivParallaxImage)
         loadAnimation()
         btnAlarmActivity.setOnClickListener (onAlarmClickListener)
@@ -93,26 +89,26 @@ class MainActivity : AppCompatActivity() {
         btnAlarmActivity.startAnimation(anim)
     }
 
-//    private fun switchFragmentDrawer(fragment: Fragment, item: MenuItem) {
-//        replaceFragment(R.id.contentContainer, fragment)
-//        with(item) {
-//            this@MainActivity.title = title
-//        }
-//
-//        drawerLayout.closeDrawers()
-//    }
+    //    private fun switchFragmentDrawer(fragment: Fragment, item: MenuItem) {
+    //        replaceFragment(R.id.contentContainer, fragment)
+    //        with(item) {
+    //            this@MainActivity.title = title
+    //        }
+    //
+    //        drawerLayout.closeDrawers()
+    //    }
 
     private fun initToolbar() {
         //        actionDrawerToggle = setupDrawerToggle()
         setSupportActionBar(toolbar)
 
         //        drawerLayout.addDrawerListener(actionDrawerToggle)
-//        navView.setCheckedItem(R.id.menu_main)
+        //        navView.setCheckedItem(R.id.menu_main)
     }
 
-//    private fun setupDrawerToggle(): ActionBarDrawerToggle {
-//        return ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
-//    }
+    //    private fun setupDrawerToggle(): ActionBarDrawerToggle {
+    //        return ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
+    //    }
 
     /** Listener zone **/
 
@@ -120,13 +116,13 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(Intent(this@MainActivity, AlarmSetActivity::class.java), AlarmSetActivity.RESULT_CODE_ADD)
     }
 
-//    private fun setupDrawerListener() {
-//        navView.setNavigationItemSelectedListener {
-//            when (it.itemId) {
-//                R.id.menu_main -> switchFragmentDrawer(mainFragment, it)
-//                R.id.menu_alarm_list -> switchFragmentDrawer(alarmListFragment, it)
-//            }
-//            true
-//        }
-//    }
+    //    private fun setupDrawerListener() {
+    //        navView.setNavigationItemSelectedListener {
+    //            when (it.itemId) {
+    //                R.id.menu_main -> switchFragmentDrawer(mainFragment, it)
+    //                R.id.menu_alarm_list -> switchFragmentDrawer(alarmListFragment, it)
+    //            }
+    //            true
+    //        }
+    //    }
 }
