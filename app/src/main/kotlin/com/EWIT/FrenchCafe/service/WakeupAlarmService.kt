@@ -26,7 +26,7 @@ class WakeupAlarmService : IntentService {
 
     override fun onHandleIntent(intent: Intent?) {
         when(intent?.type){
-            WakeupAlarmManager.WAKEUP_ALARM -> WakeupAlarmManager.startAlarm(this)
+            WakeupAlarmManager.WAKEUP_ALARM -> WakeupAlarmManager.startAlarm(this, intent)
         }
     }
 

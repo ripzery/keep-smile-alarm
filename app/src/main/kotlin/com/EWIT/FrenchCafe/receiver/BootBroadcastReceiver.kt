@@ -37,7 +37,7 @@ class BootBroadcastReceiver : WakefulBroadcastReceiver() {
 
         } else if (intent.type.equals(WakeupAlarmManager.WAKEUP_ALARM)) {
 
-            var repeatDayList = intent.getIntArrayExtra(WakeupAlarmManager.INTENT_BROADCAST_REPEAT_DAY)
+            var repeatDayList = intent.getIntArrayExtra(WakeupAlarmManager.INTENT_EXTRA_BROADCAST_REPEAT_DAY)
 
             if (repeatDayList != null ) {
 
@@ -71,6 +71,7 @@ class BootBroadcastReceiver : WakefulBroadcastReceiver() {
 
         wakeupAlarmService.type = WakeupAlarmManager.WAKEUP_ALARM
         wakeupAlarmService.action = intent?.action
+        wakeupAlarmService.putExtra(WakeupAlarmManager.INTENT_EXTRA_ALARM_SOUND, intent!!.getStringExtra(WakeupAlarmManager.INTENT_EXTRA_ALARM_SOUND))
 
         context?.startService(wakeupAlarmService)
     }

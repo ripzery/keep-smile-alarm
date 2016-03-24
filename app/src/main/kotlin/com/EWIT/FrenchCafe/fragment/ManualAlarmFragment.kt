@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.TimePicker
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.activity.AlarmSetActivity
@@ -29,8 +28,7 @@ import java.util.*
  * Created by Euro on 3/10/16 AD.
  */
 class ManualAlarmFragment : Fragment(), AlarmSetInterface {
-    /** Variable zone **/
-
+    override var alarmSoundUri: Uri? = null
     private val c: Calendar = Calendar.getInstance()
     private val hour = c.get(Calendar.HOUR_OF_DAY)
     private val minute = c.get(Calendar.MINUTE)
@@ -38,7 +36,6 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     private val month = c.get(Calendar.MONTH)
     private val year = c.get(Calendar.YEAR)
     private var repeatDayList: List<Int> = listOf()
-    private var alarmSoundUri: Uri? = null
     lateinit private var currentDate: Model.DatePicked
     lateinit private var currentTime: Model.TimeWake
     private var alarmDao: Model.AlarmDao? = null
@@ -88,11 +85,11 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK){
-            when(requestCode){
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
                 REQUEST_CODE_CHOOSE_ALARM_SOUND -> {
                     alarmSoundUri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-                    tvAlarmSound.text = alarmSoundUri.toString()
+                    tvAlarmSound.text = RingtoneManager.getRingtone(context, alarmSoundUri).getTitle(activity)
                 }
             }
         }
@@ -103,7 +100,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     override fun onAlarmStarted(alarmDao: Model.AlarmDao) {
         log(alarmDao.toString())
         toast("Set alarm at ${alarmDao.timeWake.getTimeFormat()}")
-        val data:Intent = Intent()
+        val data: Intent = Intent()
         data.putExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, editIndex)
         activity.setResult(Activity.RESULT_OK, data)
         activity.finish()
@@ -116,11 +113,11 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         //        Glide.with(activity).load(R.drawable.wallpaper).into(ivBackground)
         //        btnSelectDate.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.anim_scale_up))
 
-        if(alarmDao != null){
+        if (alarmDao != null) {
 
             initEditData(alarmDao!!)
 
-        }else{
+        } else {
             currentDate = Model.DatePicked(year, month, day)
             currentTime = Model.TimeWake(hour, minute)
             alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
@@ -157,19 +154,24 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         }
     }
 
-    private fun initEditData(alarmDao: Model.AlarmDao){
+    private fun initEditData(alarmDao: Model.AlarmDao) {
         time.setCurrentHour(alarmDao.timeWake.hourOfDay)
-//        time.hour = alarmDao.timeWake.hourOfDay
+        //        time.hour = alarmDao.timeWake.hourOfDay
         time.setCurrentMinute(alarmDao.timeWake.minute)
         log("takeEffect!")
         currentDate = mCalendar().toDatePicked()
         currentTime = alarmDao.timeWake
 
-        if(alarmDao.repeatDay.size != 0){
+        if (alarmDao.alarmSound != null) {
+            alarmSoundUri = Uri.parse(alarmDao.alarmSound)
+            tvAlarmSound.text = RingtoneManager.getRingtone(activity, alarmSoundUri).getTitle(activity)
+        }
+
+        if (alarmDao.repeatDay.size != 0) {
             cbRepeat.isChecked = true
             repeatDayList = alarmDao.repeatDay
             repeatDayViewGroup.setCheckedDay(alarmDao.repeatDay)
-        }else{
+        } else {
             cbRepeat.isChecked = false
         }
 
@@ -185,9 +187,9 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
 
     val btnSetAlarmListener = { view: View ->
         alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
-        if(editIndex == -1) {
+        if (editIndex == -1) {
             setAlarm(alarmDao!!)
-        }else{
+        } else {
             updateAlarm(alarmDao!!, editIndex)
         }
     }
@@ -197,8 +199,8 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         tvPickTime.text = "Pick time ${currentTime.getTimeFormat()}"
     }
 
-    val chooseAlarmListener = { view:View ->
-        val intent:Intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+    val chooseAlarmListener = { view: View ->
+        val intent: Intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm Sound");
         this.startActivityForResult(intent, REQUEST_CODE_CHOOSE_ALARM_SOUND);

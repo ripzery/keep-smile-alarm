@@ -9,6 +9,7 @@ import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.replaceFragment
 import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.fragment.WakeTrackerFragment
+import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 
 /**
  * Created by Euro on 3/10/16 AD.
@@ -66,7 +67,9 @@ class WakeTrackerActivity : AppCompatActivity(){
 
 
     private fun initInstance() {
-        wakeTrackerFragment = WakeTrackerFragment.getInstance()
+        val alarmRingtone = intent.getStringExtra(WakeupAlarmManager.INTENT_EXTRA_ALARM_SOUND)
+
+        wakeTrackerFragment = WakeTrackerFragment.getInstance(alarmRingtone)
         replaceFragment(R.id.contentContainer, wakeTrackerFragment)
     }
 

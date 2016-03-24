@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_padding_16"
         android:layout_gravity="center"
-        android:alpha="@dimen/text_secondary_alpha"
+        style="@style/TextSecondary"
         android:text="Default"
         />
 

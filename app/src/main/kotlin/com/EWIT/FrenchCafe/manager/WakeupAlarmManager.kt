@@ -19,7 +19,8 @@ object WakeupAlarmManager {
 
     val WAKEUP_ALARM = "WAKEUP_ALARM"
     val CANCEL_ALARM = "CANCEL_ALARM"
-    val INTENT_BROADCAST_REPEAT_DAY = "EXTRA://REPEAT_DAY"
+    val INTENT_EXTRA_BROADCAST_REPEAT_DAY = "EXTRA://REPEAT_DAY"
+    val INTENT_EXTRA_ALARM_SOUND = "EXTRA://ALARM_SOUND"
 
     /** Method zone**/
 
@@ -34,11 +35,12 @@ object WakeupAlarmManager {
 
         /* set type and action note: action must not be null */
         intent.action = "${WaketimeUtil.calculationWaketimeSummation(alarmDao)}"
+        intent.putExtra(INTENT_EXTRA_ALARM_SOUND, alarmDao.alarmSound)
         intent.type = WAKEUP_ALARM
 
         /* if user also set repeat day */
         if (alarmDao.repeatDay.size != 0) {
-            intent.putExtra(INTENT_BROADCAST_REPEAT_DAY, alarmDao.repeatDay.toIntArray())
+            intent.putExtra(INTENT_EXTRA_BROADCAST_REPEAT_DAY, alarmDao.repeatDay.toIntArray())
         }
 
         /* set pending intent */
@@ -48,11 +50,12 @@ object WakeupAlarmManager {
         alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDao.toCalendar().timeInMillis, alarmIntent)
     }
 
-    fun startAlarm(wakeupAlarmService: IntentService) {
+    fun startAlarm(wakeupAlarmService: IntentService, intent: Intent?) {
         /* start activity alarm */
         val wakeupIntent = Intent(wakeupAlarmService, WakeTrackerActivity::class.java)
         wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        wakeupIntent.putExtra(INTENT_EXTRA_ALARM_SOUND, intent?.getStringExtra(INTENT_EXTRA_ALARM_SOUND))
         wakeupAlarmService.startActivity(wakeupIntent)
     }
 

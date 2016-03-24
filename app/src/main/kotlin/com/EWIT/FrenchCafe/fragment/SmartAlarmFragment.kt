@@ -36,6 +36,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
+import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -45,6 +46,7 @@ import java.util.concurrent.TimeUnit
 class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
     /** Variable zone **/
+    override var alarmSoundUri: Uri? = null
     private val c: Calendar = Calendar.getInstance()
     private val hour = c.get(Calendar.HOUR_OF_DAY)
     private val minute = c.get(Calendar.MINUTE)
@@ -63,7 +65,6 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     private var editIndex: Int = -1
     private val mRrule: String? = ""
     private var progressDialog: ProgressDialog? = null
-    private var alarmSoundUri: Uri? = null
     private var locationSettingObservable = PublishSubject.create<Pair<Boolean, Int>>()
     private var settingSubscription: Subscription? = null
     lateinit private var locationProvider: ReactiveLocationProvider
@@ -142,7 +143,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                 }
                 REQUEST_CODE_CHOOSE_ALARM_SOUND -> {
                     alarmSoundUri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-                    tvAlarmSound.text = alarmSoundUri.toString()
+                    tvAlarmSound.text = RingtoneManager.getRingtone(context, alarmSoundUri).getTitle(activity)
                 }
             //                MapsActivity.REQUEST_CODE_START -> tvSetStart.text = data!!.getStringExtra(MapsActivity.RETURN_INTENT_EXTRA_PLACE)
             //                MapsActivity.REQUEST_CODE_DEST -> tvSetDestination.text = data!!.getStringExtra(MapsActivity.RETURN_INTENT_EXTRA_PLACE)
@@ -264,6 +265,11 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
         tvSetStart.text = alarmDao.placePicked?.departurePlace?.name
         tvSetDestination.text = alarmDao.placePicked?.arrivalPlace?.name
+
+        if(alarmDao.alarmSound != null) {
+            alarmSoundUri = Uri.parse(alarmDao.alarmSound)
+            tvAlarmSound.text = RingtoneManager.getRingtone(activity, alarmSoundUri).getTitle(activity)
+        }
     }
 
     private fun toggleRepeatDayVisible() {

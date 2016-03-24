@@ -29,7 +29,8 @@ class WakeTrackerFragment : Fragment() {
     private val EYE_OPEN_DURATION = 15000L
     private var isCounterRunning = false;
     private var isBreakMission = false
-    var isCompleted:Boolean = false
+    var isCompleted: Boolean = false
+    private var alarmSound: String? = null
     private var ringtone: MediaPlayer? = null
     private var backgroundFaceDetectionFragment: BackgroundFaceDetectionFragment? = null
 
@@ -38,12 +39,12 @@ class WakeTrackerFragment : Fragment() {
 
     companion object {
 
-        val ARG1 = "ARG_1"
+        val ALARM_SOUND = "ARG_1"
 
-        fun getInstance(param1: String? = null): WakeTrackerFragment {
+        fun getInstance(alarmSoundUriString: String? = null): WakeTrackerFragment {
             var bundle: Bundle = Bundle()
 
-            bundle.putString(ARG1, param1)
+            bundle.putString(ALARM_SOUND, alarmSoundUriString)
 
             var wakeTrackerFragment: WakeTrackerFragment = WakeTrackerFragment()
 
@@ -58,6 +59,9 @@ class WakeTrackerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            alarmSound = arguments.getString(ALARM_SOUND)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -84,6 +88,7 @@ class WakeTrackerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         backgroundFaceDetectionFragment?.setFaceTrackerListener(backgroundFaceDetectionListener)
+        if (!isCompleted) playAlarm()
 
     }
 
@@ -91,7 +96,6 @@ class WakeTrackerFragment : Fragment() {
         super.onDestroy()
         ringtone?.release()
     }
-
 
     /**** Method zone ****/
 
@@ -124,14 +128,24 @@ class WakeTrackerFragment : Fragment() {
 
     private fun playAlarm() {
         try {
-            val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-            ringtone = MediaPlayer()
-            ringtone!!.reset()
-            ringtone!!.setDataSource(context, uri)
-            ringtone!!.setAudioStreamType(AudioManager.STREAM_ALARM)
-            ringtone!!.isLooping = true
-            ringtone!!.prepare()
-            ringtone!!.start()
+            val uri: Uri
+            if (alarmSound != null) {
+                uri = Uri.parse(alarmSound)
+            } else {
+                uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            }
+            if(ringtone == null) {
+                ringtone = MediaPlayer()
+                ringtone!!.reset()
+                ringtone!!.setDataSource(context, uri)
+                ringtone!!.setAudioStreamType(AudioManager.STREAM_ALARM)
+                ringtone!!.isLooping = true
+            }
+
+            if(!(ringtone as MediaPlayer).isPlaying) {
+                ringtone!!.prepare()
+                ringtone!!.start()
+            }
         } catch(e: Exception) {
             e.printStackTrace()
         }

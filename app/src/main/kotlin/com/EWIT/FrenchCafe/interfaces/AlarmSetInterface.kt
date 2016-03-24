@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.interfaces
 
+import android.net.Uri
 import android.util.Log
 import com.EWIT.FrenchCafe.extension.*
 import com.EWIT.FrenchCafe.fragment.SmartAlarmFragment
@@ -18,6 +19,9 @@ import java.util.*
 
 interface AlarmSetInterface {
 
+    /** Variable zone **/
+    var alarmSoundUri: Uri?
+
     /** Override method zone **/
 
     fun onAlarmStarted(alarmDao: Model.AlarmDao)
@@ -25,6 +29,9 @@ interface AlarmSetInterface {
     /** Method zone **/
 
     fun setAlarm(alarmDao: Model.AlarmDao) {
+
+        /* update alarm sound uri */
+        alarmDao.alarmSound = alarmSoundUri.toString()
 
         /* Set a correct time*/
         var correctedAlarmDao = modifyWakeupTime(alarmDao)
@@ -42,6 +49,9 @@ interface AlarmSetInterface {
 
         /* cancel alarm */
         WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmCollectionList[index]))
+
+        /* update alarm sound uri */
+        alarmDao.alarmSound = alarmSoundUri.toString()
 
         /* Set a correct time*/
         var correctedAlarmDao = modifyWakeupTime(alarmDao)
@@ -121,6 +131,9 @@ interface AlarmSetInterface {
         //                R.mipmap.icon,
         //                alarmDate.timeInMillis,
         //                alarmDao.hashCode().toLong())
+
+
+        Log.d("AlarmSetInterface", alarmDao.alarmSound)
 
         WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
 

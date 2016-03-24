@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_maps_alarm_start_hint"
                 android:layout_gravity="center_horizontal"
-                android:alpha="@dimen/text_secondary_alpha"
+                style="@style/TextSecondary"
                 android:layout_marginTop="@dimen/margin_padding_16"
                 android:textSize="16sp"/>
 
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_maps_alarm_destination_hint"
                 android:layout_gravity="center_horizontal"
-                android:alpha="@dimen/text_secondary_alpha"
+                style="@style/TextSecondary"
                 android:layout_marginTop="@dimen/margin_padding_16"
                 android:textSize="16sp"/>
 
