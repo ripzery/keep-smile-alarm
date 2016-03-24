@@ -46,10 +46,10 @@ android {
   buildToolsVersion "23.0.2"
   defaultConfig {
     applicationId "com.EWIT.FrenchCafe"
-    minSdkVersion 19
+    minSdkVersion 15
     targetSdkVersion 23
-    versionCode 17
-    versionName '1.2.4'
+    versionCode 19
+    versionName '1.2.6'
   }
 
   compileOptions {

@@ -134,6 +134,7 @@ class WakeTrackerFragment : Fragment() {
             } else {
                 uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
             }
+
             if(ringtone == null) {
                 ringtone = MediaPlayer()
                 ringtone!!.reset()

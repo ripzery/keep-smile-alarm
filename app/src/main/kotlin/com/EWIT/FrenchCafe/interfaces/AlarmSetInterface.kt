@@ -31,7 +31,7 @@ interface AlarmSetInterface {
     fun setAlarm(alarmDao: Model.AlarmDao) {
 
         /* update alarm sound uri */
-        alarmDao.alarmSound = alarmSoundUri.toString()
+        alarmDao.alarmSound = alarmSoundUri?.toString()
 
         /* Set a correct time*/
         var correctedAlarmDao = modifyWakeupTime(alarmDao)
@@ -51,7 +51,7 @@ interface AlarmSetInterface {
         WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmCollectionList[index]))
 
         /* update alarm sound uri */
-        alarmDao.alarmSound = alarmSoundUri.toString()
+        alarmDao.alarmSound = alarmSoundUri?.toString()
 
         /* Set a correct time*/
         var correctedAlarmDao = modifyWakeupTime(alarmDao)
@@ -132,8 +132,6 @@ interface AlarmSetInterface {
         //                alarmDate.timeInMillis,
         //                alarmDao.hashCode().toLong())
 
-
-        Log.d("AlarmSetInterface", alarmDao.alarmSound)
 
         WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
 
