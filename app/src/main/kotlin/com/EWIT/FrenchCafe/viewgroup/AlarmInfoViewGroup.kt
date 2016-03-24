@@ -118,7 +118,7 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
         if (alarmDao.placePicked != null) {
             layoutArrival.visibility = View.VISIBLE
             tvArrivalPlace.text = "${alarmDao.placePicked!!.arrivalPlace.name}"
-            tvArrivalTime.text = "${alarmDao.placePicked!!.getReadableTime(alarmDao.placePicked!!.arriveTime)}"
+            tvArrivalTime.text = "Arrival at ${alarmDao.placePicked!!.getReadableTime(alarmDao.placePicked!!.arriveTime)}"
         } else {
             layoutArrival.visibility = View.GONE
         }

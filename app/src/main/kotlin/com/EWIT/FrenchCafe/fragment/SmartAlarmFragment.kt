@@ -32,6 +32,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
+import rx.subscriptions.CompositeSubscription
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -62,6 +63,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     private var locationSettingObservable = PublishSubject.create<Pair<Boolean, Int>>()
     private var settingSubscription: Subscription? = null
     lateinit private var locationProvider: ReactiveLocationProvider
+    private val compositeSubscription: CompositeSubscription = CompositeSubscription()
     private val locationRequest: LocationRequest = LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
             .setNumUpdates(1)
@@ -142,6 +144,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         super.onStop()
         travelInfoSubscription?.unsubscribe()
         settingSubscription?.unsubscribe()
+//        compositeSubscription.unsubscribe()
     }
 
     /** Override method zone **/
@@ -149,13 +152,11 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     fun onLocationSettingResult(isAccept: Boolean, requestCode: Int) {
         isEnabledLocation = isAccept
         locationSettingObservable.onNext(Pair(isAccept, requestCode))
-        log("locationSettingOnNext $isEnabledLocation")
         if (!isEnabledLocation) toast("Please enable location setting")
     }
 
     override fun onAlarmStarted(alarmDao: Model.AlarmDao) {
         log(alarmDao.toString())
-        toast("Set alarm at ${alarmDao.timeWake.getTimeFormat()}")
         val data: Intent = Intent()
         data.putExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, editIndex)
         activity.setResult(Activity.RESULT_OK, data)
@@ -199,12 +200,6 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
         cbRepeat.setOnClickListener(cbRepeatListener)
 
-        //        btnSetDest.setOnClickListener(btnSetDestListener)
-
-        //        btnSetStart.setOnClickListener(btnSetStartListener)
-
-        log("Init instance")
-
         btnSetStart.clicks()
                 .subscribe {
                     isEnabledLocation = false
@@ -213,7 +208,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                 }
 
 
-        getLocationSettingObservable()
+        val locationSettingSubscription = getLocationSettingObservable()
                 .filter { it.second == START_PLACE_PICKER_REQUEST || it.second == DESTINATION_PLACE_PICKER_REQUEST }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -221,6 +216,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                     progressDialog?.dismiss()
                     if (it.first) startActivityForResult(builder.build(activity), it.second);
                 }
+
+//        compositeSubscription.add(locationSettingSubscription)
 
         btnSetDest.clicks()
                 .subscribe {
@@ -326,12 +323,11 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     }
 
     private fun startCheckLocationSetting(requestCode: Int) {
-        locationProvider
+        val checkLocationSettingSubscription =locationProvider
                 .checkLocationSettings(locationSetting)
                 .subscribe {
                     if (it.status.statusCode == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
                         try {
-                            log("test check location setting")
                             it.status.startResolutionForResult(activity, requestCode)
                         } catch(ex: IntentSender.SendIntentException) {
                             ex.printStackTrace()
@@ -339,9 +335,10 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                     } else {
                         isEnabledLocation = true
                         locationSettingObservable.onNext(Pair(isEnabledLocation, requestCode))
-                        log("locationSettingOnNext true")
                     }
                 }
+
+//        compositeSubscription.add(checkLocationSettingSubscription)
     }
 
     private fun generateAlarmDao(durationInTraffic: NetworkModel.ElementValue): Model.AlarmDao? {
@@ -404,6 +401,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                             else updateAlarm(it!!, editIndex)
                         }, { error -> toast("Embarrassing, error has occurred -> ${error.message}") })
             }
+
+//            compositeSubscription.add(travelInfoSubscription)
 
 
         } else {
