@@ -56,9 +56,9 @@ class AlarmSetActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-//        if (SmartAlarmFragment.START_PLACE_PICKER_REQUEST == requestCode || SmartAlarmFragment.DESTINATION_PLACE_PICKER_REQUEST == requestCode || SmartAlarmFragment.CHECK_LOCATION_SETTING_REQUEST == requestCode) {
+        if (SmartAlarmFragment.START_PLACE_PICKER_REQUEST == requestCode || SmartAlarmFragment.DESTINATION_PLACE_PICKER_REQUEST == requestCode || SmartAlarmFragment.CHECK_LOCATION_SETTING_REQUEST == requestCode) {
             adapter.onLocationSettingResult(resultCode == RESULT_OK, requestCode)
-//        }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
