@@ -1,6 +1,7 @@
 package com.EWIT.FrenchCafe.model.dao
 
 import com.EWIT.FrenchCafe.extension.mCalendar
+import com.EWIT.FrenchCafe.extension.minBefore
 import com.google.android.gms.maps.model.LatLng
 import nz.bradcampbell.paperparcel.PaperParcel
 import nz.bradcampbell.paperparcel.PaperParcelable
@@ -51,6 +52,10 @@ object Model{
                     datePicked.dayOfMonth,
                     timeWake.hourOfDay,
                     timeWake.minute)
+        }
+
+        fun isAlreadyWaked(): Boolean{
+            return toCalendar().before(mCalendar())
         }
     }
 

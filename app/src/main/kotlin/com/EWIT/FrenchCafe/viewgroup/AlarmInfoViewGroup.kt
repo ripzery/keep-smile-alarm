@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
 import com.EWIT.FrenchCafe.R
+import com.EWIT.FrenchCafe.extension.mCalendar
+import com.EWIT.FrenchCafe.extension.minBefore
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
@@ -75,7 +77,7 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
                 }
                 false -> {
                     /* cancel alarm */
-                    WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmDao))
+                    if(alarmDao.toCalendar().minBefore(mCalendar())) WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmDao))
                 }
             }
             publishSwitchSubject.onNext(Pair(alarmDao, isChecked))
@@ -98,6 +100,8 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
     }
 
     private fun setupWaketime(alarmDao: Model.AlarmDao) {
+        btnSwitch.isChecked = !alarmDao.isAlreadyWaked()
+
         /* manage text wake time */
         tvTime.text = alarmDao.timeWake.getTimeFormat()
     }

@@ -201,7 +201,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
 
     val chooseAlarmListener = { view: View ->
         val intent: Intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm Sound");
         this.startActivityForResult(intent, REQUEST_CODE_CHOOSE_ALARM_SOUND);
     }
