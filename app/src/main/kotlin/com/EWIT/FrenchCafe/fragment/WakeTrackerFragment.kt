@@ -1,16 +1,19 @@
 package com.EWIT.FrenchCafe.fragment
 
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.vision.face.Face
-import com.EWIT.FrenchCafe.fragment.BackgroundFaceDetectionFragment
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.replaceFragment
+import com.google.android.gms.vision.face.Face
 import kotlinx.android.synthetic.main.fragment_wake_tracker.*
 
 
@@ -26,6 +29,8 @@ class WakeTrackerFragment : Fragment() {
     private val EYE_OPEN_DURATION = 15000L
     private var isCounterRunning = false;
     private var isBreakMission = false
+    var isCompleted:Boolean = false
+    private var ringtone: MediaPlayer? = null
     private var backgroundFaceDetectionFragment: BackgroundFaceDetectionFragment? = null
 
 
@@ -73,6 +78,7 @@ class WakeTrackerFragment : Fragment() {
         super.onPause()
         stopCounter()
         backgroundFaceDetectionFragment?.removeFaceTrackerListener()
+        stopAlarm()
     }
 
     override fun onResume() {
@@ -80,6 +86,12 @@ class WakeTrackerFragment : Fragment() {
         backgroundFaceDetectionFragment?.setFaceTrackerListener(backgroundFaceDetectionListener)
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ringtone?.release()
+    }
+
 
     /**** Method zone ****/
 
@@ -103,9 +115,30 @@ class WakeTrackerFragment : Fragment() {
 
     private fun initInstance() {
         backgroundFaceDetectionFragment = BackgroundFaceDetectionFragment.getInstance(0.4F)
-        backgroundFaceDetectionFragment!!.setFaceTrackerListener(backgroundFaceDetectionListener!!)
+        backgroundFaceDetectionFragment!!.setFaceTrackerListener(backgroundFaceDetectionListener)
 
         replaceFragment(R.id.cameraContainer, backgroundFaceDetectionFragment!!)
+
+        playAlarm()
+    }
+
+    private fun playAlarm() {
+        try {
+            val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            ringtone = MediaPlayer()
+            ringtone!!.reset()
+            ringtone!!.setDataSource(context, uri)
+            ringtone!!.setAudioStreamType(AudioManager.STREAM_ALARM)
+            ringtone!!.isLooping = true
+            ringtone!!.prepare()
+            ringtone!!.start()
+        } catch(e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun stopAlarm() {
+        ringtone?.stop()
     }
 
     /**** Listener zone ****/
@@ -116,6 +149,8 @@ class WakeTrackerFragment : Fragment() {
             ivWakeState.setImageLevel(STATE_COMPLETE)
             backgroundFaceDetectionFragment?.removeFaceTrackerListener()
             tvHello.text = text
+            isCompleted = true
+            stopAlarm()
         }
 
         override fun onTick(millisUntilFinished: Long) {
@@ -150,8 +185,7 @@ class WakeTrackerFragment : Fragment() {
             log("close : ${face.isLeftEyeOpenProbability}")
 
             isBreakMission = true
-            activity.runOnUiThread {
-                //                tvHello.text = "Open your eye"
+            activity.runOnUiThread { //                tvHello.text = "Open your eye"
                 //                ivWakeState.setImageLevel(STATE_CLOSE_EYE)
                 //                showSnackbar(contentContainer, "Open your eye")
             }

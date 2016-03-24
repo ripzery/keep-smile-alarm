@@ -2,6 +2,8 @@ package com.EWIT.FrenchCafe
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -29,6 +31,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+
+
+        val intent:Intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
+        this.startActivityForResult(intent, 5);
         initInstance()
     }
 

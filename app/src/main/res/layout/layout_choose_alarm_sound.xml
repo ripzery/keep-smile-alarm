@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutAlarmSound"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:showIn="@layout/fragment_manual_alarm">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        style="@style/TextHeading"
+        android:text="@string/layout_choose_alarm_sound_text_heading"/>
+
+    <include layout="@layout/layout_divider"/>
+
+    <TextView
+        android:id="@+id/tvRingtone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_padding_16"
+        android:layout_gravity="center"
+        android:alpha="@dimen/text_secondary_alpha"
+        android:text="Default"
+        />
+
+    <Button
+        android:id="@+id/btnChooseRingtone"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height_56"
+        android:layout_marginTop="@dimen/margin_padding_16"
+        android:padding="@dimen/margin_padding_16"
+        android:text="@string/alarm_choose_ringtone"
+        android:theme="@style/BaseButton.Indigo"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

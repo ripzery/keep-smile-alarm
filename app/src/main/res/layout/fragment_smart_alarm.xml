@@ -23,7 +23,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/title_text_size"
+                style="@style/TextHeading"
                 android:text="@string/fragment_maps_alarm_start"/>
 
             <include layout="@layout/layout_divider"/>
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_maps_alarm_start_hint"
                 android:layout_gravity="center_horizontal"
-                android:alpha="0.54"
+                android:alpha="@dimen/text_secondary_alpha"
                 android:layout_marginTop="@dimen/margin_padding_16"
                 android:textSize="16sp"/>
 
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textSize="@dimen/title_text_size"
+                style="@style/TextHeading"
                 android:text="@string/fragment_smart_alarm_destination_title"/>
 
             <include layout="@layout/layout_divider"/>
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_maps_alarm_destination_hint"
                 android:layout_gravity="center_horizontal"
-                android:alpha="0.54"
+                android:alpha="@dimen/text_secondary_alpha"
                 android:layout_marginTop="@dimen/margin_padding_16"
                 android:textSize="16sp"/>
 
@@ -79,13 +79,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_padding_16"
-                android:textSize="@dimen/title_text_size"
+                style="@style/TextHeading"
                 android:text="@string/fragment_maps_alarm_time_destination"
                 />
 
             <include layout="@layout/layout_divider"/>
 
             <include layout="@layout/layout_time_picker"/>
+
+            <include layout="@layout/layout_choose_alarm_sound"/>
 
             <include layout="@layout/layout_repeat_day" />
 

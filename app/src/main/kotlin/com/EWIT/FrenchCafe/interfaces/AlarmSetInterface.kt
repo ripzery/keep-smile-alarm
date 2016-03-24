@@ -61,54 +61,57 @@ interface AlarmSetInterface {
     *  Case 2* : currentTime > wakeupTime && currentTime < wakeupTime + PERSONAL_TIME_OFFSET && currentTime + travelTime <= arriveTime -> wakeup immediately
     *  Case 3 : currentTime > arriveTime || currentTime + travelTime > arriveTime  -> wakeup tomorrow */
 
-    private fun modifyWakeupTime(originalAlarmDao: Model.AlarmDao): Model.AlarmDao {
-        var shouldWakeupAlarmDao: Model.AlarmDao
-        val wakeupTime = originalAlarmDao.toCalendar()
-        val currentTime = mCalendar()
+    companion object{
+        fun modifyWakeupTime(originalAlarmDao: Model.AlarmDao): Model.AlarmDao {
+            var shouldWakeupAlarmDao: Model.AlarmDao
+            val wakeupTime = originalAlarmDao.toCalendar()
+            val currentTime = mCalendar()
 
-        if(originalAlarmDao.placePicked != null){
-            val arriveTime = mCalendar()
-            arriveTime.timeInMillis = originalAlarmDao.placePicked!!.arriveTime
-            val travelTime = originalAlarmDao.placePicked!!.travelTime
-            val currentTimePlusTravelTime = mCalendar()
-            currentTimePlusTravelTime.timeInMillis = currentTime.timeInMillis + travelTime
-            val wakeupPlusPersonalTime = mCalendar()
-            wakeupPlusPersonalTime.timeInMillis = wakeupTime.timeInMillis + SmartAlarmFragment.PERSONAL_TIME_OFFSET
+            if(originalAlarmDao.placePicked != null){
+                val arriveTime = mCalendar()
+                arriveTime.timeInMillis = originalAlarmDao.placePicked!!.arriveTime
+                val travelTime = originalAlarmDao.placePicked!!.travelTime
+                val currentTimePlusTravelTime = mCalendar()
+                currentTimePlusTravelTime.timeInMillis = currentTime.timeInMillis + travelTime
+                val wakeupPlusPersonalTime = mCalendar()
+                wakeupPlusPersonalTime.timeInMillis = wakeupTime.timeInMillis + SmartAlarmFragment.PERSONAL_TIME_OFFSET
 
-            if(currentTime.minBefore(wakeupTime)){
-                Log.d("Case 1", "Wake Normal")
-                shouldWakeupAlarmDao = originalAlarmDao
-            }else if(wakeupTime.minBefore(currentTime) && currentTime.minBefore(currentTimePlusTravelTime) &&  currentTimePlusTravelTime.minBefore(arriveTime)){ // Case 2
-                Log.d("Case 2", "Wake Now")
-                val now = Calendar.getInstance()
-                val newDate = mCalendar().toDatePicked(now.timeInMillis)
-                val newTime = mCalendar().toTimeWake(now.timeInMillis)
-                shouldWakeupAlarmDao  = Model.AlarmDao(newDate, newTime, originalAlarmDao.repeatDay, originalAlarmDao.placePicked)
-            } else {
-                Log.d("Case 3", "Wake Tomorrow")
-                shouldWakeupAlarmDao = shouldWakeTomorrow(originalAlarmDao)
+                if(currentTime.minBefore(wakeupTime)){
+                    Log.d("Case 1", "Wake Normal")
+                    shouldWakeupAlarmDao = originalAlarmDao
+                }else if(wakeupTime.minBefore(currentTime) && currentTime.minBefore(currentTimePlusTravelTime) &&  currentTimePlusTravelTime.minBefore(arriveTime)){ // Case 2
+                    Log.d("Case 2", "Wake Now")
+                    val now = Calendar.getInstance()
+                    val newDate = mCalendar().toDatePicked(now.timeInMillis)
+                    val newTime = mCalendar().toTimeWake(now.timeInMillis)
+                    shouldWakeupAlarmDao  = Model.AlarmDao(newDate, newTime, originalAlarmDao.repeatDay, originalAlarmDao.placePicked)
+                } else {
+                    Log.d("Case 3", "Wake Tomorrow")
+                    shouldWakeupAlarmDao = shouldWakeTomorrow(originalAlarmDao)
+                }
+
+                return shouldWakeupAlarmDao
+
+            }else{
+                return shouldWakeTomorrow(originalAlarmDao)
             }
 
-            return shouldWakeupAlarmDao
+            //        Case 3
+            //        if(arriveTime.minBefore(currentTime) || arriveTime.minBefore(currentTimePlusTravelTime)
+            // Case 1
 
-        }else{
-            return shouldWakeTomorrow(originalAlarmDao)
         }
 
-
-//        Case 3
-//        if(arriveTime.minBefore(currentTime) || arriveTime.minBefore(currentTimePlusTravelTime)
-        // Case 1
+        private fun shouldWakeTomorrow(alarmDao: Model.AlarmDao) : Model.AlarmDao{
+            val wakeTimeInMillis = WaketimeUtil.decideWakeupTimeMillis(alarmDao)
+            alarmDao.datePicked = mCalendar().toDatePicked(wakeTimeInMillis)
+            return alarmDao
+        }
 
     }
+
 
     /** Internal method zone **/
-
-    private fun shouldWakeTomorrow(alarmDao: Model.AlarmDao) : Model.AlarmDao{
-        val wakeTimeInMillis = WaketimeUtil.decideWakeupTimeMillis(alarmDao)
-        alarmDao.datePicked = mCalendar().toDatePicked(wakeTimeInMillis)
-        return alarmDao
-    }
 
     private fun startAlarmReceiver(alarmDao: Model.AlarmDao) {
         //        broadcast notification

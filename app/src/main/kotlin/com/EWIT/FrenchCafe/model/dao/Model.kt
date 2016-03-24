@@ -44,7 +44,7 @@ object Model{
     data class PlaceLatLng(val latitude: Double, val longitude: Double) : PaperParcelable
 
     @PaperParcel
-    data class AlarmDao(var datePicked: DatePicked, var timeWake: TimeWake, var repeatDay: List<Int>, var placePicked: PlacePicked? = null): PaperParcelable{
+    data class AlarmDao(var datePicked: DatePicked, var timeWake: TimeWake, var repeatDay: List<Int>, var placePicked: PlacePicked? = null, var alarmSound: String? = null): PaperParcelable{
         fun toCalendar(): Calendar{
             return GregorianCalendar(datePicked.year,
                     datePicked.monthOfYear,

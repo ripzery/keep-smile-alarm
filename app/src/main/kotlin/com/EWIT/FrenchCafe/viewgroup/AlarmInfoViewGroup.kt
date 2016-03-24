@@ -7,13 +7,11 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
 import com.EWIT.FrenchCafe.R
+import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.util.WaketimeUtil
-import com.google.android.gms.location.places.Place
-import com.google.android.gms.location.places.Places
 import kotlinx.android.synthetic.main.viewgroup_alarm_info.view.*
-import pl.charmas.android.reactivelocation.ReactiveLocationProvider
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.subjects.PublishSubject
@@ -72,7 +70,9 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
 
         btnSwitch.setOnCheckedChangeListener { compoundBtn: CompoundButton, isChecked: Boolean ->
             when (isChecked) {
-                true -> WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
+                true -> {
+                    WakeupAlarmManager.broadcastWakeupAlarmIntent(AlarmSetInterface.modifyWakeupTime(alarmDao))
+                }
                 false -> {
                     /* cancel alarm */
                     WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmDao))

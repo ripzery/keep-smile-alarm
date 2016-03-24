@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.WindowManager
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.replaceFragment
+import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.fragment.WakeTrackerFragment
 
 /**
@@ -37,6 +38,15 @@ class WakeTrackerActivity : AppCompatActivity(){
         super.onPause()
     }
 
+    override fun onBackPressed() {
+        // Do nothing
+        if(!wakeTrackerFragment.isCompleted) {
+            toast("Open your eye for 15 sec to stop alarm")
+        }else{
+            super.onBackPressed()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         return super.onCreateOptionsMenu(menu)
     }
@@ -58,17 +68,8 @@ class WakeTrackerActivity : AppCompatActivity(){
     private fun initInstance() {
         wakeTrackerFragment = WakeTrackerFragment.getInstance()
         replaceFragment(R.id.contentContainer, wakeTrackerFragment)
-        playAlarmSound()
     }
 
-    private fun playAlarmSound(){
-        //TODO: loop alarm sound
-
-    }
-
-    private fun cancelAlarmSound(){
-        //TODO: remove alarm sound
-    }
 
     /** Listener zone **/
 

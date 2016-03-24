@@ -67,23 +67,21 @@
                     android:id="@+id/tvPickTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pick time"
-                    android:fontFamily="sans-serif-thin"
-                    android:textAllCaps="true"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:text="@string/fragment_manual_alarm_pick_time"
+                    style="@style/TextHeading"/>
 
                 <include layout="@layout/layout_divider"/>
 
                 <include layout="@layout/layout_time_picker"/>
 
-                <include layout="@layout/layout_repeat_day"/>
+                <include layout="@layout/layout_choose_alarm_sound"/>
 
+                <include layout="@layout/layout_repeat_day"/>
 
                 <Button
                     android:id="@+id/btnSetAlarm"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp"
+                    android:layout_height="@dimen/button_height_64"
                     android:layout_marginTop="@dimen/margin_padding_16"
                     android:theme="@style/BaseButton.Pink"
                     android:text="Set Alarm"/>

@@ -17,6 +17,10 @@
         <item name="colorButtonNormal">@color/colorTeal</item>
     </style>
 
+    <style name="BaseButton.Indigo">
+        <item name="colorButtonNormal">@color/colorIndigo</item>
+    </style>
+
     <style name="RepeatDayToggleButton" parent="Widget.AppCompat.Button">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">50dp</item>
