@@ -33,10 +33,10 @@ class AlarmSetPagerAdapter(var fm: FragmentManager, var context: Context, var al
         return showFragment
     }
 
-    fun onLocationSettingResult(isEnable: Boolean) {
+    fun onLocationSettingResult(isEnable: Boolean, requestCode: Int) {
         if (showFragment != null && showFragment is SmartAlarmFragment) {
             var smartFragment = showFragment as SmartAlarmFragment
-            smartFragment.onLocationSettingResult(isEnable)
+            smartFragment.onLocationSettingResult(isEnable, requestCode)
         }
     }
 

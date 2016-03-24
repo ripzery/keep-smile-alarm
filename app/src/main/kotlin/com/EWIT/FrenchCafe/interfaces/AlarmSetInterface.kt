@@ -29,8 +29,6 @@ interface AlarmSetInterface {
         /* Set a correct time*/
         var correctedAlarmDao = modifyWakeupTime(alarmDao)
 
-        Log.d("TEST", correctedAlarmDao.toString())
-
         /* update alarm collection in share preference */
         updateAlarmCollectionDao(correctedAlarmDao)
 
@@ -47,8 +45,6 @@ interface AlarmSetInterface {
 
         /* Set a correct time*/
         var correctedAlarmDao = modifyWakeupTime(alarmDao)
-
-        Log.d("TEST", correctedAlarmDao.toString())
 
         /* update new alarmDao */
         alarmCollectionList[index] = correctedAlarmDao

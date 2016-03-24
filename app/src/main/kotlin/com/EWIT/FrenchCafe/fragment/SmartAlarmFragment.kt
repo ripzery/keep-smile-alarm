@@ -18,11 +18,11 @@ import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.model.dao.NetworkModel
 import com.EWIT.FrenchCafe.network.HttpManager
 import com.EWIT.FrenchCafe.util.WaketimeUtil
-import com.fernandocejas.frodo.annotation.RxLogObservable
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.places.ui.PlacePicker
+import com.jakewharton.rxbinding.view.clicks
 import kotlinx.android.synthetic.main.fragment_smart_alarm.*
 import kotlinx.android.synthetic.main.layout_repeat_day.*
 import kotlinx.android.synthetic.main.layout_time_picker.*
@@ -33,6 +33,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Euro on 3/10/16 AD.
@@ -40,9 +41,6 @@ import java.util.*
 class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
     /** Variable zone **/
-    val START_PLACE_PICKER_REQUEST = 4;
-    val DESTINATION_PLACE_PICKER_REQUEST = 5;
-
     private val c: Calendar = Calendar.getInstance()
     private val hour = c.get(Calendar.HOUR_OF_DAY)
     private val minute = c.get(Calendar.MINUTE)
@@ -60,7 +58,9 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     private var destPlace: Model.PlaceDetail? = null
     private var editIndex: Int = -1
     private val mRrule: String? = ""
-    private val locationSettingObservable = PublishSubject.create<Boolean>()
+    private var progressDialog: ProgressDialog? = null
+    private var locationSettingObservable = PublishSubject.create<Pair<Boolean, Int>>()
+    private var settingSubscription: Subscription? = null
     lateinit private var locationProvider: ReactiveLocationProvider
     private val locationRequest: LocationRequest = LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -78,6 +78,8 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         val ARG_2 = "ARG_2"
         val PERSONAL_TIME_OFFSET = 60 * 60 * 1000
         val CHECK_LOCATION_SETTING_REQUEST = 6
+        val START_PLACE_PICKER_REQUEST = 4;
+        val DESTINATION_PLACE_PICKER_REQUEST = 5;
 
         fun newInstance(param1: Model.AlarmDao?, editIndex: Int): SmartAlarmFragment {
             var bundle: Bundle = Bundle()
@@ -139,13 +141,15 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     override fun onStop() {
         super.onStop()
         travelInfoSubscription?.unsubscribe()
+        settingSubscription?.unsubscribe()
     }
 
     /** Override method zone **/
 
-    fun onLocationSettingResult(isAccept: Boolean) {
+    fun onLocationSettingResult(isAccept: Boolean, requestCode: Int) {
         isEnabledLocation = isAccept
-        locationSettingObservable.onNext(isEnabledLocation)
+        locationSettingObservable.onNext(Pair(isAccept, requestCode))
+        log("locationSettingOnNext $isEnabledLocation")
         if (!isEnabledLocation) toast("Please enable location setting")
     }
 
@@ -195,9 +199,41 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
         cbRepeat.setOnClickListener(cbRepeatListener)
 
-        btnSetDest.setOnClickListener(btnSetDestListener)
+        //        btnSetDest.setOnClickListener(btnSetDestListener)
 
-        btnSetStart.setOnClickListener(btnSetStartListener)
+        //        btnSetStart.setOnClickListener(btnSetStartListener)
+
+        log("Init instance")
+
+        btnSetStart.clicks()
+                .subscribe {
+                    isEnabledLocation = false
+                    progressDialog = ProgressDialog.show(activity, getString(R.string.activity_set_alarm_dialog_title), getString(R.string.activity_set_alarm_dialog_setting_content), true)
+                    startCheckLocationSetting(START_PLACE_PICKER_REQUEST)
+                }
+
+
+        getLocationSettingObservable()
+                .filter { it.second == START_PLACE_PICKER_REQUEST || it.second == DESTINATION_PLACE_PICKER_REQUEST }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    progressDialog?.dismiss()
+                    if (it.first) startActivityForResult(builder.build(activity), it.second);
+                }
+
+        btnSetDest.clicks()
+                .subscribe {
+                    isEnabledLocation = false
+                    progressDialog = ProgressDialog.show(activity, getString(R.string.activity_set_alarm_dialog_title), getString(R.string.activity_set_alarm_dialog_setting_content), true)
+                    startCheckLocationSetting(DESTINATION_PLACE_PICKER_REQUEST)
+                }
+    }
+
+    private fun getLocationSettingObservable(): Observable<Pair<Boolean, Int>> {
+        return locationSettingObservable
+                .doOnNext { if (!it.first) progressDialog?.dismiss() }
+
     }
 
     private fun initEditData(alarmDao: Model.AlarmDao) {
@@ -239,7 +275,6 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         return destPlace != null
     }
 
-    @RxLogObservable(RxLogObservable.Scope.STREAM)
     private fun getCalculateDurationInTrafficObservable(): Observable<NetworkModel.ElementValue> {
         val startLatLng = "${startPlace!!.latLng.latitude},${startPlace!!.latLng.longitude}"
         val destLatLng = "${destPlace!!.latLng.latitude},${destPlace!!.latLng.longitude}"
@@ -256,23 +291,24 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                 }
     }
 
-    @RxLogObservable
     private fun getStartLocationObservable(progressDialog: ProgressDialog): Observable<Model.AlarmDao?>? {
-        startCheckLocationSetting()
+        locationSettingObservable = PublishSubject.create<Pair<Boolean, Int>>()
+        startCheckLocationSetting(CHECK_LOCATION_SETTING_REQUEST)
 
         return locationSettingObservable
-                .doOnNext { if (!it) progressDialog.dismiss() }
-                .filter { it }
-                .flatMap { locationProvider.getUpdatedLocation(locationRequest) }
+                .debounce(30, TimeUnit.MILLISECONDS)
+                .doOnNext { if (!it.first) progressDialog.dismiss() }
+                .filter { it.first }
                 .flatMap {
-                    startPlace = Model.PlaceDetail("", "${it.latitude},${it.longitude}", Model.PlaceLatLng(it.latitude, it.longitude))
-                    locationProvider.getReverseGeocodeObservable(it.latitude, it.longitude, 1)
+                    locationProvider.getCurrentPlace(null)
+                    //                    locationProvider.getUpdatedLocation(locationRequest)
                 }
-                .map {
-                    if (it.size > 0 && it != null) {
-                        startPlace?.name = it[0].featureName
+                .doOnNext {
+                    startPlace = Model.PlaceDetail("", "${it[0].place.latLng.latitude},${it[0].place.latLng.longitude}", Model.PlaceLatLng(it[0].place.latLng.latitude, it[0].place.latLng.longitude))
+                    log("Hi -> ${it[0].place.name}")
+                    if (it.count > 0 && it != null) {
+                        startPlace?.name = it[0].place.name.toString()
                     }
-                    it
                 }
                 .flatMap {
                     getCalculateDurationInTrafficObservable()
@@ -289,26 +325,26 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         return arrivalTime - duration
     }
 
-    private fun startCheckLocationSetting() {
+    private fun startCheckLocationSetting(requestCode: Int) {
         locationProvider
                 .checkLocationSettings(locationSetting)
                 .subscribe {
                     if (it.status.statusCode == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
                         try {
-                            it.status.startResolutionForResult(activity, CHECK_LOCATION_SETTING_REQUEST)
+                            log("test check location setting")
+                            it.status.startResolutionForResult(activity, requestCode)
                         } catch(ex: IntentSender.SendIntentException) {
                             ex.printStackTrace()
                         }
                     } else {
                         isEnabledLocation = true
-                        locationSettingObservable.onNext(isEnabledLocation)
+                        locationSettingObservable.onNext(Pair(isEnabledLocation, requestCode))
+                        log("locationSettingOnNext true")
                     }
                 }
     }
 
     private fun generateAlarmDao(durationInTraffic: NetworkModel.ElementValue): Model.AlarmDao? {
-        log(durationInTraffic.toString())
-
         /* initialize alarmDao from current date and time */
         alarmDao = Model.AlarmDao(currentDate, currentTime, repeatDayList)
 
@@ -341,16 +377,16 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
         if (isPickLocation() || alarmDao?.placePicked != null) {
 
-            val progressDialog = ProgressDialog.show(activity, "Please wait", "Calculating travel time..", true)
+            progressDialog = ProgressDialog.show(activity, getString(R.string.activity_set_alarm_dialog_title), getString(R.string.activity_set_alarm_dialog_set_alarm), true)
 
             isEnabledLocation = false
             if (startPlace == null) {
 
-                travelInfoSubscription = getStartLocationObservable(progressDialog)
+                travelInfoSubscription = getStartLocationObservable(progressDialog!!)
                         ?.subscribeOn(Schedulers.io())
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.subscribe ({ it ->
-                            progressDialog.dismiss()
+                            progressDialog?.dismiss()
                             if (editIndex == -1) {
                                 setAlarm(it!!)
                             } else {
@@ -362,7 +398,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
             } else {
                 travelInfoSubscription = getCalculateDurationInTrafficObservable()
                         .map { generateAlarmDao(it) }
-                        .doOnTerminate { progressDialog.dismiss() }
+                        .doOnTerminate { progressDialog?.dismiss() }
                         .subscribe ({ it ->
                             if (editIndex == -1) setAlarm(it!!)
                             else updateAlarm(it!!, editIndex)
@@ -380,19 +416,4 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         tvDestTime.text = "${getString(R.string.fragment_maps_alarm_destination)} ${currentTime.getTimeFormat()}"
     }
 
-    val btnSetStartListener = { view: View ->
-
-        // TODO: Check if location setting enabled
-        startActivityForResult(builder.build(activity), START_PLACE_PICKER_REQUEST);
-
-        //        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Start"),
-        //                MapsActivity.REQUEST_CODE_START)
-    }
-
-    val btnSetDestListener = { view: View ->
-        // TODO: Check if location setting enabled
-        startActivityForResult(builder.build(activity), DESTINATION_PLACE_PICKER_REQUEST)
-        //        startActivityForResult(Intent(activity, MapsActivity::class.java).putExtra(MapsActivity.EXTRA_TOOLBAR_TITLE, "Pick Destination"),
-        //                MapsActivity.REQUEST_CODE_DEST)
-    }
 }
