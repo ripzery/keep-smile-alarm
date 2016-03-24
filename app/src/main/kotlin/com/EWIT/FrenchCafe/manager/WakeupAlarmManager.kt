@@ -21,6 +21,7 @@ object WakeupAlarmManager {
     val CANCEL_ALARM = "CANCEL_ALARM"
     val INTENT_EXTRA_BROADCAST_REPEAT_DAY = "EXTRA://REPEAT_DAY"
     val INTENT_EXTRA_ALARM_SOUND = "EXTRA://ALARM_SOUND"
+    val INTENT_EXTRA_ALARM_DAO = "EXTRA://ALARM_DAO"
 
     /** Method zone**/
 
@@ -35,19 +36,19 @@ object WakeupAlarmManager {
 
         /* set type and action note: action must not be null */
         intent.action = "${WaketimeUtil.calculationWaketimeSummation(alarmDao)}"
-        intent.putExtra(INTENT_EXTRA_ALARM_SOUND, alarmDao.alarmSound)
+        intent.putExtra(INTENT_EXTRA_ALARM_DAO, alarmDao)
         intent.type = WAKEUP_ALARM
-
-        /* if user also set repeat day */
-        if (alarmDao.repeatDay.size != 0) {
-            intent.putExtra(INTENT_EXTRA_BROADCAST_REPEAT_DAY, alarmDao.repeatDay.toIntArray())
-        }
 
         /* set pending intent */
         val alarmIntent: PendingIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
-        /* set wake time */
-        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDao.toCalendar().timeInMillis, alarmIntent)
+        if(alarmDao.repeatDay.size > 0) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmDao.toCalendar().timeInMillis, AlarmManager.INTERVAL_DAY, alarmIntent)
+        }
+        else{
+            /* set wake time */
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDao.toCalendar().timeInMillis, alarmIntent)
+        }
     }
 
     fun startAlarm(wakeupAlarmService: IntentService, intent: Intent?) {
@@ -55,7 +56,7 @@ object WakeupAlarmManager {
         val wakeupIntent = Intent(wakeupAlarmService, WakeTrackerActivity::class.java)
         wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         wakeupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        wakeupIntent.putExtra(INTENT_EXTRA_ALARM_SOUND, intent?.getStringExtra(INTENT_EXTRA_ALARM_SOUND))
+        wakeupIntent.putExtra(INTENT_EXTRA_ALARM_DAO, intent?.getParcelableExtra<Model.AlarmDao>(INTENT_EXTRA_ALARM_DAO))
         wakeupAlarmService.startActivity(wakeupIntent)
     }
 

@@ -4,8 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.WakefulBroadcastReceiver
+import com.EWIT.FrenchCafe.extension.mCalendar
+import com.EWIT.FrenchCafe.extension.minBefore
 import com.EWIT.FrenchCafe.manager.MyNotificationManager
+import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
+import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.service.NotificationService
 import com.EWIT.FrenchCafe.service.WakeupAlarmService
 import com.EWIT.FrenchCafe.util.WaketimeUtil
@@ -30,18 +34,28 @@ class BootBroadcastReceiver : WakefulBroadcastReceiver() {
             /* reset alarm */
 
             //TODO: reset all alarm
+            val alarmCollectionDao: Model.AlarmCollectionDao = SharePrefDaoManager.getAlarmCollectionDao()
+
+            alarmCollectionDao.alarmCollectionList.forEach { alarmDao ->
+
+                if (alarmDao.repeatDay.size > 0) {
+                    WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
+                } else if (mCalendar().minBefore(alarmDao.toCalendar())) {
+                    WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
+                }
+
+            }
 
         } else if (intent.type.equals(MyNotificationManager.SET_NOTIFICATION)) {
 
             startNotificationService(intent, context)
 
         } else if (intent.type.equals(WakeupAlarmManager.WAKEUP_ALARM)) {
+            var alarmDao: Model.AlarmDao = intent.getParcelableExtra<Model.AlarmDao>(WakeupAlarmManager.INTENT_EXTRA_ALARM_DAO)
 
-            var repeatDayList = intent.getIntArrayExtra(WakeupAlarmManager.INTENT_EXTRA_BROADCAST_REPEAT_DAY)
+            if (alarmDao.repeatDay.size > 0) {
 
-            if (repeatDayList != null ) {
-
-                if (WaketimeUtil.isAlarmToday(repeatDayList)) {
+                if (WaketimeUtil.isAlarmToday(alarmDao.repeatDay.toIntArray())) {
 
                     // if should alarm today then start service
                     startSetWakeupAlarmService(intent, context)
@@ -71,7 +85,7 @@ class BootBroadcastReceiver : WakefulBroadcastReceiver() {
 
         wakeupAlarmService.type = WakeupAlarmManager.WAKEUP_ALARM
         wakeupAlarmService.action = intent?.action
-        wakeupAlarmService.putExtra(WakeupAlarmManager.INTENT_EXTRA_ALARM_SOUND, intent!!.getStringExtra(WakeupAlarmManager.INTENT_EXTRA_ALARM_SOUND))
+        wakeupAlarmService.putExtra(WakeupAlarmManager.INTENT_EXTRA_ALARM_DAO, intent!!.getParcelableExtra<Model.AlarmDao>(WakeupAlarmManager.INTENT_EXTRA_ALARM_DAO))
 
         context?.startService(wakeupAlarmService)
     }

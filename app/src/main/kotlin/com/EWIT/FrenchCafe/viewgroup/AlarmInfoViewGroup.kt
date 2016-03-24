@@ -70,22 +70,7 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
         cardView.setOnClickListener { publishEditSubject.onNext(alarmDao) }
         btnDelete.setOnClickListener { publishDeleteSubject.onNext(1) }
 
-        btnSwitch.setOnCheckedChangeListener { compoundBtn: CompoundButton, isChecked: Boolean ->
-            when (isChecked) {
-                true -> {
-                    WakeupAlarmManager.broadcastWakeupAlarmIntent(AlarmSetInterface.modifyWakeupTime(alarmDao))
-                }
-                false -> {
-                    /* cancel alarm */
-                    if(alarmDao.toCalendar().minBefore(mCalendar())) WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmDao))
-                }
-            }
-            publishSwitchSubject.onNext(Pair(alarmDao, isChecked))
-        }
-
-        switchRepeatDay.setOnCheckedChangeListener({ cb: CompoundButton, isChecked: Boolean ->
-            repeatDay.visibility = if (isChecked) View.VISIBLE else View.GONE
-        })
+        switchRepeatDay.setOnCheckedChangeListener(repeatDayListener)
     }
 
     fun setAlarmDao(alarmDao: Model.AlarmDao) {
@@ -100,7 +85,12 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
     }
 
     private fun setupWaketime(alarmDao: Model.AlarmDao) {
-        btnSwitch.isChecked = !alarmDao.isAlreadyWaked()
+
+        if(alarmDao.repeatDay.size == 0)
+            btnSwitch.isChecked = !alarmDao.isAlreadyWaked()
+
+        /* Must change onCheckedChange after set btnSwitch automatically checked */
+        btnSwitch.setOnCheckedChangeListener(switchListener)
 
         /* manage text wake time */
         tvTime.text = alarmDao.timeWake.getTimeFormat()
@@ -153,5 +143,24 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
             a.recycle();
         }
         */
+    }
+
+    /** Listener zone **/
+
+    val switchListener = { compoundBtn: CompoundButton, isChecked: Boolean ->
+        when (isChecked) {
+            true -> {
+                WakeupAlarmManager.broadcastWakeupAlarmIntent(AlarmSetInterface.modifyWakeupTime(alarmDao))
+            }
+            false -> {
+                /* cancel alarm */
+                WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmDao))
+            }
+        }
+        publishSwitchSubject.onNext(Pair(alarmDao, isChecked))
+    }
+
+    val repeatDayListener = { cb: CompoundButton, isChecked: Boolean ->
+        repeatDay.visibility = if (isChecked) View.VISIBLE else View.GONE
     }
 }
