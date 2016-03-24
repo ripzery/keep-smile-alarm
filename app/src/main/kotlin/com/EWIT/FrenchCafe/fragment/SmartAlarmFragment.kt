@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.IntentSender
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -24,6 +26,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.places.ui.PlacePicker
 import com.jakewharton.rxbinding.view.clicks
 import kotlinx.android.synthetic.main.fragment_smart_alarm.*
+import kotlinx.android.synthetic.main.layout_choose_alarm_sound.*
 import kotlinx.android.synthetic.main.layout_repeat_day.*
 import kotlinx.android.synthetic.main.layout_time_picker.*
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider
@@ -60,6 +63,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     private var editIndex: Int = -1
     private val mRrule: String? = ""
     private var progressDialog: ProgressDialog? = null
+    private var alarmSoundUri: Uri? = null
     private var locationSettingObservable = PublishSubject.create<Pair<Boolean, Int>>()
     private var settingSubscription: Subscription? = null
     lateinit private var locationProvider: ReactiveLocationProvider
@@ -82,6 +86,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
         val CHECK_LOCATION_SETTING_REQUEST = 6
         val START_PLACE_PICKER_REQUEST = 4;
         val DESTINATION_PLACE_PICKER_REQUEST = 5;
+        val REQUEST_CODE_CHOOSE_ALARM_SOUND = 11
 
         fun newInstance(param1: Model.AlarmDao?, editIndex: Int): SmartAlarmFragment {
             var bundle: Bundle = Bundle()
@@ -118,6 +123,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -133,6 +139,10 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
                     destPlace = Model.PlaceDetail(place.id, place.name.toString(), Model.PlaceLatLng(place.latLng.latitude, place.latLng.longitude))
                     tvSetDestination.text = destPlace?.name
                     //                    checkedPickLocation()
+                }
+                REQUEST_CODE_CHOOSE_ALARM_SOUND -> {
+                    alarmSoundUri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                    tvAlarmSound.text = alarmSoundUri.toString()
                 }
             //                MapsActivity.REQUEST_CODE_START -> tvSetStart.text = data!!.getStringExtra(MapsActivity.RETURN_INTENT_EXTRA_PLACE)
             //                MapsActivity.REQUEST_CODE_DEST -> tvSetDestination.text = data!!.getStringExtra(MapsActivity.RETURN_INTENT_EXTRA_PLACE)
@@ -190,11 +200,11 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
         time.setIs24HourView(false)
 
-        // TODO : Init your location and show progress view in start
-
         time.setOnTimeChangedListener(timeChangedListener)
 
         btnSetAlarm.setOnClickListener(btnSetAlarmListener)
+
+        btnChooseRingtone.setOnClickListener(chooseAlarmListener)
 
         cbRepeat.setOnClickListener(cbRepeatListener)
 
@@ -413,6 +423,13 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     val timeChangedListener = { timePicker: TimePicker, hour: Int, min: Int ->
         currentTime = Model.TimeWake(hour, min)
         tvDestTime.text = "${getString(R.string.fragment_maps_alarm_destination)} ${currentTime.getTimeFormat()}"
+    }
+
+    val chooseAlarmListener = { view:View ->
+        val intent:Intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm Sound");
+        this.startActivityForResult(intent, ManualAlarmFragment.REQUEST_CODE_CHOOSE_ALARM_SOUND);
     }
 
 }

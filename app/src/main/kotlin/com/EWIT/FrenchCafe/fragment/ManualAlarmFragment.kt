@@ -2,6 +2,8 @@ package com.EWIT.FrenchCafe.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -18,6 +20,7 @@ import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
 import com.EWIT.FrenchCafe.model.dao.Model
 import kotlinx.android.synthetic.main.fragment_manual_alarm.*
+import kotlinx.android.synthetic.main.layout_choose_alarm_sound.*
 import kotlinx.android.synthetic.main.layout_repeat_day.*
 import kotlinx.android.synthetic.main.layout_time_picker.*
 import java.util.*
@@ -35,6 +38,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     private val month = c.get(Calendar.MONTH)
     private val year = c.get(Calendar.YEAR)
     private var repeatDayList: List<Int> = listOf()
+    private var alarmSoundUri: Uri? = null
     lateinit private var currentDate: Model.DatePicked
     lateinit private var currentTime: Model.TimeWake
     private var alarmDao: Model.AlarmDao? = null
@@ -46,6 +50,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     companion object {
         val ARG_1 = "ARG_1"
         val ARG_2 = "ARG_2"
+        val REQUEST_CODE_CHOOSE_ALARM_SOUND = 10
 
         fun newInstance(alarmDao: Model.AlarmDao?, editIndex: Int): ManualAlarmFragment {
             var bundle: Bundle = Bundle()
@@ -79,6 +84,18 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         super.onViewCreated(view, savedInstanceState)
         initInstance()
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == Activity.RESULT_OK){
+            when(requestCode){
+                REQUEST_CODE_CHOOSE_ALARM_SOUND -> {
+                    alarmSoundUri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                    tvAlarmSound.text = alarmSoundUri.toString()
+                }
+            }
+        }
     }
 
     /** Override method zone **/
@@ -122,6 +139,7 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
 
         time.setOnTimeChangedListener(timeChangedListener)
 
+        btnChooseRingtone.setOnClickListener(chooseAlarmListener)
 
         btnSetAlarm.setOnClickListener(btnSetAlarmListener)
 
@@ -177,5 +195,12 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
     val timeChangedListener = { timePicker: TimePicker, hour: Int, min: Int ->
         currentTime = Model.TimeWake(hour, min)
         tvPickTime.text = "Pick time ${currentTime.getTimeFormat()}"
+    }
+
+    val chooseAlarmListener = { view:View ->
+        val intent:Intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm Sound");
+        this.startActivityForResult(intent, REQUEST_CODE_CHOOSE_ALARM_SOUND);
     }
 }

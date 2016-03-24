@@ -18,7 +18,7 @@
     <include layout="@layout/layout_divider"/>
 
     <TextView
-        android:id="@+id/tvRingtone"
+        android:id="@+id/tvAlarmSound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_padding_16"
