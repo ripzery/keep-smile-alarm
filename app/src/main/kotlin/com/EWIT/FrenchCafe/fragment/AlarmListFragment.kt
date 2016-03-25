@@ -180,8 +180,9 @@ class AlarmListFragment : Fragment() {
             startActivityForResult(intent, AlarmSetActivity.RESULT_CODE_EDIT)
         }
 
-        override fun onCheckedChange(alarmDao: Model.AlarmDao, isChecked: Boolean) {
-            // TODO : Do something when switch change state
+        override fun onCheckedChange(alarmDao: Model.AlarmDao, isChecked: Boolean, index: Int) {
+            alarmCollectionList[index] = alarmDao
+            save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
             toast( if(isChecked) "Set alarm at ${alarmDao.timeWake.getTimeFormat()}" else "Cancel alarm at ${alarmDao.timeWake.getTimeFormat()}" )
         }
     }

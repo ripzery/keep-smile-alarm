@@ -79,7 +79,7 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
                 alarmInfoInteractionListener.onDelete(adapterPosition)
             }
 
-            alarmInfoViewGroup.getSwitchObservable().subscribe { alarmInfoInteractionListener.onCheckedChange(it.first, it.second) }
+            alarmInfoViewGroup.getSwitchObservable().subscribe { alarmInfoInteractionListener.onCheckedChange(it.first, it.second, adapterPosition) }
         }
 
         fun setModel(alarmDao: Model.AlarmDao) {
@@ -90,7 +90,7 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
     /** Listener zone  **/
 
     interface AlarmInfoInteractionListener {
-        fun onCheckedChange(alarmDao: Model.AlarmDao, isChecked: Boolean)
+        fun onCheckedChange(alarmDao: Model.AlarmDao, isChecked: Boolean, index: Int)
         fun onEdit(alarmDao: Model.AlarmDao, index: Int)
         fun onDelete(index: Int)
     }

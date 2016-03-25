@@ -10,6 +10,7 @@ import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.mCalendar
 import com.EWIT.FrenchCafe.extension.minBefore
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
+import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.util.WaketimeUtil
@@ -76,6 +77,8 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
     fun setAlarmDao(alarmDao: Model.AlarmDao) {
         this.alarmDao = alarmDao
 
+
+
         setupWaketime(alarmDao)
 
         setupPlace(alarmDao)
@@ -86,10 +89,15 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
 
     private fun setupWaketime(alarmDao: Model.AlarmDao) {
 
-        if(alarmDao.repeatDay.size == 0)
-            btnSwitch.isChecked = !alarmDao.isAlreadyWaked()
-        else
-            btnSwitch.isChecked = true
+//        if(alarmDao.repeatDay.size == 0) {
+//            btnSwitch.isChecked = !alarmDao.isAlreadyWaked()
+//        }
+//        else {
+//            btnSwitch.isChecked = true
+//        }
+
+        btnSwitch.isChecked = alarmDao.isSwitchOn
+
 
         /* Must change onCheckedChange after set btnSwitch automatically checked */
         btnSwitch.setOnCheckedChangeListener(switchListener)
@@ -159,7 +167,9 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
                 WakeupAlarmManager.cancelAlarm(WaketimeUtil.getAlarmDaoUniqueId(alarmDao))
             }
         }
+        alarmDao.isSwitchOn = isChecked
         publishSwitchSubject.onNext(Pair(alarmDao, isChecked))
+
     }
 
     val repeatDayListener = { cb: CompoundButton, isChecked: Boolean ->

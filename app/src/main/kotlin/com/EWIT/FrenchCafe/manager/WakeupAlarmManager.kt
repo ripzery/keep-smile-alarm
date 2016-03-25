@@ -35,7 +35,7 @@ object WakeupAlarmManager {
         /* create intent */
         val intent: Intent = Intent(Contextor.context, BootBroadcastReceiver::class.java)
 
-        Log.d("Cancel Alarm ", "wakeTimeSum -> ${WaketimeUtil.getAlarmDaoUniqueId(alarmDao)}")
+        Log.d("Set Alarm ", "wakeTimeSum -> ${WaketimeUtil.getAlarmDaoUniqueId(alarmDao)}")
 
         /* set type and action note: action must not be null */
         intent.action = "${WaketimeUtil.getAlarmDaoUniqueId(alarmDao)}"

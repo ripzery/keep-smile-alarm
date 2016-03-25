@@ -158,7 +158,6 @@ class ManualAlarmFragment : Fragment(), AlarmSetInterface {
         time.setCurrentHour(alarmDao.timeWake.hourOfDay)
         //        time.hour = alarmDao.timeWake.hourOfDay
         time.setCurrentMinute(alarmDao.timeWake.minute)
-        log("takeEffect!")
         currentDate = mCalendar().toDatePicked()
         currentTime = alarmDao.timeWake
 

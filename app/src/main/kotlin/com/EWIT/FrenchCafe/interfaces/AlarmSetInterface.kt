@@ -44,7 +44,6 @@ interface AlarmSetInterface {
     }
 
     fun updateAlarm(alarmDao: Model.AlarmDao, index: Int) {
-
         var alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
 
         /* cancel alarm */
