@@ -7,10 +7,14 @@ import android.view.MenuItem
 import android.view.WindowManager
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.replaceFragment
+import com.EWIT.FrenchCafe.extension.save
 import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.fragment.WakeTrackerFragment
+import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
+import com.EWIT.FrenchCafe.util.SharePref
+import com.google.gson.Gson
 
 /**
  * Created by Euro on 3/10/16 AD.
@@ -69,6 +73,14 @@ class WakeTrackerActivity : AppCompatActivity(){
 
     private fun initInstance() {
         val alarmDao = intent.getParcelableExtra<Model.AlarmDao>(WakeupAlarmManager.INTENT_EXTRA_ALARM_DAO)
+
+        if(alarmDao.repeatDay.size == 0) {
+            val alarmCollectionDao = SharePrefDaoManager.getAlarmCollectionDao()
+            val index = alarmCollectionDao.alarmCollectionList.indexOf(alarmDao)
+            alarmCollectionDao.alarmCollectionList[index].isSwitchOn = false
+            save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(alarmCollectionDao))
+        }
+
         wakeTrackerFragment = WakeTrackerFragment.getInstance(alarmDao.alarmSound)
         replaceFragment(R.id.contentContainer, wakeTrackerFragment)
     }

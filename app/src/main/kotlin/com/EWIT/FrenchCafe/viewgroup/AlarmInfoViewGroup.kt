@@ -160,7 +160,8 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
     val switchListener = { compoundBtn: CompoundButton, isChecked: Boolean ->
         when (isChecked) {
             true -> {
-                WakeupAlarmManager.broadcastWakeupAlarmIntent(AlarmSetInterface.modifyWakeupTime(alarmDao))
+                alarmDao = AlarmSetInterface.modifyWakeupTime(alarmDao)
+                WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
             }
             false -> {
                 /* cancel alarm */

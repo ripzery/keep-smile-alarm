@@ -16,9 +16,11 @@ import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.activity.AlarmSetActivity
 import com.EWIT.FrenchCafe.extension.*
 import com.EWIT.FrenchCafe.interfaces.AlarmSetInterface
+import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
 import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.model.dao.NetworkModel
 import com.EWIT.FrenchCafe.network.HttpManager
+import com.EWIT.FrenchCafe.util.SharePref
 import com.EWIT.FrenchCafe.util.WaketimeUtil
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationSettingsRequest
@@ -388,41 +390,45 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
 
     val btnSetAlarmListener = { view: View ->
 
-        if (isPickLocation() || alarmDao?.placePicked != null) {
+        if(SharePrefDaoManager.getAlarmCollectionDao().isHasSmartAlarm() && editIndex == -1){
+            toast("There can be only one smart alarm.")
+        }else {
+            if (isPickLocation() || alarmDao?.placePicked != null) {
 
-            progressDialog = ProgressDialog.show(activity, getString(R.string.activity_set_alarm_dialog_title), getString(R.string.activity_set_alarm_dialog_set_alarm), true)
+                progressDialog = ProgressDialog.show(activity, getString(R.string.activity_set_alarm_dialog_title), getString(R.string.activity_set_alarm_dialog_set_alarm), true)
 
-            isEnabledLocation = false
-            if (startPlace == null) {
+                isEnabledLocation = false
+                if (startPlace == null) {
 
-                travelInfoSubscription = getStartLocationObservable(progressDialog!!)
-                        ?.subscribeOn(Schedulers.io())
-                        ?.observeOn(AndroidSchedulers.mainThread())
-                        ?.subscribe ({ it ->
-                            progressDialog?.dismiss()
-                            if (editIndex == -1) {
-                                setAlarm(it!!)
-                            } else {
-                                updateAlarm(it!!, editIndex)
-                            }
-                        }, { error -> toast("Embarrassing, error has occurred -> ${error.message}") })
+                    travelInfoSubscription = getStartLocationObservable(progressDialog!!)
+                            ?.subscribeOn(Schedulers.io())
+                            ?.observeOn(AndroidSchedulers.mainThread())
+                            ?.subscribe ({ it ->
+                                progressDialog?.dismiss()
+                                if (editIndex == -1) {
+                                    setAlarm(it!!)
+                                } else {
+                                    updateAlarm(it!!, editIndex)
+                                }
+                            }, { error -> toast("Embarrassing, error has occurred -> ${error.message}") })
+
+
+                } else {
+                    travelInfoSubscription = getCalculateDurationInTrafficObservable()
+                            .map { generateAlarmDao(it) }
+                            .doOnTerminate { progressDialog?.dismiss() }
+                            .subscribe ({ it ->
+                                if (editIndex == -1) setAlarm(it!!)
+                                else updateAlarm(it!!, editIndex)
+                            }, { error -> toast("Embarrassing, error has occurred -> ${error.message}") })
+                }
+
+                //            compositeSubscription.add(travelInfoSubscription)
 
 
             } else {
-                travelInfoSubscription = getCalculateDurationInTrafficObservable()
-                        .map { generateAlarmDao(it) }
-                        .doOnTerminate { progressDialog?.dismiss() }
-                        .subscribe ({ it ->
-                            if (editIndex == -1) setAlarm(it!!)
-                            else updateAlarm(it!!, editIndex)
-                        }, { error -> toast("Embarrassing, error has occurred -> ${error.message}") })
+                toast("Please pick arrival location")
             }
-
-//            compositeSubscription.add(travelInfoSubscription)
-
-
-        } else {
-            toast("Please pick arrival location")
         }
     }
 

@@ -64,5 +64,15 @@ object Model{
     }
 
     @PaperParcel
-    data class AlarmCollectionDao(var alarmCollectionList:ArrayList<AlarmDao>): PaperParcelable
+    data class AlarmCollectionDao(var alarmCollectionList:ArrayList<AlarmDao>): PaperParcelable {
+
+        fun isHasSmartAlarm(): Boolean{
+            for(alarm in alarmCollectionList){
+                if(alarm.placePicked != null){
+                    return true
+                }
+            }
+            return false
+        }
+    }
 }
