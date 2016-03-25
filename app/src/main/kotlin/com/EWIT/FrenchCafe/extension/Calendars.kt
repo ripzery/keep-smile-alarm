@@ -14,22 +14,22 @@ fun Calendar.minBefore(b: Calendar): Boolean {
     return timeInMillis / 60000 < b.timeInMillis / 60000
 }
 
-fun Calendar.getAlarmDao(): Model.AlarmDao {
+fun Calendar.toAlarmDao(): Model.AlarmDao {
     return Model.AlarmDao(Model.DatePicked(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DAY_OF_MONTH)),
             Model.TimeWake(get(Calendar.HOUR_OF_DAY), get(Calendar.MINUTE)), listOf())
 }
 
-fun Calendar.getAlarmDao(repeatDayList: List<Int>): Model.AlarmDao {
+fun Calendar.toAlarmDao(repeatDayList: List<Int>): Model.AlarmDao {
     return Model.AlarmDao(Model.DatePicked(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DAY_OF_MONTH)),
             Model.TimeWake(get(Calendar.HOUR_OF_DAY), get(Calendar.MINUTE)), repeatDayList)
 }
 
-fun Calendar.getAlarmDao(placePicked: Model.PlacePicked): Model.AlarmDao {
+fun Calendar.toAlarmDao(placePicked: Model.PlacePicked): Model.AlarmDao {
     return Model.AlarmDao(Model.DatePicked(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DAY_OF_MONTH)),
             Model.TimeWake(get(Calendar.HOUR_OF_DAY), get(Calendar.MINUTE)), listOf(), placePicked)
 }
 
-fun Calendar.getAlarmDao(repeatDayList: List<Int>, placePicked: Model.PlacePicked): Model.AlarmDao {
+fun Calendar.toAlarmDao(repeatDayList: List<Int>, placePicked: Model.PlacePicked): Model.AlarmDao {
     return Model.AlarmDao(Model.DatePicked(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DAY_OF_MONTH)),
             Model.TimeWake(get(Calendar.HOUR_OF_DAY), get(Calendar.MINUTE)), repeatDayList, placePicked)
 }

@@ -2,8 +2,6 @@ package com.EWIT.FrenchCafe
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -11,9 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import com.EWIT.FrenchCafe.activity.AlarmSetActivity
-import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.replaceFragment
-import com.EWIT.FrenchCafe.extension.toast
 import com.EWIT.FrenchCafe.fragment.AlarmListFragment
 import com.EWIT.FrenchCafe.fragment.MainFragment
 import com.bumptech.glide.Glide
@@ -55,12 +51,9 @@ class MainActivity : AppCompatActivity() {
         if (resultCode == RESULT_OK) {
             when (requestCode) {
                 AlarmSetActivity.RESULT_CODE_ADD -> {
-                    log("user add")
                     alarmListFragment.onAddedNewItem()
                 }
             }
-        } else {
-            log("user cancel")
         }
     }
 

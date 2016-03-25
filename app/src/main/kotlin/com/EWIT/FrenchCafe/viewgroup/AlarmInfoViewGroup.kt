@@ -88,6 +88,8 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
 
         if(alarmDao.repeatDay.size == 0)
             btnSwitch.isChecked = !alarmDao.isAlreadyWaked()
+        else
+            btnSwitch.isChecked = true
 
         /* Must change onCheckedChange after set btnSwitch automatically checked */
         btnSwitch.setOnCheckedChangeListener(switchListener)
@@ -154,7 +156,7 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
             }
             false -> {
                 /* cancel alarm */
-                WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmDao))
+                WakeupAlarmManager.cancelAlarm(WaketimeUtil.getAlarmDaoUniqueId(alarmDao))
             }
         }
         publishSwitchSubject.onNext(Pair(alarmDao, isChecked))

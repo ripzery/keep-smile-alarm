@@ -78,21 +78,16 @@ class AlarmListFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 AlarmSetActivity.RESULT_CODE_EDIT -> {
-                    log("user edit")
                     val index = data!!.getIntExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, 0)
                     alarmCollectionList[index] = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList[index]
                     recyclerAdapter.updateAtPosition(index)
                 }
             }
-        } else {
-            // user cancel
-            log("user cancel")
         }
     }
 
     override fun onResume() {
         super.onResume()
-        log("onResume : 15 Na ")
         //        alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
         //        recyclerAdapter.setList(alarmCollectionList)
 
@@ -128,7 +123,7 @@ class AlarmListFragment : Fragment() {
         val toDeleteAlarmDao = alarmCollectionList[index]
 
         /* cancel alarm */
-        WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(toDeleteAlarmDao))
+        WakeupAlarmManager.cancelAlarm(WaketimeUtil.getAlarmDaoUniqueId(toDeleteAlarmDao))
 
         /* delete */
         alarmCollectionList.removeAt(index)

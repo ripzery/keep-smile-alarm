@@ -48,7 +48,7 @@ interface AlarmSetInterface {
         var alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
 
         /* cancel alarm */
-        WakeupAlarmManager.cancelAlarm(WaketimeUtil.calculationWaketimeSummation(alarmCollectionList[index]))
+        WakeupAlarmManager.cancelAlarm(WaketimeUtil.getAlarmDaoUniqueId(alarmCollectionList[index]))
 
         /* update alarm sound uri */
         alarmDao.alarmSound = alarmSoundUri?.toString()

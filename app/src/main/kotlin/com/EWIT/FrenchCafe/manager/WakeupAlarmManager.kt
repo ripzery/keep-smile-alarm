@@ -5,6 +5,7 @@ import android.app.IntentService
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.EWIT.FrenchCafe.activity.WakeTrackerActivity
 import com.EWIT.FrenchCafe.model.dao.Model
 import com.EWIT.FrenchCafe.receiver.BootBroadcastReceiver
@@ -34,8 +35,10 @@ object WakeupAlarmManager {
         /* create intent */
         val intent: Intent = Intent(Contextor.context, BootBroadcastReceiver::class.java)
 
+        Log.d("Cancel Alarm ", "wakeTimeSum -> ${WaketimeUtil.getAlarmDaoUniqueId(alarmDao)}")
+
         /* set type and action note: action must not be null */
-        intent.action = "${WaketimeUtil.calculationWaketimeSummation(alarmDao)}"
+        intent.action = "${WaketimeUtil.getAlarmDaoUniqueId(alarmDao)}"
         intent.putExtra(INTENT_EXTRA_ALARM_DAO, alarmDao)
         intent.type = WAKEUP_ALARM
 
@@ -68,5 +71,6 @@ object WakeupAlarmManager {
         val alarmIntent = PendingIntent.getBroadcast(Contextor.context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
         val alarmManager = Contextor.context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(alarmIntent)
+        Log.d("Cancel Alarm ", "wakeTimeSum -> $wakeTimeSum")
     }
 }

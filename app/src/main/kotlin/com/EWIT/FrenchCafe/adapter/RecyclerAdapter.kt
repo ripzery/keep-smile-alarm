@@ -31,8 +31,6 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
             lastPosition = position
         }
 
-        Log.d("Adapter", alarmCollectionList[position].toString())
-
         holder!!.setModel(alarmCollectionList[position])
     }
 

@@ -1,4 +1,4 @@
-package com.EWIT.FrenchCafé;
+package com.EWIT.FrenchCafe;
 
 import org.junit.Test;
 

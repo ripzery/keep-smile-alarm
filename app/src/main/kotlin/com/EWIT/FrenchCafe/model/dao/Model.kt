@@ -14,7 +14,7 @@ import java.util.*
 object Model{
 
     @PaperParcel
-    data class TimeWake(val hourOfDay: Int, val minute: Int): PaperParcelable {
+    data class TimeWake(var hourOfDay: Int, val minute: Int): PaperParcelable {
         fun getTimeFormat() : String{
             return String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute)
         }
