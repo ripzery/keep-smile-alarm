@@ -12,6 +12,7 @@ import android.content.Context.*
 import android.content.Intent
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION
 import android.hardware.display.VirtualDisplay
 import android.media.CamcorderProfile
@@ -26,6 +27,7 @@ import android.os.*
 import android.os.Environment.DIRECTORY_MOVIES
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Surface
 import android.view.WindowManager
 import java.io.File
 import java.io.IOException
@@ -124,7 +126,8 @@ internal class RecordingManager(private val context: Context, private val listen
 
         projection = projectionManager.getMediaProjection(resultCode, data)
 
-        val surface = recorder!!.surface
+        val surface:Surface = recorder!!.surface
+
         display = projection!!.createVirtualDisplay(DISPLAY_NAME, recordingInfo.width, recordingInfo.height,
                 recordingInfo.density, VIRTUAL_DISPLAY_FLAG_PRESENTATION, surface, null, null)
 

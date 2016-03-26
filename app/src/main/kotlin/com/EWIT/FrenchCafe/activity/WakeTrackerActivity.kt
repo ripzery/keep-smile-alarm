@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.replaceFragment
@@ -32,7 +33,14 @@ class WakeTrackerActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        val decorView: View = window.decorView;
+        // Hide both the navigation bar and the status bar.
+        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+        // a general rule, you should design your app to hide the status bar whenever you
+        // hide the navigation bar.
+        val uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        decorView.systemUiVisibility = uiOptions;
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setFlagScreenOnEvenLocked()
         setContentView(R.layout.activity_wake_tracker)
         initInstance()
