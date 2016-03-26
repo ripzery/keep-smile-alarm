@@ -66,14 +66,17 @@ class WakeTrackerActivity : AppCompatActivity(){
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        intentData = CaptureManager.handleActivityResult(this@WakeTrackerActivity, requestCode, resultCode, data!!)
-        if(intentData != null){
-            wakeTrackerFragment.setProjectionIntent(intentData)
+        if(resultCode == RESULT_OK){
+            toast("Record the screen...")
+            intentData = CaptureManager.handleActivityResult(this@WakeTrackerActivity, requestCode, resultCode, data!!)
+            wakeTrackerFragment.wakeWithRecording(intentData)
         }else{
-            toast("Something went wrong")
+            toast("Screen won't be recorded")
+            wakeTrackerFragment.wakeWithoutRecording()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
     /** Method zone **/
 
     private fun setFlagScreenOnEvenLocked() {
@@ -96,8 +99,6 @@ class WakeTrackerActivity : AppCompatActivity(){
 
         wakeTrackerFragment = WakeTrackerFragment.getInstance(alarmDao.alarmSound)
         replaceFragment(R.id.contentContainer, wakeTrackerFragment)
-//        var screenCaptureFragment = ScreenCaptureFragment()
-//        replaceFragment(R.id.contentContainer, screenCaptureFragment)
     }
 
 

@@ -129,7 +129,7 @@ class WakeTrackerFragment : Fragment() {
         //        recordScreen()
     }
 
-    fun setProjectionIntent(intentData: Intent?) {
+    fun wakeWithRecording(intentData: Intent?) {
         projectionIntent = intentData
         recordingManager = RecordingManager(activity, object: RecordingManager.Listener{
             override fun onStop() {
@@ -147,6 +147,10 @@ class WakeTrackerFragment : Fragment() {
         }, Activity.RESULT_OK, projectionIntent!!)
         playAlarm()
         startRecord()
+    }
+
+    fun wakeWithoutRecording(){
+        playAlarm()
     }
 
     private fun startCounter() {

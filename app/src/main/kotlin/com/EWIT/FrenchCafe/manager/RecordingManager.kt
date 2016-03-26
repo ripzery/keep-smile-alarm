@@ -103,9 +103,11 @@ internal class RecordingManager(private val context: Context, private val listen
         val recordingInfo = recordingInfo
 
         recorder = MediaRecorder()
+        recorder!!.setAudioSource(MediaRecorder.AudioSource.DEFAULT)
         recorder!!.setVideoSource(SURFACE)
         recorder!!.setOutputFormat(MPEG_4)
         recorder!!.setVideoFrameRate(recordingInfo.frameRate)
+        recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
         recorder!!.setVideoEncoder(H264)
         recorder!!.setVideoSize(recordingInfo.width, recordingInfo.height)
         recorder!!.setVideoEncodingBitRate(8 * 1000 * 1000)
