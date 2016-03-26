@@ -10,7 +10,6 @@ import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.replaceFragment
 import com.EWIT.FrenchCafe.extension.save
 import com.EWIT.FrenchCafe.extension.toast
-import com.EWIT.FrenchCafe.fragment.ScreenCaptureFragment
 import com.EWIT.FrenchCafe.fragment.WakeTrackerFragment
 import com.EWIT.FrenchCafe.manager.CaptureManager
 import com.EWIT.FrenchCafe.manager.SharePrefDaoManager

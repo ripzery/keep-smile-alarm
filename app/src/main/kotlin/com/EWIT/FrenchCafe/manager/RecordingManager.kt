@@ -48,7 +48,7 @@ internal class RecordingManager(private val context: Context, private val listen
     private val mainThread = Handler(Looper.getMainLooper())
 
     private val outputRoot: File
-    private val fileFormat = SimpleDateFormat("'Telecine_'yyyy-MM-dd-HH-mm-ss'.mp4'", Locale.US)
+    private val fileFormat = SimpleDateFormat("'FrenchCafe_'yyyy-MM-dd-HH-mm-ss'.mp4'", Locale.US)
 
     private val notificationManager: NotificationManager
     private val windowManager: WindowManager
@@ -63,7 +63,7 @@ internal class RecordingManager(private val context: Context, private val listen
 
     init {
         val picturesDir = Environment.getExternalStoragePublicDirectory(DIRECTORY_MOVIES)
-        outputRoot = File(picturesDir, "Telecine")
+        outputRoot = File(picturesDir, "FrenchCafe")
 
         notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         windowManager = context.getSystemService(WINDOW_SERVICE) as WindowManager
@@ -172,7 +172,7 @@ internal class RecordingManager(private val context: Context, private val listen
 
     companion object {
 
-        private val DISPLAY_NAME = "telecine"
+        private val DISPLAY_NAME = "FrenchCafe"
         private val MIME_TYPE = "video/mp4"
 
         fun calculateRecordingInfo(displayWidth: Int, displayHeight: Int,
