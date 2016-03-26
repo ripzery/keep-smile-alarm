@@ -33,7 +33,6 @@ class BaseApp : Application(){
         if(isFirstTime){
            val receiver = ComponentName(this@BaseApp, BootBroadcastReceiver::class.java )
            val pm = this@BaseApp.packageManager
-
             pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
         }
     }

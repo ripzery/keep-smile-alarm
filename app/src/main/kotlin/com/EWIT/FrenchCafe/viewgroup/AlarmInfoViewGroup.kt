@@ -161,6 +161,7 @@ class AlarmInfoViewGroup : BaseCustomViewGroup {
         when (isChecked) {
             true -> {
                 alarmDao = AlarmSetInterface.modifyWakeupTime(alarmDao)
+                alarmDao.isSwitchOn = true
                 WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
             }
             false -> {

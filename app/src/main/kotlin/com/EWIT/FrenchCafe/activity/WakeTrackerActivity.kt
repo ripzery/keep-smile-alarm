@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -9,7 +10,9 @@ import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.replaceFragment
 import com.EWIT.FrenchCafe.extension.save
 import com.EWIT.FrenchCafe.extension.toast
+import com.EWIT.FrenchCafe.fragment.ScreenCaptureFragment
 import com.EWIT.FrenchCafe.fragment.WakeTrackerFragment
+import com.EWIT.FrenchCafe.manager.CaptureManager
 import com.EWIT.FrenchCafe.manager.SharePrefDaoManager
 import com.EWIT.FrenchCafe.manager.WakeupAlarmManager
 import com.EWIT.FrenchCafe.model.dao.Model
@@ -24,6 +27,7 @@ class WakeTrackerActivity : AppCompatActivity(){
     
     /** Variable zone **/
     lateinit private var wakeTrackerFragment: WakeTrackerFragment
+    private var intentData: Intent? = null
 
     /** Lifecycle  zone **/
 
@@ -31,9 +35,9 @@ class WakeTrackerActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
 
         setFlagScreenOnEvenLocked()
-
         setContentView(R.layout.activity_wake_tracker)
         initInstance()
+        CaptureManager.fireScreenCaptureIntent(this@WakeTrackerActivity)
     }
 
     override fun onResume() {
@@ -61,6 +65,16 @@ class WakeTrackerActivity : AppCompatActivity(){
         return super.onOptionsItemSelected(item)
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        intentData = CaptureManager.handleActivityResult(this@WakeTrackerActivity, requestCode, resultCode, data!!)
+        if(intentData != null){
+            wakeTrackerFragment.setProjectionIntent(intentData)
+        }else{
+            toast("Something went wrong")
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
     /** Method zone **/
 
     private fun setFlagScreenOnEvenLocked() {
@@ -83,6 +97,8 @@ class WakeTrackerActivity : AppCompatActivity(){
 
         wakeTrackerFragment = WakeTrackerFragment.getInstance(alarmDao.alarmSound)
         replaceFragment(R.id.contentContainer, wakeTrackerFragment)
+//        var screenCaptureFragment = ScreenCaptureFragment()
+//        replaceFragment(R.id.contentContainer, screenCaptureFragment)
     }
 
 

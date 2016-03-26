@@ -391,7 +391,7 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     val btnSetAlarmListener = { view: View ->
 
         if(SharePrefDaoManager.getAlarmCollectionDao().isHasSmartAlarm() && editIndex == -1){
-            toast("There can be only one smart alarm.")
+            toast("There can be only one \"very\" smart alarm.")
         }else {
             if (isPickLocation() || alarmDao?.placePicked != null) {
 

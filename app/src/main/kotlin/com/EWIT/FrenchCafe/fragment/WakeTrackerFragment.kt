@@ -1,18 +1,26 @@
 package com.EWIT.FrenchCafe.fragment
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.media.RingtoneManager
+import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
+import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import com.EWIT.FrenchCafe.R
 import com.EWIT.FrenchCafe.extension.log
 import com.EWIT.FrenchCafe.extension.replaceFragment
+import com.EWIT.FrenchCafe.manager.CaptureManager
+import com.EWIT.FrenchCafe.manager.RecordingManager
 import com.google.android.gms.vision.face.Face
 import kotlinx.android.synthetic.main.fragment_wake_tracker.*
 
@@ -33,6 +41,11 @@ class WakeTrackerFragment : Fragment() {
     private var alarmSound: String? = null
     private var ringtone: MediaPlayer? = null
     private var backgroundFaceDetectionFragment: BackgroundFaceDetectionFragment? = null
+    lateinit private var recorder: MediaRecorder
+    lateinit private var mProjectionManager: MediaProjectionManager
+    private var recordingManager: RecordingManager? = null
+    private var projectionIntent: Intent? = null
+
 
 
     /*** Static object zone  ***/
@@ -83,12 +96,21 @@ class WakeTrackerFragment : Fragment() {
         stopCounter()
         backgroundFaceDetectionFragment?.removeFaceTrackerListener()
         stopAlarm()
+        if(recordingManager != null)
+        stopRecord()
+
     }
 
     override fun onResume() {
         super.onResume()
         backgroundFaceDetectionFragment?.setFaceTrackerListener(backgroundFaceDetectionListener)
-        if (!isCompleted) playAlarm()
+        if (!isCompleted){
+            playAlarm()
+            if(projectionIntent != null){
+                startRecord()
+            }
+        }
+
 
     }
 
@@ -99,6 +121,34 @@ class WakeTrackerFragment : Fragment() {
 
     /**** Method zone ****/
 
+    private fun initInstance() {
+        backgroundFaceDetectionFragment = BackgroundFaceDetectionFragment.getInstance(0.4F)
+        backgroundFaceDetectionFragment!!.setFaceTrackerListener(backgroundFaceDetectionListener)
+        replaceFragment(R.id.cameraContainer, backgroundFaceDetectionFragment!!)
+        //        playAlarm()
+        //        recordScreen()
+    }
+
+    fun setProjectionIntent(intentData: Intent?) {
+        projectionIntent = intentData
+        recordingManager = RecordingManager(activity, object: RecordingManager.Listener{
+            override fun onStop() {
+                log("Stop")
+            }
+
+            override fun onEnd() {
+                log("End")
+            }
+
+            override fun onStart() {
+                log("Start")
+            }
+
+        }, Activity.RESULT_OK, projectionIntent!!)
+        playAlarm()
+        startRecord()
+    }
+
     private fun startCounter() {
         if (!isCounterRunning) {
             countDownTimer.start()
@@ -106,24 +156,15 @@ class WakeTrackerFragment : Fragment() {
         }
     }
 
-    private fun restartCounter() {
-        countDownTimer.cancel()
-        countDownTimer.start()
-        isCounterRunning = true
-    }
-
     private fun stopCounter() {
         countDownTimer?.cancel()
         isCounterRunning = false
     }
 
-    private fun initInstance() {
-        backgroundFaceDetectionFragment = BackgroundFaceDetectionFragment.getInstance(0.4F)
-        backgroundFaceDetectionFragment!!.setFaceTrackerListener(backgroundFaceDetectionListener)
-
-        replaceFragment(R.id.cameraContainer, backgroundFaceDetectionFragment!!)
-
-        playAlarm()
+    private fun restartCounter() {
+        countDownTimer.cancel()
+        countDownTimer.start()
+        isCounterRunning = true
     }
 
     private fun playAlarm() {
@@ -156,6 +197,15 @@ class WakeTrackerFragment : Fragment() {
         ringtone?.stop()
     }
 
+    private fun startRecord() {
+        if(!recordingManager!!.isRunning())
+            recordingManager?.startRecording()
+    }
+
+    private fun stopRecord() {
+        recordingManager?.destroy()
+    }
+
     /**** Listener zone ****/
 
     private var countDownTimer = object : CountDownTimer(EYE_OPEN_DURATION, 1000) {
@@ -166,6 +216,7 @@ class WakeTrackerFragment : Fragment() {
             tvHello.text = text
             isCompleted = true
             stopAlarm()
+            stopRecord()
         }
 
         override fun onTick(millisUntilFinished: Long) {

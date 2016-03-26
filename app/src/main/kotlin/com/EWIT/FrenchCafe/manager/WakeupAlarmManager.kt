@@ -24,7 +24,7 @@ object WakeupAlarmManager {
     val INTENT_EXTRA_ALARM_SOUND = "EXTRA://ALARM_SOUND"
     val INTENT_EXTRA_ALARM_DAO = "EXTRA://ALARM_DAO"
 
-    /** Method zone**/
+    /** Method zone **/
 
     /* wakeTimeSum is summation of wakeupTime including repeat alarm time */
 
