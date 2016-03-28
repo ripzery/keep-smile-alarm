@@ -12,10 +12,52 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/videoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:paddingTop="16dp"
+        android:visibility="gone"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_wake_tracker_preview_video"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+            android:theme="@style/TextHeading"/>
+
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_marginTop="@dimen/margin_padding_16"
+            android:layout_width="260dp"
+            android:layout_height="390dp"/>
+
+        <android.support.v4.widget.Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btnShare"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height_64"
+            android:theme="@style/BaseButton.Teal"
+            android:text="Share"
+            android:layout_margin="@dimen/margin_padding_16"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
         android:id="@+id/contentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:visibility="visible"
         android:orientation="vertical"
         android:background="@android:color/white">
 
@@ -23,7 +65,7 @@
             android:id="@+id/ivWakeState"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/level_list_wake_image" />
+            android:src="@drawable/level_list_wake_image"/>
 
         <TextView
             android:id="@+id/tvHello"
@@ -35,7 +77,6 @@
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
-
 
 
 </FrameLayout>

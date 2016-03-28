@@ -1,5 +1,6 @@
 package com.EWIT.FrenchCafe.extension
 
+import android.os.Build
 import android.util.Log
 import com.EWIT.FrenchCafe.util.SharePref
 import java.util.*
@@ -28,6 +29,18 @@ fun <T> Any.get(id: String, defaultValue : T) : Any {
         is Boolean -> return sp!!.getBoolean(id, defaultValue)
         is Float -> return sp!!.getFloat(id, defaultValue)
         else -> throw IllegalArgumentException("Can get only [Int, String, Long, Boolean, Float] !")
+    }
+}
+
+inline fun supportsLollipop(code: () -> Unit){
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        code()
+    }
+}
+
+inline fun supportsLowerLollipop(code: () -> Unit){
+    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+       code()
     }
 }
 

@@ -171,6 +171,10 @@ internal class RecordingManager(private val context: Context, private val listen
         }
     }
 
+    fun getLatestOutputFile(): String?{
+        return outputFile
+    }
+
     fun isRunning(): Boolean{
         return running
     }

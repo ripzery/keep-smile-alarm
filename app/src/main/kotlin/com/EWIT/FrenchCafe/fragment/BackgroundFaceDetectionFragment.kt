@@ -9,6 +9,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.EWIT.FrenchCafe.R
+import com.EWIT.FrenchCafe.lib.viewgroup.GraphicOverlay
+import com.EWIT.FrenchCafe.viewgroup.FaceGraphic
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.vision.CameraSource
@@ -17,10 +20,8 @@ import com.google.android.gms.vision.MultiProcessor
 import com.google.android.gms.vision.Tracker
 import com.google.android.gms.vision.face.Face
 import com.google.android.gms.vision.face.FaceDetector
-import com.EWIT.FrenchCafe.R
-import com.EWIT.FrenchCafe.lib.viewgroup.GraphicOverlay
-import com.EWIT.FrenchCafe.viewgroup.FaceGraphic
 import kotlinx.android.synthetic.main.fragment_face_preview.*
+import rx.Observable
 import java.io.IOException
 
 /**
@@ -188,7 +189,7 @@ class BackgroundFaceDetectionFragment() : Fragment() {
     /** Method zone **/
 
     fun setFaceTrackerListener(faceTrackerListener: FaceTrackerListener) {
-        this@BackgroundFaceDetectionFragment.faceTrackerListener = faceTrackerListener
+        if (this@BackgroundFaceDetectionFragment.faceTrackerListener == null) this@BackgroundFaceDetectionFragment.faceTrackerListener = faceTrackerListener
     }
 
     fun removeFaceTrackerListener() {
@@ -302,11 +303,23 @@ class BackgroundFaceDetectionFragment() : Fragment() {
             mOverlay.add(mFaceGraphic)
             mFaceGraphic.updateFace(item!!)
             if (item!!.isLeftEyeOpenProbability == -1.toFloat()) {
-                faceTrackerListener?.onLeftCamera(item)
+                Observable.just(item.isLeftEyeOpenProbability)
+                        .distinct()
+                        .subscribe {
+                            faceTrackerListener?.onLeftCamera(item)
+                        }
             } else if (item.isLeftEyeOpenProbability < eyeThresholdSensitivity) {
-                faceTrackerListener?.onCloseEye(item)
+                Observable.just(item.isLeftEyeOpenProbability)
+                        .distinct()
+                        .subscribe {
+                            faceTrackerListener?.onCloseEye(item)
+                        }
             } else {
-                faceTrackerListener?.onOpenEye(item)
+                Observable.just(item.isLeftEyeOpenProbability)
+                        .distinct()
+                        .subscribe {
+                            faceTrackerListener?.onOpenEye(item)
+                        }
             }
         }
 
