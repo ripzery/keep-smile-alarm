@@ -78,9 +78,7 @@ class AlarmListFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 AlarmSetActivity.RESULT_CODE_EDIT -> {
-                    val index = data!!.getIntExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, 0)
-                    alarmCollectionList[index] = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList[index]
-                    recyclerAdapter.updateAtPosition(index)
+                    onEditAlarm(data)
                 }
             }
         }
@@ -112,11 +110,22 @@ class AlarmListFragment : Fragment() {
     }
 
     fun onAddedNewItem() {
-        val newItem: Model.AlarmDao = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList.takeLast(1)[0]
-        alarmCollectionList.add(newItem)
-        recyclerAdapter.addAtPosition(alarmCollectionList.lastIndex)
+        val newAlarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao()
+        val newAlarmIndex = newAlarmCollectionList.getNewAlarmIndex(alarmCollectionList)
+        val newItem: Model.AlarmDao = newAlarmCollectionList.alarmCollectionList[newAlarmIndex]
+        alarmCollectionList.add(newAlarmIndex, newItem)
+        recyclerAdapter.addAtPosition(newAlarmIndex)
+    }
 
-        //        recyclerAdapter.setList(alarmCollectionList)
+    private fun onEditAlarm(data: Intent?) {
+        // TODO : Handle sort onEditAlarm
+
+        //        val index = data!!.getIntExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, 0)
+        alarmCollectionList.clear()
+        alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
+        recyclerAdapter.setList(alarmCollectionList)
+        //                    alarmCollectionList[index] = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList[index]
+        //                    recyclerAdapter.updateAtPosition(index)
     }
 
     private fun deleteAlarm(index: Int) {
@@ -183,7 +192,7 @@ class AlarmListFragment : Fragment() {
         override fun onCheckedChange(alarmDao: Model.AlarmDao, isChecked: Boolean, index: Int) {
             alarmCollectionList[index] = alarmDao
             save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
-            toast( if(isChecked) "Set alarm at ${alarmDao.timeWake.getTimeFormat()}" else "Cancel alarm at ${alarmDao.timeWake.getTimeFormat()}" )
+            toast(if (isChecked) "Set alarm at ${alarmDao.timeWake.getTimeFormat()}" else "Cancel alarm at ${alarmDao.timeWake.getTimeFormat()}")
         }
     }
 }

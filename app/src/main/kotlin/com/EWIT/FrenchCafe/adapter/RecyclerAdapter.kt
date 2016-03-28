@@ -18,6 +18,7 @@ import java.util.*
 class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var alarmInfoInteractionListener: AlarmInfoInteractionListener) : RecyclerView.Adapter<RecyclerAdapter.AlarmInfoViewHolder>() {
 
     var lastPosition: Int = -1
+    private var lastInsertedIndex: Int = -1
 
     /** Override zone **/
 
@@ -26,12 +27,22 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
         //        holder!!.alarmInfoViewGroup.startAnimation(animScaleIn)
 
         if (position > lastPosition) {
-            var animScaleIn = AnimationUtils.loadAnimation(holder!!.alarmInfoViewGroup.context, R.anim.anim_scale_up)
-            holder.alarmInfoViewGroup.startAnimation(animScaleIn)
+            animateNewItemAdded(holder)
             lastPosition = position
         }
 
+        if(lastInsertedIndex != -1 && lastInsertedIndex == position){
+            animateNewItemAdded(holder)
+            lastInsertedIndex = -1
+            lastPosition++
+        }
+
         holder!!.setModel(alarmCollectionList[position])
+    }
+
+    private fun animateNewItemAdded(holder: AlarmInfoViewHolder?) {
+        var animScaleIn = AnimationUtils.loadAnimation(holder!!.alarmInfoViewGroup.context, R.anim.anim_scale_up)
+        holder.alarmInfoViewGroup.startAnimation(animScaleIn)
     }
 
     override fun onCreateViewHolder(container: ViewGroup?, position: Int): AlarmInfoViewHolder? {
@@ -55,11 +66,15 @@ class RecyclerAdapter(var alarmCollectionList: ArrayList<Model.AlarmDao>, var al
         lastPosition--
     }
 
+
     fun addAtPosition(index: Int) {
         notifyItemInserted(index)
+        lastInsertedIndex = index
     }
 
     fun setList(alarmCollectionList: ArrayList<Model.AlarmDao>) {
+        lastPosition = -1
+        lastInsertedIndex = -1
         this@RecyclerAdapter.alarmCollectionList = alarmCollectionList
         notifyDataSetChanged()
     }

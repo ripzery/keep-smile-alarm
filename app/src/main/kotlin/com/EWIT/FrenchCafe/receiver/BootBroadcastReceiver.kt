@@ -32,16 +32,14 @@ class BootBroadcastReceiver : WakefulBroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent!!.action.equals(ACTION_BOOT_COMPLETE)) {
             /* reset alarm */
-
-            //TODO: reset all alarm
             val alarmCollectionDao: Model.AlarmCollectionDao = SharePrefDaoManager.getAlarmCollectionDao()
 
             alarmCollectionDao.alarmCollectionList.forEach { alarmDao ->
 
-                if (alarmDao.repeatDay.size > 0) {
-                    WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
-                } else if (mCalendar().minBefore(alarmDao.toCalendar())) {
-                    WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
+                if (alarmDao.isSwitchOn) {
+                    if (alarmDao.repeatDay.size > 0 || mCalendar().minBefore(alarmDao.toCalendar())) {
+                        WakeupAlarmManager.broadcastWakeupAlarmIntent(alarmDao)
+                    }
                 }
 
             }

@@ -1,8 +1,6 @@
 package com.EWIT.FrenchCafe.model.dao
 
 import com.EWIT.FrenchCafe.extension.mCalendar
-import com.EWIT.FrenchCafe.extension.minBefore
-import com.google.android.gms.maps.model.LatLng
 import nz.bradcampbell.paperparcel.PaperParcel
 import nz.bradcampbell.paperparcel.PaperParcelable
 import java.util.*
@@ -73,6 +71,29 @@ object Model{
                 }
             }
             return false
+        }
+
+        fun sortAscending() {
+            alarmCollectionList.sortWith(Comparator { alarm1, alarm2 ->
+                alarm1.toCalendar().timeInMillis.toInt() - alarm2.toCalendar().timeInMillis.toInt()
+            })
+        }
+
+        fun sortDecending() {
+            alarmCollectionList.sortWith(Comparator { alarm1, alarm2 ->
+                alarm2.toCalendar().timeInMillis.toInt() - alarm1.toCalendar().timeInMillis.toInt()
+            })
+        }
+
+        fun getNewAlarmIndex(alarmList: ArrayList<AlarmDao>): Int{
+            for(index in alarmCollectionList.indices){
+                if(!alarmList.contains(alarmCollectionList[index])){
+                    return index
+                }
+            }
+
+            // No new alarm
+            return -1
         }
     }
 }

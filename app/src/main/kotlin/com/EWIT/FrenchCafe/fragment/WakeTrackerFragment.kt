@@ -133,7 +133,7 @@ class WakeTrackerFragment : Fragment() {
                 .debounce(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    showSharingDialog(recordingManager?.getLatestOutputFile())
+                    showSharingDialog()
                     btnShare.isEnabled = true
                 }
     }
@@ -241,7 +241,7 @@ class WakeTrackerFragment : Fragment() {
         }
     }
 
-    private fun showSharingDialog(latestOutputFile: String?) {
+    private fun showSharingDialog() {
         startActivity(sharingChooser)
     }
 
@@ -279,8 +279,7 @@ class WakeTrackerFragment : Fragment() {
                         .subscribe {
                             stopAlarm()
                             stopRecord()
-                            log("show dialog")
-                            supportsLollipop { // TODO :Implemented play video preview and share button
+                            supportsLollipop {
                                 buildSharingDialog(recordingManager?.getLatestOutputFile())
                                 showVideoPreview(recordingManager?.getLatestOutputFile())
                             }

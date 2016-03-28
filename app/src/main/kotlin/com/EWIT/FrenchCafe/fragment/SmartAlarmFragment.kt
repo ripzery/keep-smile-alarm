@@ -286,7 +286,6 @@ class SmartAlarmFragment : Fragment(), AlarmSetInterface {
     }
 
     private fun isPickLocation(): Boolean {
-        // TODO : Check only arrival location
         return destPlace != null
     }
 

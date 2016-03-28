@@ -96,8 +96,6 @@ internal class RecordingManager(private val context: Context, private val listen
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP) fun startRecording() {
 
-        // TODO : Build better recording algorithm :D
-
         if (!outputRoot.mkdirs()) {
             // We're probably about to crash, but at least the log will indicate as to why.
         }

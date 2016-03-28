@@ -58,14 +58,19 @@ interface AlarmSetInterface {
         /* update new alarmDao */
         alarmCollectionList[index] = correctedAlarmDao
 
+        /* get alarmCollectionDao */
+        var alarmCollectionDao = Model.AlarmCollectionDao(alarmCollectionList)
+
+        /* sort alarm dao*/
+        alarmCollectionDao.sortAscending()
+
         /* save to sharePref */
-        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(Model.AlarmCollectionDao(alarmCollectionList)))
+        save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(alarmCollectionDao))
 
         startAlarmReceiver(correctedAlarmDao)
 
     }
 
-    // TODO: 3 case
     /* Case 1 : currentTime < wakeupTime -> wakeup normally
     *  Case 2* : currentTime > wakeupTime && currentTime < wakeupTime + PERSONAL_TIME_OFFSET && currentTime + travelTime <= arriveTime -> wakeup immediately
     *  Case 3 : currentTime > arriveTime || currentTime + travelTime > arriveTime  -> wakeup tomorrow */
@@ -143,6 +148,9 @@ interface AlarmSetInterface {
 
         /* add alarm dao */
         alarmCollectionDao.alarmCollectionList.add(alarmDao)
+
+        /* sort alarm dao*/
+        alarmCollectionDao.sortAscending()
 
         /* save back to share preference */
         save(SharePref.SHARE_PREF_KEY_ALARM_COLLECTION_JSON, Gson().toJson(alarmCollectionDao))
