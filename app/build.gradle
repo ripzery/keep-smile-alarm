@@ -50,6 +50,11 @@ android {
     targetSdkVersion 23
     versionCode 22
     versionName '1.2.9'
+    vectorDrawables.useSupportLibrary = true
+  }
+
+  aaptOptions {
+    additionalParameters "--no-version-vectors"
   }
 
   compileOptions {
