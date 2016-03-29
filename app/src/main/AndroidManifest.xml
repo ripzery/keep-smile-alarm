@@ -56,13 +56,16 @@
         <activity
             android:name=".FaceTrackerActivity"
             android:screenOrientation="sensorPortrait"/>
+
         <activity
             android:name=".activity.AlarmSetActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
+
         <activity
             android:name=".activity.MapsActivity"
             android:screenOrientation="portrait"/>
+        
         <activity
             android:name=".activity.WakeTrackerActivity"
             android:showOnLockScreen="true"
@@ -71,6 +74,8 @@
         <service android:name=".service.NotificationService"/>
 
         <service android:name=".service.WakeupAlarmService"/>
+
+        <service android:name=".service.LocationService" />
 
         <receiver
             android:name=".receiver.BootBroadcastReceiver"

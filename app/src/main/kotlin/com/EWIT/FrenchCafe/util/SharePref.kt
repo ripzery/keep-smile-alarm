@@ -10,6 +10,7 @@ object SharePref {
 
     val SHARE_PREF_KEY_ALARM_COLLECTION_JSON = "ALARM_COLLECTION_JSON"
     val SHARE_PREF_KEY_IS_FIRST_TIME = "IS_FIRST_TIME_OPEN_APP"
+    val SHARE_PREF_KEY_LAST_KNOWN_LOCATION = "LAST_KNOWN_LOCATION"
 
     fun putString(key:String, value:String){
         sharePref?.edit()?.putString(key,value)?.apply()

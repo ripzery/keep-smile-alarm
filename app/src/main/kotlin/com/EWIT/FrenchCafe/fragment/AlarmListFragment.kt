@@ -118,14 +118,12 @@ class AlarmListFragment : Fragment() {
     }
 
     private fun onEditAlarm(data: Intent?) {
-        // TODO : Handle sort onEditAlarm
-
-        //        val index = data!!.getIntExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, 0)
+//        val index = data!!.getIntExtra(AlarmSetActivity.EXTRA_EDIT_INDEX, 0)
         alarmCollectionList.clear()
         alarmCollectionList = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList
         recyclerAdapter.setList(alarmCollectionList)
-        //                    alarmCollectionList[index] = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList[index]
-        //                    recyclerAdapter.updateAtPosition(index)
+        //        alarmCollectionList[index] = SharePrefDaoManager.getAlarmCollectionDao().alarmCollectionList[index]
+        //        recyclerAdapter.updateAtPosition(index)
     }
 
     private fun deleteAlarm(index: Int) {
